@@ -1,0 +1,478 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CA1DA29B24B1CA23006015E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA29A24B1CA23006015E0 /* AppDelegate.swift */; };
+		CA1DA29D24B1CA23006015E0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA29C24B1CA23006015E0 /* ViewController.swift */; };
+		CA1DA29F24B1CA23006015E0 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA29E24B1CA23006015E0 /* Document.swift */; };
+		CA1DA2A224B1CA23006015E0 /* Document.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA2A024B1CA23006015E0 /* Document.xcdatamodeld */; };
+		CA1DA2A424B1CA27006015E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA1DA2A324B1CA27006015E0 /* Assets.xcassets */; };
+		CA1DA2A724B1CA27006015E0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CA1DA2A524B1CA27006015E0 /* Main.storyboard */; };
+		CA1DA2B324B1CA27006015E0 /* Subtitle_EditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA2B224B1CA27006015E0 /* Subtitle_EditorTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CA1DA2AF24B1CA27006015E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CA1DA28F24B1CA23006015E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA1DA29624B1CA23006015E0;
+			remoteInfo = "Subtitle Editor";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CA1DA29724B1CA23006015E0 /* Subtitle Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Subtitle Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA1DA29A24B1CA23006015E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CA1DA29C24B1CA23006015E0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		CA1DA29E24B1CA23006015E0 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		CA1DA2A124B1CA23006015E0 /* Document.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Document.xcdatamodel; sourceTree = "<group>"; };
+		CA1DA2A324B1CA27006015E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CA1DA2A624B1CA27006015E0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		CA1DA2A824B1CA27006015E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CA1DA2A924B1CA27006015E0 /* Subtitle_Editor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Subtitle_Editor.entitlements; sourceTree = "<group>"; };
+		CA1DA2AE24B1CA27006015E0 /* Subtitle EditorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Subtitle EditorTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA1DA2B224B1CA27006015E0 /* Subtitle_EditorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtitle_EditorTests.swift; sourceTree = "<group>"; };
+		CA1DA2B424B1CA27006015E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CA1DA29424B1CA23006015E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA1DA2AB24B1CA27006015E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CA1DA28E24B1CA23006015E0 = {
+			isa = PBXGroup;
+			children = (
+				CA1DA29924B1CA23006015E0 /* Subtitle Editor */,
+				CA1DA2B124B1CA27006015E0 /* Subtitle EditorTests */,
+				CA1DA29824B1CA23006015E0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CA1DA29824B1CA23006015E0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CA1DA29724B1CA23006015E0 /* Subtitle Editor.app */,
+				CA1DA2AE24B1CA27006015E0 /* Subtitle EditorTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CA1DA29924B1CA23006015E0 /* Subtitle Editor */ = {
+			isa = PBXGroup;
+			children = (
+				CA1DA29A24B1CA23006015E0 /* AppDelegate.swift */,
+				CA1DA29C24B1CA23006015E0 /* ViewController.swift */,
+				CA1DA29E24B1CA23006015E0 /* Document.swift */,
+				CA1DA2A324B1CA27006015E0 /* Assets.xcassets */,
+				CA1DA2A524B1CA27006015E0 /* Main.storyboard */,
+				CA1DA2A824B1CA27006015E0 /* Info.plist */,
+				CA1DA2A924B1CA27006015E0 /* Subtitle_Editor.entitlements */,
+				CA1DA2A024B1CA23006015E0 /* Document.xcdatamodeld */,
+			);
+			path = "Subtitle Editor";
+			sourceTree = "<group>";
+		};
+		CA1DA2B124B1CA27006015E0 /* Subtitle EditorTests */ = {
+			isa = PBXGroup;
+			children = (
+				CA1DA2B224B1CA27006015E0 /* Subtitle_EditorTests.swift */,
+				CA1DA2B424B1CA27006015E0 /* Info.plist */,
+			);
+			path = "Subtitle EditorTests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CA1DA29624B1CA23006015E0 /* Subtitle Editor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA1DA2B724B1CA27006015E0 /* Build configuration list for PBXNativeTarget "Subtitle Editor" */;
+			buildPhases = (
+				CA1DA29324B1CA23006015E0 /* Sources */,
+				CA1DA29424B1CA23006015E0 /* Frameworks */,
+				CA1DA29524B1CA23006015E0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Subtitle Editor";
+			productName = "Subtitle Editor";
+			productReference = CA1DA29724B1CA23006015E0 /* Subtitle Editor.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CA1DA2AD24B1CA27006015E0 /* Subtitle EditorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA1DA2BA24B1CA27006015E0 /* Build configuration list for PBXNativeTarget "Subtitle EditorTests" */;
+			buildPhases = (
+				CA1DA2AA24B1CA27006015E0 /* Sources */,
+				CA1DA2AB24B1CA27006015E0 /* Frameworks */,
+				CA1DA2AC24B1CA27006015E0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA1DA2B024B1CA27006015E0 /* PBXTargetDependency */,
+			);
+			name = "Subtitle EditorTests";
+			productName = "Subtitle EditorTests";
+			productReference = CA1DA2AE24B1CA27006015E0 /* Subtitle EditorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CA1DA28F24B1CA23006015E0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1150;
+				LastUpgradeCheck = 1150;
+				ORGANIZATIONNAME = "Michael Seeberger";
+				TargetAttributes = {
+					CA1DA29624B1CA23006015E0 = {
+						CreatedOnToolsVersion = 11.5;
+					};
+					CA1DA2AD24B1CA27006015E0 = {
+						CreatedOnToolsVersion = 11.5;
+						TestTargetID = CA1DA29624B1CA23006015E0;
+					};
+				};
+			};
+			buildConfigurationList = CA1DA29224B1CA23006015E0 /* Build configuration list for PBXProject "Subtitle Editor" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CA1DA28E24B1CA23006015E0;
+			productRefGroup = CA1DA29824B1CA23006015E0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CA1DA29624B1CA23006015E0 /* Subtitle Editor */,
+				CA1DA2AD24B1CA27006015E0 /* Subtitle EditorTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CA1DA29524B1CA23006015E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA1DA2A424B1CA27006015E0 /* Assets.xcassets in Resources */,
+				CA1DA2A724B1CA27006015E0 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA1DA2AC24B1CA27006015E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CA1DA29324B1CA23006015E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA1DA2A224B1CA23006015E0 /* Document.xcdatamodeld in Sources */,
+				CA1DA29D24B1CA23006015E0 /* ViewController.swift in Sources */,
+				CA1DA29B24B1CA23006015E0 /* AppDelegate.swift in Sources */,
+				CA1DA29F24B1CA23006015E0 /* Document.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA1DA2AA24B1CA27006015E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA1DA2B324B1CA27006015E0 /* Subtitle_EditorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CA1DA2B024B1CA27006015E0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA1DA29624B1CA23006015E0 /* Subtitle Editor */;
+			targetProxy = CA1DA2AF24B1CA27006015E0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CA1DA2A524B1CA27006015E0 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CA1DA2A624B1CA27006015E0 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CA1DA2B524B1CA27006015E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CA1DA2B624B1CA27006015E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		CA1DA2B824B1CA27006015E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Subtitle Editor/Subtitle_Editor.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Subtitle Editor/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.michaelseeberger.Subtitle-Editor";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CA1DA2B924B1CA27006015E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Subtitle Editor/Subtitle_Editor.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Subtitle Editor/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.michaelseeberger.Subtitle-Editor";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		CA1DA2BB24B1CA27006015E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Subtitle EditorTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.michaelseeberger.Subtitle-EditorTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Subtitle Editor.app/Contents/MacOS/Subtitle Editor";
+			};
+			name = Debug;
+		};
+		CA1DA2BC24B1CA27006015E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Subtitle EditorTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.michaelseeberger.Subtitle-EditorTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Subtitle Editor.app/Contents/MacOS/Subtitle Editor";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CA1DA29224B1CA23006015E0 /* Build configuration list for PBXProject "Subtitle Editor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA1DA2B524B1CA27006015E0 /* Debug */,
+				CA1DA2B624B1CA27006015E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA1DA2B724B1CA27006015E0 /* Build configuration list for PBXNativeTarget "Subtitle Editor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA1DA2B824B1CA27006015E0 /* Debug */,
+				CA1DA2B924B1CA27006015E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA1DA2BA24B1CA27006015E0 /* Build configuration list for PBXNativeTarget "Subtitle EditorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA1DA2BB24B1CA27006015E0 /* Debug */,
+				CA1DA2BC24B1CA27006015E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		CA1DA2A024B1CA23006015E0 /* Document.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				CA1DA2A124B1CA23006015E0 /* Document.xcdatamodel */,
+			);
+			currentVersion = CA1DA2A124B1CA23006015E0 /* Document.xcdatamodel */;
+			path = Document.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = CA1DA28F24B1CA23006015E0 /* Project object */;
+}
