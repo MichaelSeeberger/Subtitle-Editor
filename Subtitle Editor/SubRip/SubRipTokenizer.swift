@@ -8,10 +8,9 @@
 
 import Foundation
 
+typealias TokenDefinition = (String, TokenGenerator)
+
 struct SubRipTokenizer {
-    private let input: String
-    
-    public typealias TokenDefinition = (String, TokenGenerator)
 
     let WhiteSpace: TokenDefinition = ("[ \t]", { (r: String) in .WhiteSpace(r) })
     let NewLine: TokenDefinition = ("\r*\n", { _ in .Newline })
@@ -56,8 +55,6 @@ struct SubRipTokenizer {
         return [
             OpenLeftBrace,
             OpenLeftAngledBracket,
-            CloseLeftBrace,
-            CloseLeftAngledBracket,
             NewLine
         ]
     }
@@ -67,6 +64,20 @@ struct SubRipTokenizer {
             BoldTag,
             ItalicTag,
             FontTag
+        ]
+    }
+    
+    var braceTagTokens: [TokenDefinition] {
+        return [
+            CloseLeftBrace,
+            RightBrace
+        ]
+    }
+    
+    var angledTagTokens: [TokenDefinition] {
+        return [
+            CloseLeftAngledBracket,
+            RightAngledBracket
         ]
     }
     
@@ -80,23 +91,16 @@ struct SubRipTokenizer {
             ColorName
         ]
     }
-
-    init(string: String) {
-        input = string
+    
+    var whiteSpaceAndNewlines: [TokenDefinition] {
+        return [
+            WhiteSpace,
+            NewLine
+        ]
     }
     
-    fileprivate func matchLongest(_ currentTokenList: [(String, TokenGenerator)], _ content: String) -> (matchedString: String, token: SubRipToken)? {
-        var longestMatch: (matchedString: String, token: SubRipToken)?
-        for (pattern, generator) in currentTokenList {
-            guard let match = content.match(regex: pattern) else {
-                continue
-            }
-            
-            if longestMatch == nil || longestMatch!.matchedString.count < match.count {
-                longestMatch = (match, generator(match))
-            }
-        }
-        return longestMatch
+    var whiteSpace: [TokenDefinition] {
+        return [ WhiteSpace ]
     }
     
     fileprivate func firstMatch(_ tokenList: [(String, TokenGenerator)], _ content: String) -> (matchedString: String, token: SubRipToken) {
@@ -114,12 +118,6 @@ struct SubRipTokenizer {
             if closestRange == nil || closestRange!.location > firstMatch.location {
                 closestRange = firstMatch
             }
-            
-            /*guard let match = content.match(regex: pattern) else {
-                continue
-            }
-            
-            return (match, generator(match))*/
         }
         
         guard let detectedRange = closestRange else {
@@ -129,71 +127,6 @@ struct SubRipTokenizer {
         let matchedString: String = (content as NSString).substring(with: rangeToString)
         
         return (matchedString, .Other(matchedString))
-    }
-    
-    /**
-     * Tokenize will match the longest possible string.
-     */
-    func tokenize() -> [SubRipToken] {
-        var content = input
-        var unmatchedString = ""
-        var currentTokenList = tokenList
-        var tokenListStack: [[(String, TokenGenerator)]] = []
-        var popTokenListOn = [SubRipToken]()
-        var tokens = [SubRipToken]()
-        
-        func addUnmatchedStringToTokenList() {
-            if unmatchedString.count > 0 {
-                tokens.append(SubRipToken.Other(unmatchedString))
-                unmatchedString = ""
-            }
-        }
-
-        while content.count > 0 {
-            /*guard let (match, newToken) = matchLongest(currentTokenList, content) else {
-                let index = content.index(after: content.startIndex)
-                unmatchedString += content[..<index]
-                content = String(content[index...])
-                
-                continue
-            }*/
-            /*guard let (match, newToken) = firstMatch(currentTokenList, content) else {
-                let index = content.index(after: content.startIndex)
-                unmatchedString += content[..<index]
-                content = String(content[index...])
-                
-                continue
-            }*/
-            let (match, newToken) = firstMatch(currentTokenList, content)
-            
-            content = String(content[match.endIndex...])
-            
-            addUnmatchedStringToTokenList()
-            
-            tokens.append(newToken)
-            
-            func updateTokenListStack(popOn: SubRipToken) {
-                tokenListStack.append(currentTokenList)
-                currentTokenList = tagTokenList + tokenList
-                popTokenListOn.append(popOn)
-            }
-            
-            if newToken == .OpenLeftAngledBracket || newToken == .CloseLeftAngleBracket {
-                updateTokenListStack(popOn: .RightAngledBracket)
-            } else if newToken == .OpenLeftBrace || newToken == .CloseLeftBrace {
-                updateTokenListStack(popOn: .RightBrace)
-            } else if let popToken = popTokenListOn.last {
-                if popToken == newToken {
-                    popTokenListOn.removeLast()
-                    currentTokenList = tokenListStack.popLast()! // if this is not set, crash... something went horribly wrong!
-                }
-            }
-        }
-        
-        addUnmatchedStringToTokenList()
-        tokens.append(SubRipToken.EOF)
-        
-        return tokens
     }
     
     func nextToken(tokenList: [(String, TokenGenerator)], content: String) -> (token: SubRipToken, newContent: String) {

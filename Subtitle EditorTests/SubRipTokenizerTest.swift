@@ -17,7 +17,7 @@ final class SubRipTokenizerTests: XCTestCase {
     
     func testTokenizeTimeLine() {
         let text = "00:00:00,000 --> 00:00:05,000\n"
-        let tokenizer = SubRipTokenizer(string: text)
+        let tokenizer = SubRipTokenizer()
         var counter = 1
         var (nextToken, content) = tokenizer.nextToken(tokenList: tokenizer.timeLineTokens, content: text)
         while nextToken != .EOF {
@@ -32,7 +32,7 @@ final class SubRipTokenizerTests: XCTestCase {
     
     func testTokenizeTimeLineWithTooLongArrow() {
         let text = "00:00:00,000 -------> 00:00:05,000\n"
-        let tokenizer = SubRipTokenizer(string: text)
+        let tokenizer = SubRipTokenizer()
         var counter = 1
         var (nextToken, content) = tokenizer.nextToken(tokenList: tokenizer.timeLineTokens, content: text)
         while nextToken != .EOF {
@@ -47,7 +47,7 @@ final class SubRipTokenizerTests: XCTestCase {
     
     func testTokenizeTimeLineWithTooShortArrow() {
         let text = "00:00:00,000 -> 00:00:05,000\n"
-        let tokenizer = SubRipTokenizer(string: text)
+        let tokenizer = SubRipTokenizer()
         var counter = 1
         var (nextToken, content) = tokenizer.nextToken(tokenList: tokenizer.timeLineTokens, content: text)
         while nextToken != .EOF {
@@ -62,7 +62,7 @@ final class SubRipTokenizerTests: XCTestCase {
     
     func testTokenizeBody() {
         let body = "A subtitle\nWith a second line"
-        let tokenizer = SubRipTokenizer(string: body)
+        let tokenizer = SubRipTokenizer()
         
         var (nextToken, content) = tokenizer.nextToken(tokenList: tokenizer.bodyTokens, content: body)
         var counter = 1
@@ -77,7 +77,7 @@ final class SubRipTokenizerTests: XCTestCase {
     func testTokenizeBodyWithTags() {
         // Note: this will not change into the tag mode, hence the b and i tag, as well as the right tag symbols (> and }> will not be recognised
         let body = "A <b>subtitle</b>\nWith a {i}second{/i} line"
-        let tokenizer = SubRipTokenizer(string: body)
+        let tokenizer = SubRipTokenizer()
         
         var (nextToken, content) = tokenizer.nextToken(tokenList: tokenizer.bodyTokens, content: body)
         var counter = 1

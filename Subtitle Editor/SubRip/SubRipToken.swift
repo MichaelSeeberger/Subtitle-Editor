@@ -44,6 +44,12 @@ public enum SubRipToken: Equatable {
         case (.IntValue(_, _), .IntValue(_, _)): return true
         case (.FloatValue(_, _), .FloatValue(_, _)): return true
         case (.Other(_), .Other(_)): return true
+        case (.Arrow(_), .Arrow(_)): return true
+        case (.ColorName(_), .ColorName(_)): return true
+        case (.Bold(_), .Bold(_)): return true
+        case (.Italic(_), .Italic(_)): return true
+        case (.Font(_), .Font(_)): return true
+        case (.Color(_), .Color(_)): return true
         default: return false
         }
     }

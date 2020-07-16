@@ -1,444 +1,446 @@
 //
-//  SubRipParser.swift
+//  SubRipParser2.swift
 //  Subtitle Editor
 //
-//  Created by Michael Seeberger on 05.07.20.
+//  Created by Michael Seeberger on 13.07.20.
 //  Copyright © 2020 Michael Seeberger. All rights reserved.
 //
 
 import Foundation
+import AppKit
 import struct SwiftUI.Color
-import class AppKit.NSFont
-import class AppKit.NSFontDescriptor
-import class AppKit.NSFontManager
-import struct AppKit.NSFontTraitMask
-import CoreData
 
 enum SubRipParseError: Error {
     case UnexpectedToken(expected: String, actual: SubRipToken)
 }
 
-enum TagType {
-    case Bold
-    case Italic
-    case Font
-}
-
-enum BracketType {
-    case Curly
-    case Angled
-}
-
+/**
+ This struct provides a parser for the sub rip subtitle format. It will parse the string using the SubRipTokenizer.
+ 
+ When parsing a comlete subtitle file, the tokenizer will be created by `SubRipParser`. In case only the actual subtitle should be parsed using `parseBody(tokenizer, subtitleString)`, one must be provided.
+ 
+ In order to create subtitles from the parsed string, the parser will require a closure that creates an instance of `Subtitle` that can be used. See the sample code in order to
+ 
+ # Thread safety
+ `SubRipParser` is thread safe, as it does not have state. Due to that, multiple subtitles can be parsed in parallel by the same parser.
+ 
+ # Sample Code
+ To use the parser, use something like the following
+ ```
+ let managedObjectContext = myMOC() // set this to your NSManagedObjectContext
+ let subRipParser = SubRipParser()
+ let subtitlesString = ... // load from disk or otherwise
+ subRipParseer.parse(string: subtitlesString, subtitleGenerator: { return Subtitle(context: managedObjectContext) })
+ ```
+ */
 struct SubRipParser {
-    let tokens: [SubRipToken]
-    var index = 0
-    
-    private func peek() -> SubRipToken {
-        return tokens[index]
+    /**
+     Parse the subtitles string. This will create subtitles using the `subtitleGenerator` param and populate the newly created subtitles with values.
+     */
+    func parse(string: String, subtitleGenerator: SubtitleGenerator) throws {
+        let tokenizer = SubRipTokenizer()
+        try parseAndCreateSubtitles(tokenizer: tokenizer, subtitlesString: string, subtitleGenerator: subtitleGenerator)
     }
     
-    private func currentToken() -> SubRipToken {
-        return tokens[index - 1]
-    }
-    
-    private mutating func pop() -> SubRipToken {
-        let token = tokens[index]
-        index += 1
-        return token
-    }
-    
-    private mutating func skipWhiteSpace() {
-        while case SubRipToken.WhiteSpace(_) = peek() {
-            _ = pop()
+    func parseAndCreateSubtitles(tokenizer: SubRipTokenizer, subtitlesString: String, subtitleGenerator: SubtitleGenerator) throws {
+         let subtitles = subtitlesString.replacingOccurrences(of: "\r", with: "").components(separatedBy: "\n\n")
+         for component in subtitles {
+            if component == "" {
+                continue
+            }
+            _ = try parseAndCreateSubtitle(tokenizer: tokenizer, subtitlesString: component, subtitleGenerator: subtitleGenerator)
         }
     }
     
-    private mutating func returnWhiteSpace() -> String {
-        var content = ""
-        while case let SubRipToken.WhiteSpace(string) = peek() {
-            content += string
-            _ = pop()
-        }
-        return content
+    fileprivate func parseAndCreateSubtitle(tokenizer: SubRipTokenizer, subtitlesString: String, subtitleGenerator: SubtitleGenerator) throws -> String {
+        var subtitlesString = skipWhiteSpaceAndNewlines(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        let counter: Int64!
+        (counter, _, subtitlesString) = try parseInt(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        subtitlesString = try parseNewLine(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        
+        subtitlesString = skipWhiteSpace(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        
+        let startTime: Double!
+        (startTime, subtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        
+        subtitlesString = try parseArrowIgnoringWhitespace(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        
+        let endTime: Double!
+        (endTime, subtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        subtitlesString = try parseNewLine(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        
+        let body: String!
+        let formattedBody: NSAttributedString
+        (body, formattedBody, subtitlesString) = try parseBody(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        
+        let newSubtitle = subtitleGenerator()
+        newSubtitle.counter = counter
+        newSubtitle.startTime = startTime
+        newSubtitle.duration = endTime - startTime
+        newSubtitle.content = body
+        newSubtitle.formattedContent = formattedBody.rtf(from: NSMakeRange(0, formattedBody.length))
+        
+        return subtitlesString
     }
     
-    private mutating func skipWhiteSpaceAndNewLines() {
-        var nextToken = peek()
-        while nextToken.isSameType(asOneOf: [.WhiteSpace(" "), .Newline]) {
-            _ = pop()
-            nextToken = peek()
-        }
-    }
-    
-    mutating func parseSubtitles(generator: SubtitleGenerator) throws {
-        skipWhiteSpaceAndNewLines()
-        while index < tokens.count && !peek().isSameType(as: .EOF) {
-            try parseSubtitle(generator: generator)
-            skipWhiteSpaceAndNewLines()
-        }
-    }
-    
-    private mutating func parseSubtitle(generator: SubtitleGenerator) throws {
-        let subtitleID = try parseInteger().value
-        try parseNewLine()
-        skipWhiteSpace()
-        
-        let startTime = try parseTime()
-        skipWhiteSpace()
-        
-        try parseArrow()
-        skipWhiteSpace()
-        
-        let endTime = try parseTime()
-        skipWhiteSpace()
-        try parseNewLine()
-        
-        let (original, formatted) = try parseBody()
-        
-        let subtitle = generator()
-        subtitle.counter = subtitleID
-        subtitle.startTime = startTime
-        subtitle.duration = endTime - startTime
-        subtitle.content = original
-        subtitle.formattedContent = formatted.rtf(from: NSMakeRange(0, formatted.length))
-    }
-    
-    private mutating func parseNewLine() throws {
-        guard SubRipToken.Newline == pop() else {
-            throw SubRipParseError.UnexpectedToken(expected: "NewLine", actual: currentToken())
+    fileprivate func skipWhiteSpaceAndNewlines(tokenizer: SubRipTokenizer, subtitlesString: String) -> String {
+        var subtitlesString = subtitlesString
+        while true {
+            let (token, newSubtitlesString) = tokenizer.nextToken(tokenList: tokenizer.whiteSpaceAndNewlines, content: subtitlesString)
+            if !token.isSameType(asOneOf: [.Newline, .WhiteSpace("")]) {
+                return subtitlesString
+            }
+            subtitlesString = newSubtitlesString
         }
     }
     
-    private mutating func parseInteger() throws -> (value: Int64, original: String) {
-        guard case let SubRipToken.IntValue(value, original) = pop() else {
-            throw SubRipParseError.UnexpectedToken(expected: "Integer", actual: currentToken())
+    fileprivate func skipWhiteSpace(tokenizer: SubRipTokenizer, subtitlesString: String) -> String {
+        var subtitlesString = subtitlesString
+        while true {
+            let (token, newSubtitlesString) = tokenizer.nextToken(tokenList: tokenizer.whiteSpace, content: subtitlesString)
+            if !token.isSameType(as: .WhiteSpace("")) {
+                return subtitlesString
+            }
+            subtitlesString = newSubtitlesString
         }
-        
-        return (value, original)
     }
     
-    private mutating func parseFloat() throws -> (value: Double, original: String) {
-        guard case let SubRipToken.FloatValue(value, original) = pop() else {
-            throw SubRipParseError.UnexpectedToken(expected: "Float", actual: currentToken())
+    fileprivate func parseArrowIgnoringWhitespace(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> String {
+        let subtitlesString = skipWhiteSpace(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        let (token, newSubtitlesString) = tokenizer.nextToken(tokenList: tokenizer.whiteSpace + [tokenizer.Arrow], content: subtitlesString)
+        if !token.isSameType(as: .Arrow("")) {
+            throw SubRipParseError.UnexpectedToken(expected: "-->", actual: token)
         }
         
-        return (value, original)
-    }
-    
-    private mutating func parseTime() throws -> Double {
-        var time = try Double(parseInteger().value * 3600)
-        
-        if SubRipToken.Colon != pop() {
-            throw SubRipParseError.UnexpectedToken(expected: "Colon", actual: currentToken())
-        }
-        
-        time += try Double(parseInteger().value * 60)
-        
-        if SubRipToken.Colon != pop() {
-            throw SubRipParseError.UnexpectedToken(expected: "Colon", actual: currentToken())
-        }
-        
-        time += try parseFloat().value
-
-        return time
+        return skipWhiteSpace(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
     }
     
     /**
-     * Parse the body part of a subtitle (the actual subtitle).
+     * Will return the white space. If no whitespace is encountered, an error is thrown.
      */
-    mutating func parseBody() throws -> (original: String, formatted: NSAttributedString) {
-        var text = ""
-        var attributedText = NSMutableAttributedString(string: "")
+    fileprivate func parseWhiteSpace(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (whiteSpace: String, subtitlesString: String) {
+        var subtitlesString = subtitlesString
+        var whiteSpace = ""
         while true {
-            let token = peek()
-            func popAndAppend() {
-                let string = textForToken(token: pop())
-                text += string
-                attributedText.append(NSAttributedString(string: string))
-            }
-            
+            let (token, newSubtitlesString) = tokenizer.nextToken(tokenList: tokenizer.whiteSpace, content: subtitlesString)
             switch token {
-            case .OpenLeftBrace,
-                 .OpenLeftAngledBracket:
-                let currentIndex = index
+            case let .WhiteSpace(ws):
+                whiteSpace += ws
+                subtitlesString = newSubtitlesString
+            default:
+                if whiteSpace == "" {
+                    throw SubRipParseError.UnexpectedToken(expected: "whitespace", actual: token)
+                }
+                return (whiteSpace, subtitlesString)
+            }
+        }
+    }
+    
+    fileprivate func parseNewLine(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> String {
+        let (token, subtitlesString) = tokenizer.nextToken(tokenList: [tokenizer.NewLine], content: subtitlesString)
+        if token != .Newline {
+            throw SubRipParseError.UnexpectedToken(expected: "\\n", actual: token)
+        }
+        return subtitlesString
+    }
+    
+    func parseTimeLabels(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (startTime: Double, endTime: Double, subtitlesString: String) {
+        var newSubtitlesString = subtitlesString
+        let startTime: Double!
+        let endTime: Double!
+        (startTime, newSubtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        newSubtitlesString = skipWhiteSpace(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        (endTime, newSubtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        
+        return (startTime, endTime, newSubtitlesString)
+    }
+    
+    func parseTime(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (time: Double, subtitlesString: String) {
+        var newSubtitlesString = subtitlesString
+        let hours: Int64!
+        let minutes: Int64!
+        let seconds: Double!
+        (hours, _, newSubtitlesString) = try parseInt(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        var time = Double(hours * 3600)
+        
+        newSubtitlesString = try parseColon(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        
+        (minutes, _, newSubtitlesString) = try parseInt(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        time += Double(minutes * 60)
+        
+        newSubtitlesString = try parseColon(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        
+        (seconds, _, newSubtitlesString) = try parseFloat(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        time += seconds
+
+        return (time, newSubtitlesString)
+    }
+    
+    func parseBody(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (body: String, formattedBody: NSAttributedString, subtitlesString: String) {
+        var subtitlesString = subtitlesString
+        var rawString = ""
+        let attributedString = NSMutableAttributedString(string: "")
+        while true {
+            var (currentToken, newSubtitlesString) = tokenizer.nextToken(tokenList: tokenizer.bodyTokens, content: subtitlesString)
+            switch currentToken {
+            case let .Other(content):
+                rawString += content
+                attributedString.append(NSAttributedString(string: content, attributes: [ .font: NSFont.systemFont(ofSize: NSFont.systemFontSize) ]))
+            case .OpenLeftBrace:
+                rawString += "{"
                 do {
-                    let (result, attributedString) = try parseTag()
-                    text += result
-                    attributedText.append(attributedString)
+                    let newRawText: String!
+                    let newAttributedString: NSAttributedString!
+                    (newRawText, newAttributedString, newSubtitlesString) = try continueParsingTag(tokenizer: tokenizer, tagTokens: tokenizer.braceTagTokens, subtitlesString: newSubtitlesString)
+                    rawString += newRawText
+                    attributedString.append(newAttributedString)
                 } catch {
-                    index = currentIndex
-                    popAndAppend()
+                    // continue parsing, ignoring the open tag.
+                }
+            case .OpenLeftAngledBracket:
+                rawString += "<"
+                do {
+                    let newRawText: String!
+                    let newAttributedString: NSAttributedString!
+                    (newRawText, newAttributedString, newSubtitlesString) = try continueParsingTag(tokenizer: tokenizer, tagTokens: tokenizer.angledTagTokens, subtitlesString: newSubtitlesString)
+                    rawString += newRawText
+                    attributedString.append(newAttributedString)
+                } catch {
+                    // continue parsing, ignoring the open tag.
                 }
             case .EOF:
-                return (text, attributedText)
+                return (rawString, attributedString, "")
             case .Newline:
-                _ = pop()
-                if peek() == .Newline {
-                    _ = pop()
-                    return (text, attributedText)
+                let (nlToken, nlSubtitlesString) = tokenizer.nextToken(tokenList: tokenizer.bodyTokens, content: newSubtitlesString)
+                if nlToken == .Newline {
+                    return (rawString, attributedString, nlSubtitlesString)
+                } else {
+                    rawString += "\n"
+                    attributedString.append(NSAttributedString(string: "\n"))
                 }
-                text += "\n"
-                attributedText.append(NSAttributedString(string: "\n"))
             default:
-                popAndAppend()
+                throw SubRipParseError.UnexpectedToken(expected: "{, <, \n or text", actual: currentToken)
             }
+            subtitlesString = newSubtitlesString
         }
     }
     
     /**
-     * Parse the end token of a tag. This returns a tuple. where the success element is set to true when the end tag has been parsed. rawText contains the text the end tag had, e.g. </b> or < /b > (both allowed)
+     Parse the rest of the tag, continuing from the opening bracket (e.g. {).
+     - Parameters:
+        - tokenizer: The tokenizer that should be used
+        - tagTokens: An array of `TokenDefinition`s that should be used. For angled brackets, this should be `tokenizer.angledTagTokens`, for braces `tokenizer.braceTagTokens`
+        - subtitlesString: The string that should be parsed. The parsing starts at the beginning of the string.
+     - Returns: A tuple of items is returned:
+        - `rawText` A string containing every part of the string that was parsed, including tags.
+        - `formattedText` The formatted text. This does not include the formatting tags.
+        - `subtitlesString` The rest of the string passed as thee `subtitlesString` parameter, that has not been parsed in the function.
+     - Throws: If an unexpected token appears, an `SubRipParseError.UnexpectedToken` error is thrown.
      */
-    private mutating func parseEndToken(endTokenStart: SubRipToken, tagToken: SubRipToken) -> (success: Bool, rawText: String?) {
-        let storedIndex = index
+    fileprivate func continueParsingTag(tokenizer: SubRipTokenizer, tagTokens: [TokenDefinition], subtitlesString: String) throws -> (rawText: String, formattedText: NSAttributedString, subtitlesString: String) {
+        let tokens = tagTokens + tokenizer.bodyTokens
+        var rawText: String!
+        var subtitlesString = subtitlesString
+        let tagToken: SubRipToken! // tag token is the type of tag, (i, b or font)
+        let attributes: [NSAttributedString.Key : Any]!
+        let tagName: String!
         
-        var currentToken = pop()
-        if !currentToken.isSameType(as: endTokenStart) {
-            index = storedIndex
-            return (false, nil)
-        }
-        var scannedText = textForToken(token: currentToken)
+        (tagName, attributes, tagToken, subtitlesString) = try parseTagType(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        rawText = tagName
         
-        currentToken = pop()
-        scannedText += textForToken(token: currentToken)
-        if !currentToken.isSameType(as: tagToken) {
-            index = storedIndex
-            return (false, nil)
-        } // should now have reached </b
-        
-        currentToken = pop()
-        scannedText += textForToken(token: currentToken)
-        if endTokenStart.isSameType(as: .CloseLeftBrace) && currentToken.isSameType(as: .RightBrace) {
-            return (true, scannedText)
-        } else if currentToken.isSameType(as: .RightAngledBracket) {
-            return (true, scannedText)
-        } else {
-            index = storedIndex
-            return (false, nil)
-        }
-    }
-    
-    /**
-     * Returns a tuple, where success is true when a tag has been parsed. The text parsed will be returned as parsedTag (including e.g. <b>...</b>) and the formatted text as attributedString (without the <b></b> tags).
-     *
-     * If an error occurs, the stack pointer will be reset to the point it had when parseTag() was called.
-     *
-     * In case success is false, parsedTag and attributedString are nil
-     */
-    private mutating func parseTag() throws -> (parsedTag: String, attributedString: NSAttributedString) {
-        var text = ""
-        let token = pop()
-        var endToken: SubRipToken!
-        let expectedRightBracket: SubRipToken!
-        // parse the opening tag (e.g. <
-        switch token {
-        case .OpenLeftBrace:
-            endToken = .CloseLeftBrace
-            expectedRightBracket = .RightBrace
-            text += "{"
-        case .OpenLeftAngledBracket:
-            endToken = .CloseLeftAngleBracket
-            expectedRightBracket = .RightAngledBracket
-            text += "<"
-        default:
-            throw SubRipParseError.UnexpectedToken(expected: "{ or <", actual: token)
-        }
+        var formattedString = NSMutableAttributedString(string: "")
 
-        // check what kind of tag it is (b, i or font)
-        let tagToken = pop()
-        var attribute: [NSAttributedString.Key : Any]!
+        // parse closing bracket
+        let closingBracket: SubRipToken!
+        (closingBracket, subtitlesString) = tokenizer.nextToken(tokenList: tagTokens, content: subtitlesString)
+        switch closingBracket {
+        case .RightBrace:
+            rawText += "}"
+        case .RightAngledBracket:
+            rawText += ">"
+        default:
+            throw SubRipParseError.UnexpectedToken(expected: "closing bracket", actual: closingBracket)
+        }
+        
+        // Parse content of tag
+        while true {
+            let token: SubRipToken!
+            var newSubtitlesString: String!
+            (token, newSubtitlesString) = tokenizer.nextToken(tokenList: tokens, content: subtitlesString)
+            switch token {
+            case let .Other(content):
+                rawText += content
+                formattedString.append(NSAttributedString(string: content))
+            case .OpenLeftBrace:
+                rawText += "{"
+                do {
+                    let newRawText: String!
+                    let newAttributedString: NSAttributedString!
+                    (newRawText, newAttributedString, newSubtitlesString) = try continueParsingTag(tokenizer: tokenizer, tagTokens: tokenizer.braceTagTokens, subtitlesString: newSubtitlesString)
+                    rawText += newRawText
+                    formattedString.append(newAttributedString)
+                } catch {
+                    // continue parsing, ignoring the open tag.
+                    formattedString.append(NSAttributedString(string: "{"))
+                }
+            case .OpenLeftAngledBracket:
+                rawText += "<"
+                do {
+                    let newRawText: String!
+                    let newAttributedString: NSAttributedString!
+                    (newRawText, newAttributedString, newSubtitlesString) = try continueParsingTag(tokenizer: tokenizer, tagTokens: tokenizer.angledTagTokens, subtitlesString: newSubtitlesString)
+                    rawText += newRawText
+                    formattedString.append(newAttributedString)
+                } catch {
+                    // continue parsing, ignoring the open tag.
+                    formattedString.append(NSAttributedString(string: "<"))
+                }
+            case .CloseLeftBrace:
+                rawText += "{/"
+                let closingTag: SubRipToken!
+                (closingTag, newSubtitlesString) = tokenizer.nextToken(tokenList: tagTokens + tokenizer.tagTokens, content: newSubtitlesString)
+                if !closingTag.isSameType(as: tagToken) {
+                    throw SubRipParseError.UnexpectedToken(expected: String(describing: tagToken), actual: closingTag)
+                }
+                rawText += tagName
+                let closingBracket: SubRipToken!
+                (closingBracket, newSubtitlesString) = tokenizer.nextToken(tokenList: tagTokens, content: newSubtitlesString)
+                if !closingBracket.isSameType(as: .RightBrace) {
+                    throw SubRipParseError.UnexpectedToken(expected: "}", actual: closingBracket)
+                }
+                rawText += "}"
+                let range = NSMakeRange(0, formattedString.length)
+                if attributes[.font] != nil {
+                    formattedString = combineFontTraits(formattedString, range: range, font: attributes[.font] as! NSFont)
+                } else {
+                    formattedString.addAttributes(attributes, range: range)
+                }
+                return (rawText, formattedString, newSubtitlesString)
+            case .CloseLeftAngleBracket:
+                rawText += "</"
+                let closingTag: SubRipToken!
+                (closingTag, newSubtitlesString) = tokenizer.nextToken(tokenList: tagTokens + tokenizer.tagTokens, content: newSubtitlesString)
+                if !closingTag.isSameType(as: tagToken) {
+                    throw SubRipParseError.UnexpectedToken(expected: String(describing: tagToken), actual: closingTag)
+                }
+                rawText += tagName
+                let closingBracket: SubRipToken!
+                (closingBracket, newSubtitlesString) = tokenizer.nextToken(tokenList: tagTokens, content: newSubtitlesString)
+                if !closingBracket.isSameType(as: .RightAngledBracket) {
+                    throw SubRipParseError.UnexpectedToken(expected: ">", actual: closingBracket)
+                }
+                rawText += ">"
+                let range = NSMakeRange(0, formattedString.length)
+                if attributes[.font] != nil {
+                    formattedString = combineFontTraits(formattedString, range: range, font: attributes[.font] as! NSFont)
+                } else {
+                    formattedString.addAttributes(attributes, range: range)
+                }
+
+                return (rawText, formattedString, newSubtitlesString)
+            case .Newline:
+                let (nlToken, _) = tokenizer.nextToken(tokenList: tokenizer.bodyTokens, content: newSubtitlesString)
+                if nlToken == .Newline {
+                    throw SubRipParseError.UnexpectedToken(expected: "closing tag", actual: nlToken)
+                } else {
+                    rawText += "\n"
+                    formattedString.append(NSAttributedString(string: "\n"))
+                }
+            default:
+                throw SubRipParseError.UnexpectedToken(expected: "text or closing tag", actual: token)
+            }
+            subtitlesString = newSubtitlesString
+        }
+    }
+    
+    fileprivate func combineFontTraits(_ string: NSMutableAttributedString, range: NSRange, font: NSFont) -> NSMutableAttributedString {
+        let newString = NSMutableAttributedString(string: string.string)
+        let newTraits = font.fontDescriptor.symbolicTraits.rawValue
+        newString.addAttributes([.font: font], range: range)
+        
+        string.enumerateAttribute(.font, in: range) { (rawFont: Any?, range: NSRange, shouldStop: UnsafeMutablePointer<ObjCBool>) in
+            guard rawFont != nil else {
+                return
+            }
+            
+            let currentFont = rawFont as! NSFont
+            let currentTraits = currentFont.fontDescriptor.symbolicTraits.rawValue
+            let combinedTraits = currentTraits | newTraits
+            let symbolicTraits = NSFontDescriptor.SymbolicTraits(rawValue: combinedTraits)
+            
+            let combinedDescriptor = currentFont.fontDescriptor.withSymbolicTraits(symbolicTraits)
+            let combinedFont = NSFont(descriptor: combinedDescriptor, size: currentFont.pointSize)
+            
+            
+            newString.addAttributes([.font : combinedFont ?? currentFont], range: range)
+        }
+        
+        return newString
+    }
+    
+    fileprivate func parseTagType(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (tagAsText: String, attributes: [NSAttributedString.Key : Any], tagToken: SubRipToken, subtitlesString: String) {
+        let (tagToken, newSubtitlesString) = tokenizer.nextToken(tokenList: tokenizer.tagTokens, content: subtitlesString)
+        var text: String!
+        let attributes: [NSAttributedString.Key : Any]
         switch tagToken {
         case let .Font(fontString):
-            text += fontString
-            let (color, string) = try parseFontAttributes()
-            text += string
-            attribute = [ .foregroundColor: color ]
+            text = fontString
+            let (color, string) = try parseFontAttributes(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+            text = string
+            attributes = [ .foregroundColor: color ]
         case let .Bold(boldTag):
-            text += boldTag
-            attribute = [ .font: NSFont.boldSystemFont(ofSize: NSFont.systemFontSize) ]
+            text = boldTag
+            attributes = [ .font: NSFont.boldSystemFont(ofSize: NSFont.systemFontSize) ]
         case let .Italic(italicTag):
-            text += italicTag
+            text = italicTag
             let italicFont = NSFontManager.shared.convert(NSFont.systemFont(ofSize: NSFont.systemFontSize), toHaveTrait: NSFontTraitMask.italicFontMask)
-            attribute = [ .font: italicFont ]
+            attributes = [ .font: italicFont ]
         default:
             throw SubRipParseError.UnexpectedToken(expected: "font, b or i", actual: tagToken)
         }
         
-        let closingToken = pop()
-        if !closingToken.isSameType(as: expectedRightBracket) {
-            throw SubRipParseError.UnexpectedToken(expected: "", actual: expectedRightBracket)
-        } else if closingToken == .RightAngledBracket {
-            text += ">"
-        } else {
-            text += "}"
-        }
-        
-        var attributedText = NSAttributedString(string: "", attributes: attribute)
-        
-        // parse text until EOF or the closing tag was encountered
-        while !peek().isSameType(as: .EOF) {
-            let (success, rawPartial) = parseEndToken(endTokenStart: endToken, tagToken: tagToken)
-            if success {
-                text += rawPartial!
-                return (text, attributedText)
-            }
-            
-            let nextToken = peek()
-            switch nextToken {
-            case .OpenLeftBrace,
-                 .OpenLeftAngledBracket:
-                let currentIndex = index
-                do {
-                    let (result, attributedString) = try parseTag()
-                    (text, attributedText) = append(newString: result, newAttributedString: attributedString, rawText: text, attributedText: attributedText)
-                } catch {
-                    index = currentIndex
-                    (text, attributedText) = popAndAppend(rawText: text, attributedText: attributedText)
-                }
-            case .Newline:
-                (text, attributedText) = popAndAppend(rawText: text, attributedText: attributedText)
-                if peek() == .Newline {
-                    throw SubRipParseError.UnexpectedToken(expected: "closing tag", actual: .Newline)
-                }
-            default:
-                (text, attributedText) = popAndAppend(rawText: text, attributedText: attributedText)
-            }
-        }
-        
-        throw SubRipParseError.UnexpectedToken(expected: "closing tag", actual: .EOF)
+        return (text, attributes, tagToken, newSubtitlesString)
     }
     
-    /*
-     * If there is an error while parsing, an exception is throwns.
-     *
-     * color may be nil in case of something like <font>text</font>
-     * This will return before popping the closing > or }
-     */
-    private mutating func parseFontAttributes() throws -> (color: Color, alternative: String) {
-        var rawTextValue = returnWhiteSpace()
-        
-        var next = peek()
-        if next.isSameType(asOneOf: [.RightBrace, .RightAngledBracket]) {
-            throw SubRipParseError.UnexpectedToken(expected: "color", actual: next)
-        }
-        
-        guard case let SubRipToken.Color(colorTag) = pop()  else {
-            throw SubRipParseError.UnexpectedToken(expected: "color", actual: currentToken())
-        }
-        
-        rawTextValue += colorTag
-        next = pop()
-        rawTextValue += returnWhiteSpace()
-        next = peek()
-        if !next.isSameType(as: SubRipToken.Assign) {
-            throw SubRipParseError.UnexpectedToken(expected: "=", actual: next)
-        }
-        _ = pop()
-        
-        var requireStringDelimiter = true
-        if !next.isSameType(as: .StringDelimiter) {
-            requireStringDelimiter = false
-        }
-        
-        rawTextValue = returnWhiteSpace()
-        next = pop()
-        let color: Color!
-        switch next {
-        case .NumberSign:
-            rawTextValue += textForToken(token: next)
-            let (colorValue, rawValue) = try parseInteger()
-            rawTextValue += rawValue
-            color = Color(rgb: Int(colorValue))
-        case let .Other(colorName):
-            guard let colorValue: Int = HTMLColors[colorName] else {
-                throw SubRipParseError.UnexpectedToken(expected: "valid color name or hex value", actual: next)
-            }
-            
-            color = Color(rgb: Int(colorValue))
-            rawTextValue += colorName
+    fileprivate func parseFontAttributes(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (color: Color, string: String) {
+        var (rawText, subtitlesString) = try parseWhiteSpace(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        let colorAttrToken: SubRipToken!
+        (colorAttrToken, subtitlesString) = tokenizer.nextToken(tokenList: tokenizer.fontAttributeTags, content: subtitlesString)
+        switch colorAttrToken {
+        case let .Color(colorAttr):
+            rawText += colorAttr
         default:
-            throw SubRipParseError.UnexpectedToken(expected: "Hex value or color name", actual: next)
+            throw SubRipParseError.UnexpectedToken(expected: "color", actual: colorAttrToken)
         }
         
-        
-        rawTextValue += returnWhiteSpace()
-        if requireStringDelimiter {
-            guard peek() == SubRipToken.StringDelimiter else {
-                throw SubRipParseError.UnexpectedToken(expected: "\"", actual: peek())
-            }
-            _ = pop()
-        }
-        
-        return (color, rawTextValue)
+        //TODO: implement the font attributes
+        fatalError()
     }
     
-    private mutating func popAndAppend(rawText: String, attributedText: NSAttributedString) -> (rawText: String, attributedText: NSAttributedString) {
-        let value = textForToken(token: pop())
-        return append(newString: value, rawText: rawText, attributedText: attributedText)
-    }
-    
-    private func append(newString: String, rawText: String, attributedText: NSAttributedString) -> (rawText: String, attributedText: NSAttributedString) {
-        return append(newString: newString, newAttributedString: NSAttributedString(string: newString), rawText: rawText, attributedText: attributedText)
-    }
-    
-    private func append(newString: String, newAttributedString: NSAttributedString, rawText: String, attributedText: NSAttributedString) -> (rawText: String, attributedText: NSAttributedString) {
-        let concatenatedAttributedString = NSMutableAttributedString(attributedString: attributedText)
-        concatenatedAttributedString.append(newAttributedString)
-        
-        return (rawText + newString, concatenatedAttributedString)
-    }
-    
-    private func textForToken(token: SubRipToken) -> String {
+    fileprivate func parseFloat(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (floatValue: Double, rawValue: String, subtitlesString: String) {
+        let (token, string) = tokenizer.nextToken(tokenList: [tokenizer.FloatValue], content: subtitlesString)
         switch token {
-        case let .Other(textValue):
-            return textValue
-        case .OpenLeftBrace:
-            return "{"
-        case .OpenLeftAngledBracket:
-            return "<"
-        case .CloseLeftBrace:
-            return "{/"
-        case .CloseLeftAngleBracket:
-            return "</"
-        case .RightAngledBracket:
-            return ">"
-        case .RightBrace:
-            return "}"
-        case let .WhiteSpace(string):
-            return string
-        case .Colon:
-            return ":"
-        case let .IntValue(value: _, original: string):
-            return string
-        case let .FloatValue(value: _, original: string):
-            return string
-        case let .Bold(text):
-            return text
-        case let .Italic(text):
-            return text
-        case let .Font(text):
-            return text
-        case let .Color(text):
-            return text
-        case .StringDelimiter:
-            return "\""
-        case .NumberSign:
-            return "#"
-        case .Newline:
-            return "\n"
-        case let .Arrow(text):
-            return text
-        case .Assign:
-            return "="
-        case .EOF:
-            return ""
-        case let .ColorName(colorName):
-            return colorName
+        case let .FloatValue(floatValue, rawValue):
+            return (floatValue, rawValue, string)
+        default:
+            throw SubRipParseError.UnexpectedToken(expected: "Float Value", actual: token)
         }
     }
-    
-    private mutating func parseArrow() throws {
-        guard case SubRipToken.Arrow(_) = pop() else {
-            throw SubRipParseError.UnexpectedToken(expected: "Arrow (-->)", actual: currentToken())
+    fileprivate func parseInt(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (intValue: Int64, rawValue: String, subtitlesString: String) {
+        let (token, string) = tokenizer.nextToken(tokenList: [tokenizer.IntegerValue], content: subtitlesString)
+        switch token {
+        case let .IntValue(value, original):
+            return (value, original, string)
+        default:
+            throw SubRipParseError.UnexpectedToken(expected: "Integer Value", actual: token)
         }
+    }
+    fileprivate func parseColon(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> String {
+        let (token, string) = tokenizer.nextToken(tokenList: [tokenizer.Colon], content: subtitlesString)
+        if !token.isSameType(as: .Colon) {
+            throw SubRipParseError.UnexpectedToken(expected: ":", actual: token)
+        }
+        
+        return string
     }
 }

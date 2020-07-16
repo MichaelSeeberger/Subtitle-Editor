@@ -19,8 +19,7 @@ struct SubRipDecoder: SubtitleDecoder {
     }
     
     func decodeSubtitleString(contents: String, generator: SubtitleGenerator) throws {
-        let tokens = SubRipTokenizer(string: contents).tokenize()
-        var parser = SubRipParser(tokens: tokens)
-        try parser.parseSubtitles(generator: generator)
+        let parser = SubRipParser()
+        try parser.parse(string: contents, subtitleGenerator: generator)
     }
 }

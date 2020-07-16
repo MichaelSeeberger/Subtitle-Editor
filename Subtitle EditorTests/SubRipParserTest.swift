@@ -14,12 +14,19 @@ final class SubRipParserTests: XCTestCase {
     var managedObjectContext: NSManagedObjectContext!
     var persistentContainer: NSPersistentContainer!
     lazy var testHelpers = TestHelpers()
+    
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
 
     override func setUp() {
         persistentContainer = NSPersistentContainer(name: "Document")
         let description = NSPersistentStoreDescription()
         description.type = NSInMemoryStoreType
         persistentContainer.persistentStoreDescriptions = [description]
+        managedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        //managedObjectContext.persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator
         managedObjectContext = persistentContainer.viewContext
         
         super.setUp()
@@ -27,21 +34,6 @@ final class SubRipParserTests: XCTestCase {
     
     func newSubtitle() -> Subtitle {
         return Subtitle(context: managedObjectContext)
-    }
-    
-    func parseText(_ text: String) {
-        let tokenizer = SubRipTokenizer(string: text)
-        let tokens = tokenizer.tokenize()
-        var parser = SubRipParser(tokens: tokens)
-        do {
-            try parser.parseSubtitles(generator: newSubtitle)
-        } catch let SubRipParseError.UnexpectedToken(expected, actual) {
-            print("Unexpected token \(actual) (expected \(expected))")
-            fatalError()
-        } catch {
-            print("Unkown error")
-            fatalError()
-        }
     }
     
     func fetchSubtitles() -> [Subtitle] {
@@ -57,11 +49,6 @@ final class SubRipParserTests: XCTestCase {
         }
     }
     
-    func parseTextAndReturnSubtitles(_ text: String) -> [Subtitle] {
-        parseText(text)
-        return fetchSubtitles()
-    }
-    
     func testParseWithWellFormedSubtitles() {
         let text = """
         1
@@ -72,7 +59,15 @@ final class SubRipParserTests: XCTestCase {
         00:00:10,123 --> 00:00:13,000
         Another Subtitle
         """
-        let subtitles = parseTextAndReturnSubtitles(text)
+        //let subtitles = parseTextAndReturnSubtitles(text)
+        let parser = SubRipParser()
+        do {
+            try parser.parse(string: text, subtitleGenerator: newSubtitle)
+        } catch {
+            XCTFail()
+            return
+        }
+        let subtitles = fetchSubtitles()
         
         XCTAssertEqual(subtitles.count, 2)
         XCTAssertEqual(subtitles[0].content, "A Subtitle")
@@ -94,7 +89,14 @@ final class SubRipParserTests: XCTestCase {
         00:00:10,123 --> 00:00:13,000
         Another {b}Subtitle{/b}
         """
-        let subtitles = parseTextAndReturnSubtitles(text)
+        let parser = SubRipParser()
+        do {
+            try parser.parse(string: text, subtitleGenerator: newSubtitle)
+        } catch {
+            XCTFail()
+            return
+        }
+        let subtitles = fetchSubtitles()
         
         XCTAssertEqual(subtitles.count, 2)
         XCTAssertEqual(subtitles[0].content, "A <b>Subtitle</b>")
@@ -120,28 +122,152 @@ final class SubRipParserTests: XCTestCase {
     
     func testParseBodyWithBoldFont() {
         let text = "A <b>Subtitle</b>"
-        let tokenizer = SubRipTokenizer(string: text)
-        var parser = SubRipParser(tokens: tokenizer.tokenize())
-
+        let parser = SubRipParser()
         do {
-            let (parsedText, attributedText) = try parser.parseBody()
-            XCTAssertEqual(text, parsedText)
-            XCTAssertEqual("A Subtitle", attributedText.string)
+            let tokenizer = SubRipTokenizer()
+            let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
+            XCTAssertEqual(text, rawText)
+            XCTAssertEqual("A Subtitle", formattedText.string)
+            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
+            do {
+                try data!.write(to: getDocumentsDirectory().appendingPathComponent("bold.rtf"))
+            } catch {
+                print("\(error)")
+            }
         } catch {
             XCTFail()
         }
     }
     
+    func testParseBodyWithItalicFont() {
+        let text = "A <i>Subtitle</i>"
+        let parser = SubRipParser()
+        do {
+            let tokenizer = SubRipTokenizer()
+            let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
+            XCTAssertEqual(text, rawText)
+            XCTAssertEqual("A Subtitle", formattedText.string)
+            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
+            func getDocumentsDirectory() -> URL {
+                let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                return paths[0]
+            }
+            do {
+                try data!.write(to: getDocumentsDirectory().appendingPathComponent("italic.rtf"))
+            } catch {
+                print("\(error)")
+            }
+        } catch {
+            XCTFail()
+        }
+    }
+    
+    func testParseBoldItalicFont() {
+        let text = "A <b>test <i>Subtitle</i></b>"
+        let parser = SubRipParser()
+        do {
+            let tokenizer = SubRipTokenizer()
+            let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
+            XCTAssertEqual(text, rawText)
+            XCTAssertEqual("A test Subtitle", formattedText.string)
+            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
+            func getDocumentsDirectory() -> URL {
+                let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                return paths[0]
+            }
+            do {
+                try data!.write(to: getDocumentsDirectory().appendingPathComponent("boldItalic.rtf"))
+            } catch {
+                print("\(error)")
+            }
+        } catch {
+            XCTFail()
+        }
+    }
+    
+    func testParseFormattedMultilineSubtitle() {
+        let text = "A <b>test <i>Subtitle</i></b>\nwith two lines"
+        let parser = SubRipParser()
+        do {
+            let tokenizer = SubRipTokenizer()
+            let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
+            XCTAssertEqual(text, rawText)
+            XCTAssertEqual("A test Subtitle\nwith two lines", formattedText.string)
+            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
+            do {
+                try data!.write(to: getDocumentsDirectory().appendingPathComponent("boldItalicTwoLines.rtf"))
+            } catch {
+                print("\(error)")
+            }
+        } catch {
+            XCTFail()
+        }
+    }
+    
+    func testParseFormattedSubtitleWithNewLineInTag() {
+        let text = "A <b>test <i>Subtitle</i>\nwith</b> two lines"
+        let parser = SubRipParser()
+        do {
+            let tokenizer = SubRipTokenizer()
+            let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
+            XCTAssertEqual(text, rawText)
+            XCTAssertEqual("A test Subtitle\nwith two lines", formattedText.string)
+            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
+            do {
+                try data!.write(to: getDocumentsDirectory().appendingPathComponent("boldItalicTwoLinesSpanFormat.rtf"))
+            } catch {
+                print("\(error)")
+            }
+        } catch {
+            XCTFail()
+        }
+    }
+    
+    func testParseMultilineSubtitle() {
+        let text = "A test Subtitle\nwith two lines"
+        let parser = SubRipParser()
+        do {
+            let tokenizer = SubRipTokenizer()
+            let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
+            XCTAssertEqual(text, rawText)
+            XCTAssertEqual("A test Subtitle\nwith two lines", formattedText.string)
+            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
+            do {
+                try data!.write(to: getDocumentsDirectory().appendingPathComponent("boldItalicTwoLines.rtf"))
+            } catch {
+                print("\(error)")
+            }
+        } catch {
+            XCTFail()
+        }
+    }
+
+
     func testRealSubtitle() {
         let subtitleString = testHelpers.getSubtitlesFromFile()
-        let tokens = SubRipTokenizer(string: subtitleString).tokenize()
-        var parser = SubRipParser(tokens: tokens)
+        let parser = SubRipParser()
         do {
-            try parser.parseSubtitles(generator: newSubtitle)
+            try parser.parse(string: subtitleString, subtitleGenerator: newSubtitle)
+            let subtitles = fetchSubtitles()
+            XCTAssertEqual(subtitles.count, 937)
         } catch SubRipParseError.UnexpectedToken(_, _) {
             XCTFail()
         } catch {
             XCTFail()
+        }
+    }
+    
+    func testRealSubtitleTime() {
+        let subtitleString = testHelpers.getSubtitlesFromFile()
+        let parser = SubRipParser()
+        self.measure {
+            do {
+                try parser.parse(string: subtitleString, subtitleGenerator: newSubtitle)
+            } catch SubRipParseError.UnexpectedToken(_, _) {
+                XCTFail()
+            } catch {
+                XCTFail()
+            }
         }
     }
 }
