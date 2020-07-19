@@ -30,6 +30,7 @@
 		CA1DA34024BC667A006015E0 /* The Last Samurai.srt in Resources */ = {isa = PBXBuildFile; fileRef = CA1DA33F24BC667A006015E0 /* The Last Samurai.srt */; };
 		CA1DA34224BC6AD2006015E0 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA34124BC6AD2006015E0 /* TestHelpers.swift */; };
 		CAFCC64124BC92C600C71465 /* SubRipParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFCC64024BC92C600C71465 /* SubRipParser.swift */; };
+		CAFCC67224C18E9A00C71465 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		CA1DA33F24BC667A006015E0 /* The Last Samurai.srt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "The Last Samurai.srt"; sourceTree = "<group>"; };
 		CA1DA34124BC6AD2006015E0 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		CAFCC64024BC92C600C71465 /* SubRipParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubRipParser.swift; sourceTree = "<group>"; };
+		CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 				CA1DA32A24B363D1006015E0 /* SubtitleEncoder.swift */,
 				CA1DA33224B6E867006015E0 /* RGBColor.swift */,
 				CA1DA33424B6E9E0006015E0 /* HTMLColorNames.swift */,
+				CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */,
 			);
 			path = "Subtitle Editor";
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 				CA1DA2A224B1CA23006015E0 /* Document.xcdatamodeld in Sources */,
 				CA1DA32924B363C0006015E0 /* SubRipEncoder.swift in Sources */,
 				CA1DA33E24BB092E006015E0 /* TextWithAttributedString.swift in Sources */,
+				CAFCC67224C18E9A00C71465 /* CoreDataStack.swift in Sources */,
 				CA1DA33124B46483006015E0 /* Regex.swift in Sources */,
 				CA1DA2EC24B20926006015E0 /* SubtitleDecoder.swift in Sources */,
 				CA1DA29D24B1CA23006015E0 /* ViewController.swift in Sources */,

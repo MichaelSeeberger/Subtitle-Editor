@@ -10,18 +10,7 @@ import Cocoa
 
 class Document: NSDocument {
     var encoding: String.Encoding = .utf8
-    var managedObjectContext: NSManagedObjectContext
-    var persistentContainer: NSPersistentContainer
-
-    override init() {
-        persistentContainer = NSPersistentContainer(name: "Document")
-        let description = NSPersistentStoreDescription()
-        description.type = NSInMemoryStoreType
-        persistentContainer.persistentStoreDescriptions = [description]
-        managedObjectContext = persistentContainer.viewContext
-        
-        super.init()
-    }
+    let coreDataStack = CoreDataStack()
 
     override class var autosavesInPlace: Bool {
         return true
@@ -39,13 +28,17 @@ class Document: NSDocument {
     }
     
     override func read(from url: URL, ofType typeName: String) throws {
+        enum ReadError: Error {
+            case readError
+        }
+        
         let contents = try String(contentsOf: url, usedEncoding: &encoding)
         let decoder = SubRipDecoder()
-        try decoder.decodeSubtitleString(contents: contents, generator: newEmptySubtitle)
-    }
-    
-    private func newEmptySubtitle() -> Subtitle {
-        return Subtitle(context: managedObjectContext)
+        let backgroundContext = coreDataStack.createBackgroundContext()
+        try decoder.decodeSubtitleString(contents: contents, generator: { Subtitle(context: backgroundContext) })
+        if !coreDataStack.save(backgroundContext: backgroundContext) {
+            throw ReadError.readError
+        }
     }
     
     private func orderedSubtitles() -> [Subtitle] {

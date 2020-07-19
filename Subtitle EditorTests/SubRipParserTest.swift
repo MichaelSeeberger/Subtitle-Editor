@@ -11,8 +11,7 @@ import Foundation
 @testable import Subtitle_Editor
 
 final class SubRipParserTests: XCTestCase {
-    var managedObjectContext: NSManagedObjectContext!
-    var persistentContainer: NSPersistentContainer!
+    var coreDataStack: CoreDataStack!
     lazy var testHelpers = TestHelpers()
     
     func getDocumentsDirectory() -> URL {
@@ -21,19 +20,13 @@ final class SubRipParserTests: XCTestCase {
     }
 
     override func setUp() {
-        persistentContainer = NSPersistentContainer(name: "Document")
-        let description = NSPersistentStoreDescription()
-        description.type = NSInMemoryStoreType
-        persistentContainer.persistentStoreDescriptions = [description]
-        managedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        //managedObjectContext.persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator
-        managedObjectContext = persistentContainer.viewContext
+        coreDataStack = CoreDataStack()
         
         super.setUp()
     }
     
     func newSubtitle() -> Subtitle {
-        return Subtitle(context: managedObjectContext)
+        return Subtitle(context: coreDataStack.mainManagedObjectContext)
     }
     
     func fetchSubtitles() -> [Subtitle] {
@@ -43,7 +36,7 @@ final class SubRipParserTests: XCTestCase {
         let request = NSFetchRequest<Subtitle>(entityName: subtitleEntityName)
         request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
         do {
-            return try managedObjectContext.fetch(request)
+            return try coreDataStack.mainManagedObjectContext.fetch(request)
         } catch {
             fatalError()
         }
@@ -59,7 +52,7 @@ final class SubRipParserTests: XCTestCase {
         00:00:10,123 --> 00:00:13,000
         Another Subtitle
         """
-        //let subtitles = parseTextAndReturnSubtitles(text)
+        
         let parser = SubRipParser()
         do {
             try parser.parse(string: text, subtitleGenerator: newSubtitle)
