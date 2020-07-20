@@ -7,19 +7,37 @@
 //
 
 import Cocoa
+import SwiftUI
 
 class Document: NSDocument {
     var encoding: String.Encoding = .utf8
     let coreDataStack = CoreDataStack()
-
+    
+    override var undoManager: UndoManager? {
+        get {
+            coreDataStack.mainManagedObjectContext.undoManager
+        }
+        set {
+            coreDataStack.mainManagedObjectContext.undoManager = newValue
+        }
+    }
+    
     override class var autosavesInPlace: Bool {
         return true
     }
 
     override func makeWindowControllers() {
-        // Returns the Storyboard that contains your Document window.
-        let storyboard = NSStoryboard(name: NSStoryboard.Name("Main"), bundle: nil)
-        let windowController = storyboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("Document Window Controller")) as! NSWindowController
+        undoManager = UndoManager()
+        let contentView = Content().environment(\.managedObjectContext, self.coreDataStack.mainManagedObjectContext)
+
+        // Create the window and set the content view.
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
+            styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
+            backing: .buffered, defer: false)
+        window.center()
+        window.contentView = NSHostingView(rootView: contentView)
+        let windowController = NSWindowController(window: window)
         self.addWindowController(windowController)
     }
 
@@ -42,8 +60,20 @@ class Document: NSDocument {
     }
     
     private func orderedSubtitles() -> [Subtitle] {
-        //TODO: Implement
-        return []
+        guard let entityName = Subtitle.entity().name else {
+            fatalError("Could not get entity name")
+        }
+        
+        let request = NSFetchRequest<Subtitle>(entityName: entityName)
+        request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
+        let result: [Subtitle]!
+        do {
+            result = try coreDataStack.mainManagedObjectContext.fetch(request)
+        } catch {
+            fatalError("Could not get subtitles: \(error)")
+        }
+        
+        return result
     }
 }
 

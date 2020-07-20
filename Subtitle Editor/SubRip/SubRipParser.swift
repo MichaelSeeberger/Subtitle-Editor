@@ -144,7 +144,7 @@ struct SubRipParser {
         return subtitlesString
     }
     
-    func parseTimeLabels(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (startTime: Double, endTime: Double, subtitlesString: String) {
+    fileprivate func parseTimeLabels(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (startTime: Double, endTime: Double, subtitlesString: String) {
         var newSubtitlesString = subtitlesString
         let startTime: Double!
         let endTime: Double!
@@ -196,6 +196,7 @@ struct SubRipParser {
                     attributedString.append(newAttributedString)
                 } catch {
                     // continue parsing, ignoring the open tag.
+                    attributedString.append(NSAttributedString(string: "{"))
                 }
             case .OpenLeftAngledBracket:
                 rawString += "<"
@@ -207,6 +208,7 @@ struct SubRipParser {
                     attributedString.append(newAttributedString)
                 } catch {
                     // continue parsing, ignoring the open tag.
+                    attributedString.append(NSAttributedString(string: "<"))
                 }
             case .EOF:
                 return (rawString, attributedString, "")

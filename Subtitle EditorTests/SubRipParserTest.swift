@@ -263,4 +263,31 @@ final class SubRipParserTests: XCTestCase {
             }
         }
     }
+    
+    func testIncompleteTag() {
+        let text = "An <b>incomplete tag"
+        let parser = SubRipParser()
+        do {
+            let tokenizer = SubRipTokenizer()
+            let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
+            XCTAssertEqual(text, rawText)
+            XCTAssertEqual(text, formattedText.string)
+        } catch {
+            XCTFail()
+        }
+    }
+    
+    func testIncompleteTagInTag() {
+        let text = "An <i><b>incomplete tag</i>"
+        let expected = "An <b>incomplete tag"
+        let parser = SubRipParser()
+        do {
+            let tokenizer = SubRipTokenizer()
+            let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
+            XCTAssertEqual(text, rawText)
+            XCTAssertEqual(expected, formattedText.string)
+        } catch {
+            XCTFail()
+        }
+    }
 }

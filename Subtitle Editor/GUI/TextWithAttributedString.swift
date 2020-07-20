@@ -24,3 +24,9 @@ struct TextWithAttributedString: NSViewRepresentable {
         nsView.attributedStringValue = attributedString
     }
 }
+
+struct TextWithAttributedString_Previews: PreviewProvider {
+    static var previews: some View {
+        TextWithAttributedString(attributedString: NSAttributedString(string: "A string\nwith two lines"))
+    }
+}

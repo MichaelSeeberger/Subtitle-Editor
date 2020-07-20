@@ -9,14 +9,14 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>binary</string>
+				<string>srt</string>
 			</array>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
-				<string>application/octet-stream</string>
+				<string>text/text</string>
 			</array>
 			<key>CFBundleTypeName</key>
-			<string>Binary</string>
+			<string>SubRip</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSTypeIsPackage</key>

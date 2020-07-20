@@ -10,19 +10,8 @@ import Foundation
 import CoreData
 
 class CoreDataStack {
-    let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: CoreDataStack.managedObjectModel)
+    let persistentStoreCoordinator: NSPersistentStoreCoordinator
     let mainManagedObjectContext: NSManagedObjectContext
-    
-    required init(mainManagedObjectContext: NSManagedObjectContext? = nil) {
-        let moc: NSManagedObjectContext!
-        if mainManagedObjectContext == nil {
-            moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        } else {
-            moc = mainManagedObjectContext
-        }
-        moc.persistentStoreCoordinator = persistentStoreCoordinator
-        self.mainManagedObjectContext = moc
-    }
     
     static var managedObjectModel: NSManagedObjectModel = {
         guard let objectModelFile = Bundle.main.url(forResource: "Document", withExtension: "momd") else {
@@ -34,6 +23,24 @@ class CoreDataStack {
         
         return mom
     }()
+    
+    required init(mainManagedObjectContext: NSManagedObjectContext? = nil) {
+        persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: CoreDataStack.managedObjectModel)
+        do {
+            try persistentStoreCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
+        } catch {
+            fatalError("Could not create a persistent in memory store: \(error)")
+        }
+        
+        let moc: NSManagedObjectContext!
+        if mainManagedObjectContext == nil {
+            moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        } else {
+            moc = mainManagedObjectContext
+        }
+        moc.persistentStoreCoordinator = persistentStoreCoordinator
+        self.mainManagedObjectContext = moc
+    }
     
     func createBackgroundContext() -> NSManagedObjectContext {
         let backgroundContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
@@ -56,5 +63,17 @@ class CoreDataStack {
         }
         
         return true
+    }
+    
+    /**
+     * Replaces the current in memory store with a new one. If no persistent store exists, one will be created.
+     */
+    func resetStore() throws {
+        if persistentStoreCoordinator.persistentStores.count > 0 {
+            try persistentStoreCoordinator.remove(persistentStoreCoordinator.persistentStores[0])
+        }
+        
+        try persistentStoreCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
+        mainManagedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
     }
 }
