@@ -21,11 +21,16 @@
 import Foundation
 import CoreData
 
+/**
+ Create a core data stack.
+ 
+ Core data stack provides a stack with a persistent store coordinator, an in memory store and a main managed object context that can be used on the main queue.
+ */
 class CoreDataStack {
     let persistentStoreCoordinator: NSPersistentStoreCoordinator
-    let mainManagedObjectContext: NSManagedObjectContext
+    let mainContext: NSManagedObjectContext
     
-    static var managedObjectModel: NSManagedObjectModel = {
+    private static var managedObjectModel: NSManagedObjectModel = {
         guard let objectModelFile = Bundle.main.url(forResource: "Document", withExtension: "momd") else {
             fatalError("Could not find the data model")
         }
@@ -36,7 +41,10 @@ class CoreDataStack {
         return mom
     }()
     
-    required init(mainManagedObjectContext: NSManagedObjectContext? = nil) {
+    /**
+     Initialize the stack with an in memory store and a context.
+     */
+    required init() {
         persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: CoreDataStack.managedObjectModel)
         do {
             try persistentStoreCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
@@ -44,16 +52,13 @@ class CoreDataStack {
             fatalError("Could not create a persistent in memory store: \(error)")
         }
         
-        let moc: NSManagedObjectContext!
-        if mainManagedObjectContext == nil {
-            moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        } else {
-            moc = mainManagedObjectContext
-        }
-        moc.persistentStoreCoordinator = persistentStoreCoordinator
-        self.mainManagedObjectContext = moc
+        mainContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        mainContext.persistentStoreCoordinator = persistentStoreCoordinator
     }
     
+    /**
+     Create a context with concurrency type `.privateQueueConcurrencyType`. A new one is created each time the method is called.
+     */
     func createBackgroundContext() -> NSManagedObjectContext {
         let backgroundContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         backgroundContext.persistentStoreCoordinator = persistentStoreCoordinator
@@ -65,7 +70,7 @@ class CoreDataStack {
      Save changes of context. If an error occurs, `false` is returned. On success, `true` is returned
      */
     func save(backgroundContext: NSManagedObjectContext? = nil) -> Bool {
-        let context = backgroundContext ?? mainManagedObjectContext
+        let context = backgroundContext ?? mainContext
         guard context.hasChanges else { return true }
         do {
             try context.save()
@@ -86,6 +91,6 @@ class CoreDataStack {
         }
         
         try persistentStoreCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
-        mainManagedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
+        mainContext.persistentStoreCoordinator = persistentStoreCoordinator
     }
 }

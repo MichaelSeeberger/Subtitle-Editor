@@ -55,7 +55,7 @@ struct SubtitleOverview_Previews: PreviewProvider {
     static let coreDataStack = CoreDataStack()
     
     static var subtitle: Subtitle = {
-        let s = Subtitle(context: coreDataStack.mainManagedObjectContext)
+        let s = Subtitle(context: coreDataStack.mainContext)
         s.startTime = 120.123
         s.duration = 15.835
         s.content = "My attributed string\nWith two lines"

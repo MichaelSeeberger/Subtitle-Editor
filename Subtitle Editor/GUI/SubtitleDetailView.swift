@@ -59,7 +59,7 @@ struct SubtitleDetail: View {
 struct SubtitleDetail_Previews: PreviewProvider {
     static let stack = CoreDataStack()
     static var subtitle: Subtitle = {
-        let s = Subtitle(context: stack.mainManagedObjectContext)
+        let s = Subtitle(context: stack.mainContext)
         s.startTime = 120.123
         s.duration = 15.835
         s.content = "My <b>attributed</b> string\nWith two lines"
@@ -72,6 +72,6 @@ struct SubtitleDetail_Previews: PreviewProvider {
     
     static var previews: some View {
         SubtitleDetail(selectedSubtitle: .constant(subtitle))
-            .environment(\.managedObjectContext, stack.mainManagedObjectContext)
+            .environment(\.managedObjectContext, stack.mainContext)
     }
 }

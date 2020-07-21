@@ -159,8 +159,6 @@
 				CA1DA32724B363AF006015E0 /* SubRip */,
 				CA1DA2EB24B20926006015E0 /* SubtitleDecoder.swift */,
 				CA1DA32A24B363D1006015E0 /* SubtitleEncoder.swift */,
-				CA1DA33224B6E867006015E0 /* RGBColor.swift */,
-				CA1DA33424B6E9E0006015E0 /* HTMLColorNames.swift */,
 				CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */,
 				CA9FA67A24C4330A00C6BFC0 /* SubRipTimeFormatter.swift */,
 				CA1DA2A324B1CA27006015E0 /* Assets.xcassets */,
@@ -198,6 +196,8 @@
 				CA1DA32524B363AA006015E0 /* SubRipDecoder.swift */,
 				CA1DA32824B363C0006015E0 /* SubRipEncoder.swift */,
 				CA1DA33024B46483006015E0 /* Regex.swift */,
+				CA1DA33424B6E9E0006015E0 /* HTMLColorNames.swift */,
+				CA1DA33224B6E867006015E0 /* RGBColor.swift */,
 			);
 			path = SubRip;
 			sourceTree = "<group>";

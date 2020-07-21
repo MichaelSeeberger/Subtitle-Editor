@@ -47,7 +47,7 @@ struct Content_Previews: PreviewProvider {
         }
         subtitles = []
         for i in 0...6 {
-            let subtitle = Subtitle(context: stack.mainManagedObjectContext)
+            let subtitle = Subtitle(context: stack.mainContext)
             subtitle.counter = Int64(i+1)
             subtitle.startTime = Double(60*i)
             subtitle.duration = 25.0
@@ -61,6 +61,6 @@ struct Content_Previews: PreviewProvider {
     static var previews: some View {
         createSampleData()
         return Content()
-            .environment(\.managedObjectContext, stack.mainManagedObjectContext)
+            .environment(\.managedObjectContext, stack.mainContext)
     }
 }

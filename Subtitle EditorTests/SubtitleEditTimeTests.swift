@@ -33,7 +33,7 @@ final class SubtitleEditTimeTests: XCTestCase {
             fatalError("Error setting up SubtitleEditTimeTests: \(error)")
         }
         
-        subtitle = Subtitle(context: stack.mainManagedObjectContext)
+        subtitle = Subtitle(context: stack.mainContext)
         subtitle.startTime = 120
         subtitle.duration = 15
     }
@@ -95,6 +95,27 @@ final class SubtitleEditTimeTests: XCTestCase {
         subtitle.changeEndTime(newEndTime: 110, keepDuration: false)
         XCTAssertEqual(subtitle.startTime, 120, accuracy: 0.0001)
         XCTAssertEqual(subtitle.duration, 15, accuracy: 0.0001)
+        XCTAssertEqual(subtitle.endTime, 135, accuracy: 0.0001)
+    }
+    
+    func testChangeDurationKeepingStartTimeDefault() {
+        subtitle.changeDuration(newDuration: 20)
+        XCTAssertEqual(subtitle.startTime, 120, accuracy: 0.0001)
+        XCTAssertEqual(subtitle.duration, 20, accuracy: 0.0001)
+        XCTAssertEqual(subtitle.endTime, 140, accuracy: 0.0001)
+    }
+    
+    func testChangeDurationKeepingStartTime() {
+        subtitle.changeDuration(newDuration: 20, keepStartTime: true)
+        XCTAssertEqual(subtitle.startTime, 120, accuracy: 0.0001)
+        XCTAssertEqual(subtitle.duration, 20, accuracy: 0.0001)
+        XCTAssertEqual(subtitle.endTime, 140, accuracy: 0.0001)
+    }
+    
+    func testChangeDurationKeepingEndTime() {
+        subtitle.changeDuration(newDuration: 20, keepStartTime: false)
+        XCTAssertEqual(subtitle.startTime, 115, accuracy: 0.0001)
+        XCTAssertEqual(subtitle.duration, 20, accuracy: 0.0001)
         XCTAssertEqual(subtitle.endTime, 135, accuracy: 0.0001)
     }
 }

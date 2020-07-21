@@ -73,12 +73,15 @@ struct SubRipParser {
         subtitlesString = skipWhiteSpace(tokenizer: tokenizer, subtitlesString: subtitlesString)
         
         let startTime: Double!
+        let endTime: Double!
+        (startTime, endTime, subtitlesString) = try parseTimeLabels(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        /*let startTime: Double!
         (startTime, subtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: subtitlesString)
         
         subtitlesString = try parseArrowIgnoringWhitespace(tokenizer: tokenizer, subtitlesString: subtitlesString)
         
         let endTime: Double!
-        (endTime, subtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        (endTime, subtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: subtitlesString)*/
         subtitlesString = try parseNewLine(tokenizer: tokenizer, subtitlesString: subtitlesString)
         
         let body: String!
@@ -157,14 +160,16 @@ struct SubRipParser {
     }
     
     fileprivate func parseTimeLabels(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (startTime: Double, endTime: Double, subtitlesString: String) {
-        var newSubtitlesString = subtitlesString
+        var subtitlesString = subtitlesString
         let startTime: Double!
-        let endTime: Double!
-        (startTime, newSubtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
-        newSubtitlesString = skipWhiteSpace(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
-        (endTime, newSubtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        (startTime, subtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: subtitlesString)
         
-        return (startTime, endTime, newSubtitlesString)
+        subtitlesString = try parseArrowIgnoringWhitespace(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        
+        let endTime: Double!
+        (endTime, subtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        
+        return (startTime, endTime, subtitlesString)
     }
     
     func parseTime(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (time: Double, subtitlesString: String) {

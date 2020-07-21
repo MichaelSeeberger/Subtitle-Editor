@@ -34,7 +34,7 @@ class SubRipEncoderTests: XCTestCase {
         let request = NSFetchRequest<Subtitle>(entityName: subtitleEntityName)
         request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
         do {
-            return try stack.mainManagedObjectContext.fetch(request)
+            return try stack.mainContext.fetch(request)
         } catch {
             fatalError()
         }
@@ -44,7 +44,7 @@ class SubRipEncoderTests: XCTestCase {
         try stack.resetStore()
         
         for i in 1...2 {
-            let subtitle = Subtitle(context: stack.mainManagedObjectContext)
+            let subtitle = Subtitle(context: stack.mainContext)
             subtitle.counter = Int64(i)
             subtitle.content = "Subtitle \(i)"
             subtitle.startTime = Double(i*25)

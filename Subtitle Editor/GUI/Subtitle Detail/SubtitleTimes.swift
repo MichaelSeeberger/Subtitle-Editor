@@ -57,11 +57,11 @@ struct SubtitleTimes: View {
 struct SubtitleTimes_Previews: PreviewProvider {
     static let stack = CoreDataStack()
     static var previews: some View {
-        let subtitle = Subtitle(context: stack.mainManagedObjectContext)
+        let subtitle = Subtitle(context: stack.mainContext)
         subtitle.startTime = 62.183
         subtitle.duration = 5.331
         _ = stack.save()
         return SubtitleTimes(startTime: 61.0135, duration: 3.332, subtitle: .constant(subtitle))
-            .environment(\.managedObjectContext, stack.mainManagedObjectContext)
+            .environment(\.managedObjectContext, stack.mainContext)
     }
 }

@@ -78,30 +78,3 @@ public enum SubRipToken: Equatable {
 }
 
 typealias TokenGenerator = (String) -> SubRipToken
-
-let tokenList: [(String, TokenGenerator)] = [
-    ("[ \t]", { (r: String) in .WhiteSpace(r) }),
-    ("\r*\n", { _ in .Newline }),
-    ("[0-9]+[,\\.][0-9]+", { (r: String) in .FloatValue(value: (r.replacingOccurrences(of: ",", with: ".", options: .literal, range: nil) as NSString).doubleValue, original: r) }),
-    ("[0-9]+", { (r: String) in .IntValue(value: (r as NSString).longLongValue, original: r) }),
-    ("-+>", { (r: String) in .Arrow(r) }),
-    ("</", { _ in .CloseLeftAngleBracket }),
-    ("\\{/", { _ in .CloseLeftBrace } ),
-    ("<", { _ in .OpenLeftAngledBracket }),
-    (">", { _ in .RightAngledBracket }),
-    ("\\{", { _ in .OpenLeftBrace }),
-    ("\\}", { _ in .RightBrace}),
-    (":", { _ in .Colon })
-]
-
-// Tokens that are valid only inside a tag ({} or <>)
-let tagTokenList: [(String, TokenGenerator)] = [
-    ("b", { (r: String) in .Bold(r) }),
-    ("i", { (r: String) in .Italic(r) }),
-    ("font", { (r: String) in .Font(r) }),
-    ("color", { (r: String) in .Color(r) }),
-    ("\"", { _ in .StringDelimiter }),
-    ("#", { _ in .NumberSign }),
-    ("=", { _ in .Assign })
-]
-

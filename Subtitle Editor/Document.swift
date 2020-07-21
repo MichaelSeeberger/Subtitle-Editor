@@ -27,10 +27,10 @@ class Document: NSDocument {
     
     override var undoManager: UndoManager? {
         get {
-            coreDataStack.mainManagedObjectContext.undoManager
+            coreDataStack.mainContext.undoManager
         }
         set {
-            coreDataStack.mainManagedObjectContext.undoManager = newValue
+            coreDataStack.mainContext.undoManager = newValue
         }
     }
     
@@ -40,7 +40,7 @@ class Document: NSDocument {
 
     override func makeWindowControllers() {
         undoManager = UndoManager()
-        let contentView = Content().environment(\.managedObjectContext, self.coreDataStack.mainManagedObjectContext)
+        let contentView = Content().environment(\.managedObjectContext, self.coreDataStack.mainContext)
 
         // Create the window and set the content view.
         let window = NSWindow(
@@ -80,7 +80,7 @@ class Document: NSDocument {
         request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
         let result: [Subtitle]!
         do {
-            result = try coreDataStack.mainManagedObjectContext.fetch(request)
+            result = try coreDataStack.mainContext.fetch(request)
         } catch {
             fatalError("Could not get subtitles: \(error)")
         }
