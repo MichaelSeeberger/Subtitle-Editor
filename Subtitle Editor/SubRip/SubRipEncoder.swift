@@ -21,29 +21,26 @@
 import Foundation
 
 struct SubRipEncoder: SubtitleEncoder {
-    func formattedTime(_ aTime: Double) -> String {
-        let partialSeconds = Int(aTime * 1000) % 1000
-        var time = Int(aTime)
-        let seconds = time % 60
-        time -= seconds
-        time /= 60
-        let minutes: Int = time % 60
-        time -= minutes
-        time /= 60
-        
-        return "\(String(format: "%02d", time)):\(String(format: "%02d", minutes)):\(String(format: "%02d", seconds)),\(String(format: "%03d", partialSeconds))"
-    }
-    
-    func subtitleAsString(subtitle: Subtitle) -> String {
-        var string = String()
-        string.append(contentsOf: formattedTime(subtitle.startTime))
-        return ""
-    }
+    let timeFormatter = SubRipTimeFormatter()
     
     func encodeSubtitles(subtitles: [Subtitle], using encoding: String.Encoding) throws -> Data {
         var documentString = String()
+        var counter = 1
         for subtitle in subtitles {
-            documentString.append(contentsOf: subtitleAsString(subtitle: subtitle))
+            documentString += "\(counter)\r\n"
+            
+            guard let startTime = timeFormatter.string(for: subtitle.startTime) else {
+                throw SubtitleEncoderError.DataNotConvertable
+            }
+            guard let endTime = timeFormatter.string(for: subtitle.endTime) else {
+                throw SubtitleEncoderError.DataNotConvertable
+            }
+            
+            documentString += "\(startTime) --> \(endTime)\r\n"
+            
+            documentString += (subtitle.content ?? "").replacingOccurrences(of: "\n", with: "\r\n") + "\r\n\r\n"
+            
+            counter += 1
         }
         
         guard let data = documentString.data(using: encoding) else {

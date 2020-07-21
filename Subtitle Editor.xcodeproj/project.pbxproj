@@ -45,6 +45,7 @@
 		CAF7174E24C6D8010056888D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CAF7174D24C6D8010056888D /* README.md */; };
 		CAF7175024C6E6B60056888D /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = CAF7174F24C6E6B60056888D /* LICENSE */; };
 		CAF7175224C6ED630056888D /* NOTICE in Resources */ = {isa = PBXBuildFile; fileRef = CAF7175124C6ED630056888D /* NOTICE */; };
+		CAF7175424C6F3220056888D /* SubRipEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7175324C6F3220056888D /* SubRipEncoderTests.swift */; };
 		CAFCC64124BC92C600C71465 /* SubRipParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFCC64024BC92C600C71465 /* SubRipParser.swift */; };
 		CAFCC67224C18E9A00C71465 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */; };
 /* End PBXBuildFile section */
@@ -103,6 +104,7 @@
 		CAF7174D24C6D8010056888D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CAF7174F24C6E6B60056888D /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		CAF7175124C6ED630056888D /* NOTICE */ = {isa = PBXFileReference; lastKnownFileType = text; path = NOTICE; sourceTree = "<group>"; };
+		CAF7175324C6F3220056888D /* SubRipEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubRipEncoderTests.swift; sourceTree = "<group>"; };
 		CAFCC64024BC92C600C71465 /* SubRipParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubRipParser.swift; sourceTree = "<group>"; };
 		CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -182,6 +184,7 @@
 				CA1DA33A24B88101006015E0 /* SubRipParserTest.swift */,
 				CA9FA67C24C43BCB00C6BFC0 /* SubRipTimeFormatterTests.swift */,
 				CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */,
+				CAF7175324C6F3220056888D /* SubRipEncoderTests.swift */,
 			);
 			path = "Subtitle EditorTests";
 			sourceTree = "<group>";
@@ -373,6 +376,7 @@
 				CA9FA67D24C43BCB00C6BFC0 /* SubRipTimeFormatterTests.swift in Sources */,
 				CAF7174724C6C13C0056888D /* SubtitleEditTimeTests.swift in Sources */,
 				CA1DA2B324B1CA27006015E0 /* Subtitle_EditorTests.swift in Sources */,
+				CAF7175424C6F3220056888D /* SubRipEncoderTests.swift in Sources */,
 				CA1DA34224BC6AD2006015E0 /* TestHelpers.swift in Sources */,
 				CA1DA33924B79FA4006015E0 /* SubRipTokenizerTest.swift in Sources */,
 				CA1DA33724B76058006015E0 /* HTMLColorNamesTests.swift in Sources */,
