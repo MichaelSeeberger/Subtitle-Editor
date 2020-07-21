@@ -21,6 +21,12 @@ struct SubtitleTimes: View {
     @Binding var subtitle: Subtitle
     @State private var locked: Locked = .duration
     
+    private var endTime: Binding<Double> { Binding (
+        get: { return self.subtitle.endTime },
+        set: { self.subtitle.changeEndTime(newEndTime: $0, keepDuration: self.locked == .duration) }
+        )
+    }
+    
     func changeLocked(newLocked: Locked) {
         if locked != newLocked {
             locked = newLocked
@@ -29,46 +35,9 @@ struct SubtitleTimes: View {
     
     var body: some View {
         return HStack {
-            VStack(alignment: .leading) {
-                HStack {
-                    Text("Start Time")
-                    LockButton(locked: locked == .startTime, action: {
-                        self.changeLocked(newLocked: .startTime)
-                    })
-                }
-                if locked == .startTime {
-                    Text(formatter.string(for: startTime) ?? "<error>")
-                } else {
-                    TextField("Start Time", value: $subtitle.startTime, formatter: formatter)
-                }
-            }
-            .frame(width: 120)
-            
-            VStack(alignment: .leading) {
-                HStack {
-                    Text("Duration")
-                    LockButton(locked: locked == .duration, action: {
-                        self.changeLocked(newLocked: .duration)
-                    })
-                }
-                if locked == .duration {
-                    Text(String(format: "%.3fs", duration))
-                } else {
-                    TextField("Duration", value: $subtitle.duration, formatter: formatter)
-                }
-            }
-            .frame(width: 120)
-            
-            VStack(alignment: .leading) {
-                HStack {
-                    Text("End Time")
-                    LockButton(locked: locked == .endTime, action: {
-                        self.changeLocked(newLocked: .endTime)
-                    })
-                }
-                Text(formatter.string(for: (startTime + duration)) ?? "<error>")
-            }
-            .frame(width: 120)
+            TimeEditorView(label: "Start Time", locked: locked == .startTime, time: $subtitle.startTime, action: { self.changeLocked(newLocked: .startTime) })
+            TimeEditorView(label: "End Time", locked: locked == .endTime, time: endTime, action: { self.changeLocked(newLocked: .startTime) })
+            TimeEditorView(label: "Duration", locked: locked == .duration, time: $subtitle.duration, action: { self.changeLocked(newLocked: .duration) })
         }
     }
 }

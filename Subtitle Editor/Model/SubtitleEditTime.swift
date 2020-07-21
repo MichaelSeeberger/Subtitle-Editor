@@ -8,12 +8,25 @@
 
 import Foundation
 
+/**
+ Provides an easy way to access the end time (read only).
+ */
 extension Subtitle {
+    /**
+     Get the end time of the subtitle.
+     
+     This (computed) property is read only. To change the end time, use `changeEndTime(newEndTime: Double, keepDuration: Bool)`.
+     */
     var endTime: Double {
         self.startTime + self.duration
     }
 }
 
+/**
+ This provides convenience methods to change the subtitles times.
+ 
+ - Note: Do not edit the times manually, but instead use these methods!
+ */
 extension Subtitle {
     /**
      Change the start time of the subtitle.

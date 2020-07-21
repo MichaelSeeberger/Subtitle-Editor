@@ -40,6 +40,8 @@
 		CA9FA67B24C4330A00C6BFC0 /* SubRipTimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9FA67A24C4330A00C6BFC0 /* SubRipTimeFormatter.swift */; };
 		CA9FA67D24C43BCB00C6BFC0 /* SubRipTimeFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9FA67C24C43BCB00C6BFC0 /* SubRipTimeFormatterTests.swift */; };
 		CAF7174424C6360A0056888D /* SubtitleEditTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174324C6360A0056888D /* SubtitleEditTime.swift */; };
+		CAF7174724C6C13C0056888D /* SubtitleEditTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */; };
+		CAF7174C24C6CB640056888D /* TimeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174B24C6CB640056888D /* TimeEditorView.swift */; };
 		CAFCC64124BC92C600C71465 /* SubRipParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFCC64024BC92C600C71465 /* SubRipParser.swift */; };
 		CAFCC67224C18E9A00C71465 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */; };
 /* End PBXBuildFile section */
@@ -93,6 +95,8 @@
 		CA9FA67C24C43BCB00C6BFC0 /* SubRipTimeFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubRipTimeFormatterTests.swift; sourceTree = "<group>"; };
 		CA9FA67E24C4CB7800C6BFC0 /* SubtitleList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleList.swift; sourceTree = "<group>"; };
 		CAF7174324C6360A0056888D /* SubtitleEditTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleEditTime.swift; sourceTree = "<group>"; };
+		CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleEditTimeTests.swift; sourceTree = "<group>"; };
+		CAF7174B24C6CB640056888D /* TimeEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeEditorView.swift; sourceTree = "<group>"; };
 		CAFCC64024BC92C600C71465 /* SubRipParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubRipParser.swift; sourceTree = "<group>"; };
 		CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -136,15 +140,11 @@
 		CA1DA29924B1CA23006015E0 /* Subtitle Editor */ = {
 			isa = PBXGroup;
 			children = (
+				CAF7174824C6CA8F0056888D /* Model */,
 				CA1DA33C24BB08F9006015E0 /* GUI */,
 				CA1DA29A24B1CA23006015E0 /* AppDelegate.swift */,
 				CA1DA29C24B1CA23006015E0 /* ViewController.swift */,
 				CA1DA29E24B1CA23006015E0 /* Document.swift */,
-				CA1DA2A324B1CA27006015E0 /* Assets.xcassets */,
-				CA1DA2A524B1CA27006015E0 /* Main.storyboard */,
-				CA1DA2A824B1CA27006015E0 /* Info.plist */,
-				CA1DA2A924B1CA27006015E0 /* Subtitle_Editor.entitlements */,
-				CA1DA2A024B1CA23006015E0 /* Document.xcdatamodeld */,
 				CA1DA32724B363AF006015E0 /* SubRip */,
 				CA1DA2EB24B20926006015E0 /* SubtitleDecoder.swift */,
 				CA1DA32A24B363D1006015E0 /* SubtitleEncoder.swift */,
@@ -152,8 +152,11 @@
 				CA1DA33424B6E9E0006015E0 /* HTMLColorNames.swift */,
 				CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */,
 				CA9FA67A24C4330A00C6BFC0 /* SubRipTimeFormatter.swift */,
-				CA210B0224C58E5000F5D06F /* SubtitleIdentifiable.swift */,
-				CAF7174324C6360A0056888D /* SubtitleEditTime.swift */,
+				CA1DA2A324B1CA27006015E0 /* Assets.xcassets */,
+				CA1DA2A524B1CA27006015E0 /* Main.storyboard */,
+				CA1DA2A824B1CA27006015E0 /* Info.plist */,
+				CA1DA2A924B1CA27006015E0 /* Subtitle_Editor.entitlements */,
+				CA1DA2A024B1CA23006015E0 /* Document.xcdatamodeld */,
 			);
 			path = "Subtitle Editor";
 			sourceTree = "<group>";
@@ -161,14 +164,15 @@
 		CA1DA2B124B1CA27006015E0 /* Subtitle EditorTests */ = {
 			isa = PBXGroup;
 			children = (
+				CA1DA34124BC6AD2006015E0 /* TestHelpers.swift */,
 				CA1DA2B224B1CA27006015E0 /* Subtitle_EditorTests.swift */,
 				CA1DA2B424B1CA27006015E0 /* Info.plist */,
 				CA1DA33F24BC667A006015E0 /* The Last Samurai.srt */,
 				CA1DA33624B76058006015E0 /* HTMLColorNamesTests.swift */,
 				CA1DA33824B79FA4006015E0 /* SubRipTokenizerTest.swift */,
 				CA1DA33A24B88101006015E0 /* SubRipParserTest.swift */,
-				CA1DA34124BC6AD2006015E0 /* TestHelpers.swift */,
 				CA9FA67C24C43BCB00C6BFC0 /* SubRipTimeFormatterTests.swift */,
+				CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */,
 			);
 			path = "Subtitle EditorTests";
 			sourceTree = "<group>";
@@ -204,9 +208,19 @@
 			isa = PBXGroup;
 			children = (
 				CA210B0524C5AEBD00F5D06F /* SubtitleTimes.swift */,
+				CAF7174B24C6CB640056888D /* TimeEditorView.swift */,
 				CA210B0724C5D05500F5D06F /* LockButton.swift */,
 			);
 			path = "Subtitle Detail";
+			sourceTree = "<group>";
+		};
+		CAF7174824C6CA8F0056888D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				CAF7174324C6360A0056888D /* SubtitleEditTime.swift */,
+				CA210B0224C58E5000F5D06F /* SubtitleIdentifiable.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -327,6 +341,7 @@
 				CA210ADA24C4E58500F5D06F /* NavigationPrimary.swift in Sources */,
 				CAFCC67224C18E9A00C71465 /* CoreDataStack.swift in Sources */,
 				CA1DA33124B46483006015E0 /* Regex.swift in Sources */,
+				CAF7174C24C6CB640056888D /* TimeEditorView.swift in Sources */,
 				CA1DA2EC24B20926006015E0 /* SubtitleDecoder.swift in Sources */,
 				CA1DA29D24B1CA23006015E0 /* ViewController.swift in Sources */,
 				CA210B0824C5D05500F5D06F /* LockButton.swift in Sources */,
@@ -344,6 +359,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA9FA67D24C43BCB00C6BFC0 /* SubRipTimeFormatterTests.swift in Sources */,
+				CAF7174724C6C13C0056888D /* SubtitleEditTimeTests.swift in Sources */,
 				CA1DA2B324B1CA27006015E0 /* Subtitle_EditorTests.swift in Sources */,
 				CA1DA34224BC6AD2006015E0 /* TestHelpers.swift in Sources */,
 				CA1DA33924B79FA4006015E0 /* SubRipTokenizerTest.swift in Sources */,

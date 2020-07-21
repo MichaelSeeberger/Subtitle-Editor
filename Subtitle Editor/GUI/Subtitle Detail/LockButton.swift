@@ -17,9 +17,7 @@ struct LockButton: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: {
-            self.action()
-        }) {
+        Button(action: self.action) {
             Image(nsImage: locked ? LockButton.imageLocked : LockButton.imageUnlocked)
         }
         .buttonStyle(BorderlessButtonStyle())
