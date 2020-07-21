@@ -42,6 +42,9 @@
 		CAF7174424C6360A0056888D /* SubtitleEditTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174324C6360A0056888D /* SubtitleEditTime.swift */; };
 		CAF7174724C6C13C0056888D /* SubtitleEditTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */; };
 		CAF7174C24C6CB640056888D /* TimeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174B24C6CB640056888D /* TimeEditorView.swift */; };
+		CAF7174E24C6D8010056888D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CAF7174D24C6D8010056888D /* README.md */; };
+		CAF7175024C6E6B60056888D /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = CAF7174F24C6E6B60056888D /* LICENSE */; };
+		CAF7175224C6ED630056888D /* NOTICE in Resources */ = {isa = PBXBuildFile; fileRef = CAF7175124C6ED630056888D /* NOTICE */; };
 		CAFCC64124BC92C600C71465 /* SubRipParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFCC64024BC92C600C71465 /* SubRipParser.swift */; };
 		CAFCC67224C18E9A00C71465 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */; };
 /* End PBXBuildFile section */
@@ -97,6 +100,9 @@
 		CAF7174324C6360A0056888D /* SubtitleEditTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleEditTime.swift; sourceTree = "<group>"; };
 		CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleEditTimeTests.swift; sourceTree = "<group>"; };
 		CAF7174B24C6CB640056888D /* TimeEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeEditorView.swift; sourceTree = "<group>"; };
+		CAF7174D24C6D8010056888D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		CAF7174F24C6E6B60056888D /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		CAF7175124C6ED630056888D /* NOTICE */ = {isa = PBXFileReference; lastKnownFileType = text; path = NOTICE; sourceTree = "<group>"; };
 		CAFCC64024BC92C600C71465 /* SubRipParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubRipParser.swift; sourceTree = "<group>"; };
 		CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -122,6 +128,9 @@
 		CA1DA28E24B1CA23006015E0 = {
 			isa = PBXGroup;
 			children = (
+				CAF7174D24C6D8010056888D /* README.md */,
+				CAF7174F24C6E6B60056888D /* LICENSE */,
+				CAF7175124C6ED630056888D /* NOTICE */,
 				CA1DA29924B1CA23006015E0 /* Subtitle Editor */,
 				CA1DA2B124B1CA27006015E0 /* Subtitle EditorTests */,
 				CA1DA29824B1CA23006015E0 /* Products */,
@@ -304,6 +313,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAF7175224C6ED630056888D /* NOTICE in Resources */,
+				CAF7175024C6E6B60056888D /* LICENSE in Resources */,
+				CAF7174E24C6D8010056888D /* README.md in Resources */,
 				CA1DA2A424B1CA27006015E0 /* Assets.xcassets in Resources */,
 				CA1DA2A724B1CA27006015E0 /* Main.storyboard in Resources */,
 			);
