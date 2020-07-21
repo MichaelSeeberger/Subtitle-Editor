@@ -152,7 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				CAF7174824C6CA8F0056888D /* Model */,
-				CA1DA33C24BB08F9006015E0 /* GUI */,
+				CA1DA33C24BB08F9006015E0 /* Views */,
 				CA1DA29A24B1CA23006015E0 /* AppDelegate.swift */,
 				CA1DA29C24B1CA23006015E0 /* ViewController.swift */,
 				CA1DA29E24B1CA23006015E0 /* Document.swift */,
@@ -202,7 +202,7 @@
 			path = SubRip;
 			sourceTree = "<group>";
 		};
-		CA1DA33C24BB08F9006015E0 /* GUI */ = {
+		CA1DA33C24BB08F9006015E0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				CA210B0024C58C3600F5D06F /* Content.swift */,
@@ -213,7 +213,7 @@
 				CA210AD724C4DE6900F5D06F /* SubtitleDetailView.swift */,
 				CA210B0424C5AEAD00F5D06F /* Subtitle Detail */,
 			);
-			path = GUI;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		CA210B0424C5AEAD00F5D06F /* Subtitle Detail */ = {
