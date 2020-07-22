@@ -1,5 +1,5 @@
 //
-//  SubtitleOverview.swift
+//  SubtitleRow.swift
 //  Subtitle Editor
 //
 //  Created by Michael Seeberger on 19.07.20.
@@ -20,7 +20,7 @@
 
 import SwiftUI
 
-struct SubtitleOverview: View {
+struct SubtitleRow: View {
     let subtitle: Subtitle
     let formatter = SubRipTimeFormatter()
     
@@ -67,6 +67,6 @@ struct SubtitleOverview_Previews: PreviewProvider {
     }()
     
     static var previews: some View {
-        SubtitleOverview(subtitle: subtitle)
+        SubtitleRow(subtitle: subtitle)
     }
 }

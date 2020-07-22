@@ -28,7 +28,7 @@ struct SubtitleList: View {
         List(selection: $selectedSubtitle) {
             ForEach(subtitles, id: \.self) { subtitle in
                 VStack {
-                    SubtitleOverview(subtitle: subtitle)
+                    SubtitleRow(subtitle: subtitle)
                     Divider()
                 }
                 .tag(subtitle)
