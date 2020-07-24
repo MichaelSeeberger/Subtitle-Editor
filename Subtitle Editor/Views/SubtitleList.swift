@@ -21,18 +21,29 @@
 import SwiftUI
 
 struct SubtitleList: View {
-    @FetchRequest(entity: Subtitle.entity(), sortDescriptors: [NSSortDescriptor(key: "counter", ascending: true)]) var subtitles: FetchedResults<Subtitle>
+    @FetchRequest(entity: Subtitle.entity(),
+                  sortDescriptors: [NSSortDescriptor(key: "counter", ascending: true)]) var subtitles: FetchedResults<Subtitle>
+    @Environment(\.managedObjectContext) var context
     @Binding var selectedSubtitle: Subtitle?
     
     var body: some View {
         List(selection: $selectedSubtitle) {
-            ForEach(subtitles, id: \.self) { subtitle in
-                VStack {
-                    SubtitleRow(subtitle: subtitle)
-                    Divider()
-                }
-                .tag(subtitle)
+            ForEach(subtitles) { subtitle in
+                SubtitleRow(subtitle: subtitle).tag(subtitle)
             }
+        .onDelete(perform: deleteRows)
+        }
+    }
+}
+
+extension SubtitleList {
+    func deleteRows(at offsets: IndexSet) {
+        for index in offsets {
+            let deletedSubtitle = subtitles[index]
+            if deletedSubtitle == selectedSubtitle {
+                selectedSubtitle = nil
+            }
+            context.delete(deletedSubtitle)
         }
     }
 }

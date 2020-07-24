@@ -28,7 +28,10 @@ struct Content: View {
             NavigationPrimary(selectedSubtitle: $selectedSubtitle)
             
             if selectedSubtitle != nil {
-                SubtitleDetail(selectedSubtitle: .constant(selectedSubtitle!))
+                /*
+                 Probably binding is set to nil before view is taken off screen. Turn this into an optional!!!
+                 */
+                SubtitleDetail(selectedSubtitle: selectedSubtitle!)
             }
         }
         .frame(minWidth: 700, minHeight: 300)

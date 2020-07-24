@@ -24,8 +24,12 @@ import Foundation
 import CoreData
 
 extension Subtitle: Identifiable {
-    public typealias ID = NSManagedObjectID
-    public var id: NSManagedObjectID {
-        self.objectID
+    public typealias ID = UUID
+    public var id: Subtitle.ID {
+        if self.uuid == nil {
+            self.uuid = UUID()
+        }
+        
+        return self.uuid!
     }
 }

@@ -21,7 +21,7 @@
 import SwiftUI
 
 struct SubtitleRow: View {
-    let subtitle: Subtitle
+    @ObservedObject var subtitle: Subtitle
     let formatter = SubRipTimeFormatter()
     
     func attributedString() -> NSAttributedString {
@@ -46,8 +46,9 @@ struct SubtitleRow: View {
                     .bold()
             }
             TextWithAttributedString(attributedString: attributedString())
+            Divider()
         }
-        .padding(.vertical, 4)
+        //.padding(.vertical, 4)
     }
 }
 

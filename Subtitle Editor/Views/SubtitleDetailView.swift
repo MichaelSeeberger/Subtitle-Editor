@@ -21,7 +21,7 @@
 import SwiftUI
 
 struct SubtitleDetail: View {
-    @Binding public var selectedSubtitle: Subtitle
+    @ObservedObject var selectedSubtitle: Subtitle
     
     var parser = SubRipParser()
     private var subtitleString: Binding<String> { Binding (
@@ -41,7 +41,7 @@ struct SubtitleDetail: View {
         ScrollView {
             HStack {
                 VStack(alignment: .leading) {
-                    SubtitleTimes(startTime: selectedSubtitle.startTime, duration: selectedSubtitle.duration, subtitle: .constant(selectedSubtitle))
+                    SubtitleTimes(subtitle: selectedSubtitle)
                         .padding()
                     Divider()
                     TextField("Subtitle Text", text: subtitleString)
@@ -71,7 +71,7 @@ struct SubtitleDetail_Previews: PreviewProvider {
     }()
     
     static var previews: some View {
-        SubtitleDetail(selectedSubtitle: .constant(subtitle))
+        SubtitleDetail(selectedSubtitle: subtitle)
             .environment(\.managedObjectContext, stack.mainContext)
     }
 }

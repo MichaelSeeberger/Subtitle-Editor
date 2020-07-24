@@ -28,14 +28,25 @@ enum Locked {
 
 struct SubtitleTimes: View {
     let formatter = SubRipTimeFormatter()
-    let startTime: Double
-    let duration: Double
-    @Binding var subtitle: Subtitle
+    @ObservedObject var subtitle: Subtitle
+    
     @State private var locked: Locked = .duration
     
-    private var endTime: Binding<Double> { Binding (
+    private var endTime: Binding<Double?> { Binding (
         get: { return self.subtitle.endTime },
-        set: { self.subtitle.changeEndTime(newEndTime: $0, keepDuration: self.locked == .duration) }
+        set: { self.subtitle.changeEndTime(newEndTime: $0 ?? 0, keepDuration: self.locked == .duration) }
+        )
+    }
+    
+    private var startTime: Binding<Double?> { Binding (
+        get: { return self.subtitle.startTime },
+        set: { self.subtitle.changeStartTime(newStartTime: $0 ?? 0, keepDuration: self.locked == .duration) }
+        )
+    }
+    
+    private var duration: Binding<Double?> { Binding (
+        get: { return self.subtitle.duration },
+        set: { self.subtitle.changeDuration(newDuration: $0 ?? 0, keepStartTime: self.locked == .startTime) }
         )
     }
     
@@ -46,10 +57,25 @@ struct SubtitleTimes: View {
     }
     
     var body: some View {
-        return HStack {
-            TimeEditorView(label: "Start Time", locked: locked == .startTime, time: $subtitle.startTime, action: { self.changeLocked(newLocked: .startTime) })
-            TimeEditorView(label: "End Time", locked: locked == .endTime, time: endTime, action: { self.changeLocked(newLocked: .startTime) })
-            TimeEditorView(label: "Duration", locked: locked == .duration, time: $subtitle.duration, action: { self.changeLocked(newLocked: .duration) })
+        HStack {
+            TimeEditorView(
+                label: "Start Time",
+                locked: locked == .startTime,
+                time: startTime,
+                action: { self.changeLocked(newLocked: .startTime) }
+            )
+            TimeEditorView(
+                label: "End Time",
+                locked: locked == .endTime,
+                time: endTime,
+                action: { self.changeLocked(newLocked: .endTime) }
+            )
+            TimeEditorView(
+                label: "Duration",
+                locked: locked == .duration,
+                time: duration,
+                action: { self.changeLocked(newLocked: .duration) }
+            )
         }
     }
 }
@@ -61,7 +87,7 @@ struct SubtitleTimes_Previews: PreviewProvider {
         subtitle.startTime = 62.183
         subtitle.duration = 5.331
         _ = stack.save()
-        return SubtitleTimes(startTime: 61.0135, duration: 3.332, subtitle: .constant(subtitle))
+        return SubtitleTimes(subtitle: subtitle)
             .environment(\.managedObjectContext, stack.mainContext)
     }
 }

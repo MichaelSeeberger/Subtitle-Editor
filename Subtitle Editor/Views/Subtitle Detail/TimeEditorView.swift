@@ -23,7 +23,7 @@ import SwiftUI
 struct TimeEditorView: View {
     let label: String
     let locked: Bool
-    @Binding var time: Double
+    @Binding var time: Double?
     let action: () -> Void
     let formatter = SubRipTimeFormatter()
     

@@ -22,11 +22,92 @@ import SwiftUI
 
 struct NavigationPrimary: View {
     @Binding var selectedSubtitle: Subtitle?
+    @Environment(\.managedObjectContext) var context: NSManagedObjectContext
+    @State private var showDeleteAlert = false
     
     var body: some View {
-        SubtitleList(selectedSubtitle: $selectedSubtitle)
-            .frame(minWidth: 250, maxWidth: 350)
-            .listStyle(SidebarListStyle())
+        VStack(alignment: .leading, spacing: 0) {
+            SubtitleList(selectedSubtitle: $selectedSubtitle)
+                //.listStyle(SidebarListStyle()) // SidebarListStyle introduces a bug into selection of the subtitle...
+            Divider()
+            HStack {
+                Button(action: self.addSubtitle) {
+                    Image(nsImage: NSImage(named: NSImage.addTemplateName)!)
+                }
+                .buttonStyle(BorderlessButtonStyle())
+                
+                Divider().frame(height: 18)
+                
+                Button(action: {
+                    self.showDeleteAlert = true
+                }) {
+                    Image(nsImage: NSImage(named: NSImage.removeTemplateName)!)
+                }
+                .buttonStyle(BorderlessButtonStyle())
+                .disabled(selectedSubtitle == nil)
+            }
+            .padding(6)
+            .padding(.leading, 8)
+        }
+        .frame(minWidth: 250, maxWidth: 350)
+        .alert(isPresented: $showDeleteAlert) {
+            Alert(title: Text("Are you sure?"),
+                  message: Text("Do you really want to delete the selected Subtitle?"),
+                  primaryButton: .default(Text("Yes"), action: deleteSelectedSubtitle), secondaryButton: .cancel())
+        }
+    }
+}
+
+extension NavigationPrimary {
+    func deleteSelectedSubtitle() {
+        guard let subtitle = selectedSubtitle else {
+            return
+        }
+        
+        selectedSubtitle = nil
+        context.delete(subtitle)
+    }
+    
+    func addSubtitle() {
+        let newSubtitle = Subtitle(context: context)
+        newSubtitle.startTime = selectedSubtitle?.endTime ?? 0.0
+        newSubtitle.duration = 5
+        newSubtitle.content = ""
+        newSubtitle.formattedContent = NSAttributedString(string:"").rtf(from: NSMakeRange(0, 0))
+        let newCounter: Int64!
+        if selectedSubtitle != nil {
+            newCounter = selectedSubtitle!.counter + 1
+        } else {
+            newCounter = 1
+        }
+        
+        do {
+            //try newSubtitle.managedObjectContext?.obtainPermanentIDs(for: [newSubtitle])
+            var counter: Int64 = newCounter
+            let request = NSFetchRequest<Subtitle>(entityName: Subtitle.entity().name ?? "Subtitle")
+            request.sortDescriptors = [
+                NSSortDescriptor(key: "counter", ascending: true),
+            ]
+            request.predicate = NSPredicate(format: "counter >= %d", counter)
+            let subtitles = try context.fetch(request)
+            for subtitle in subtitles {
+                counter += 1
+                subtitle.counter = counter
+            }
+            
+            newSubtitle.counter = newCounter
+            
+            try context.save()
+        } catch {
+            print("Could not save context: \(error): \((error as NSError).localizedDescription)")
+        }
+    }
+    
+    func removeSubtitle() {
+        guard let deletableSubtitle = selectedSubtitle else {
+            return
+        }
+        context.delete(deletableSubtitle)
     }
 }
 
