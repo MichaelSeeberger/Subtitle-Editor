@@ -39,7 +39,10 @@ class Document: NSDocument {
     }
 
     override func makeWindowControllers() {
-        undoManager = UndoManager()
+        if undoManager == nil {
+            undoManager = UndoManager()
+        }
+        
         let contentView = Content().environment(\.managedObjectContext, self.coreDataStack.mainContext)
 
         // Create the window and set the content view.
