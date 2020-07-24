@@ -39,8 +39,8 @@ class Document: NSDocument {
     }
 
     override func makeWindowControllers() {
-        if undoManager == nil {
-            undoManager = UndoManager()
+        if coreDataStack.mainContext.undoManager == nil {
+            coreDataStack.mainContext.undoManager = UndoManager()
         }
         
         let contentView = Content().environment(\.managedObjectContext, self.coreDataStack.mainContext)
