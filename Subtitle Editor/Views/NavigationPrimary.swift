@@ -82,7 +82,6 @@ extension NavigationPrimary {
         }
         
         do {
-            //try newSubtitle.managedObjectContext?.obtainPermanentIDs(for: [newSubtitle])
             var counter: Int64 = newCounter
             let request = NSFetchRequest<Subtitle>(entityName: Subtitle.entity().name ?? "Subtitle")
             request.sortDescriptors = [

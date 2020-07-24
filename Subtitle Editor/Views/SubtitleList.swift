@@ -31,7 +31,7 @@ struct SubtitleList: View {
             ForEach(subtitles) { subtitle in
                 SubtitleRow(subtitle: subtitle).tag(subtitle)
             }
-        .onDelete(perform: deleteRows)
+            .onDelete(perform: deleteRows)
         }
     }
 }
