@@ -303,4 +303,41 @@ final class SubRipParserTests: XCTestCase {
             XCTFail()
         }
     }
+    
+    func testEmptySubtitleBody() {
+        let text = """
+        1
+        00:00:00,000 --> 00:00:05,000
+        A Subtitle
+        
+        2
+        00:00:10,123 --> 00:00:13,000
+        
+        3
+        00:00:15,385 --> 00:00:22,348
+        Another Subtitle
+        """
+        
+        let parser = SubRipParser()
+        do {
+            try parser.parse(string: text, subtitleGenerator: newSubtitle)
+        } catch {
+            XCTFail()
+            return
+        }
+        let subtitles = fetchSubtitles()
+        
+        XCTAssertEqual(subtitles.count, 3)
+        XCTAssertEqual(subtitles[0].content, "A Subtitle")
+        XCTAssertEqual(subtitles[0].startTime, 0.0, accuracy: 0.0001)
+        XCTAssertEqual(subtitles[0].duration, 5.0, accuracy: 0.0001)
+        
+        XCTAssertEqual(subtitles[1].content, "")
+        XCTAssertEqual(subtitles[1].startTime, 10.123, accuracy: 0.0001)
+        XCTAssertEqual(subtitles[1].duration, 2.877, accuracy: 0.0001)
+
+        XCTAssertEqual(subtitles[2].content, "Another Subtitle")
+        XCTAssertEqual(subtitles[2].startTime, 15.385, accuracy: 0.0001)
+        XCTAssertEqual(subtitles[2].duration, 6.963, accuracy: 0.0001)
+    }
 }

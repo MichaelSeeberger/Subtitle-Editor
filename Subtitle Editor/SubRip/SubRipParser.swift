@@ -57,7 +57,7 @@ struct SubRipParser {
     func parseAndCreateSubtitles(tokenizer: SubRipTokenizer, subtitlesString: String, subtitleGenerator: SubtitleGenerator) throws {
          let subtitles = subtitlesString.replacingOccurrences(of: "\r", with: "").components(separatedBy: "\n\n")
          for component in subtitles {
-            if component == "" {
+            if component.replacingOccurrences(of: "\n", with: "") == "" {
                 continue
             }
             _ = try parseAndCreateSubtitle(tokenizer: tokenizer, subtitlesString: component, subtitleGenerator: subtitleGenerator)
@@ -65,28 +65,27 @@ struct SubRipParser {
     }
     
     fileprivate func parseAndCreateSubtitle(tokenizer: SubRipTokenizer, subtitlesString: String, subtitleGenerator: SubtitleGenerator) throws -> String {
-        var subtitlesString = skipWhiteSpaceAndNewlines(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        var newSubtitlesString = skipWhiteSpaceAndNewlines(tokenizer: tokenizer, subtitlesString: subtitlesString)
         let counter: Int64!
-        (counter, _, subtitlesString) = try parseInt(tokenizer: tokenizer, subtitlesString: subtitlesString)
-        subtitlesString = try parseNewLine(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        (counter, _, newSubtitlesString) = try parseInt(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        newSubtitlesString = try parseNewLine(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
         
-        subtitlesString = skipWhiteSpace(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        newSubtitlesString = skipWhiteSpace(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
         
         let startTime: Double!
         let endTime: Double!
-        (startTime, endTime, subtitlesString) = try parseTimeLabels(tokenizer: tokenizer, subtitlesString: subtitlesString)
-        /*let startTime: Double!
-        (startTime, subtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: subtitlesString)
-        
-        subtitlesString = try parseArrowIgnoringWhitespace(tokenizer: tokenizer, subtitlesString: subtitlesString)
-        
-        let endTime: Double!
-        (endTime, subtitlesString) = try parseTime(tokenizer: tokenizer, subtitlesString: subtitlesString)*/
-        subtitlesString = try parseNewLine(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        (startTime, endTime, newSubtitlesString) = try parseTimeLabels(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
         
         let body: String!
         let formattedBody: NSAttributedString
-        (body, formattedBody, subtitlesString) = try parseBody(tokenizer: tokenizer, subtitlesString: subtitlesString)
+        do {
+            newSubtitlesString = try parseNewLine(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+            (body, formattedBody, newSubtitlesString) = try parseBody(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        } catch {
+            NSLog("Error parsing body. Assuming no content, add empty body: \(error). Here is my subtitle component:\n***\n\(subtitlesString)\n***")
+            body = ""
+            formattedBody = NSAttributedString(string: "")
+        }
         
         let newSubtitle = subtitleGenerator()
         newSubtitle.counter = counter
@@ -95,7 +94,7 @@ struct SubRipParser {
         newSubtitle.content = body
         newSubtitle.formattedContent = formattedBody.rtf(from: NSMakeRange(0, formattedBody.length))
         
-        return subtitlesString
+        return newSubtitlesString
     }
     
     fileprivate func skipWhiteSpaceAndNewlines(tokenizer: SubRipTokenizer, subtitlesString: String) -> String {
