@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA0261B824D02F8100E1AAC9 /* DoubleComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0261B724D02F8100E1AAC9 /* DoubleComparator.swift */; };
 		CA1DA29B24B1CA23006015E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA29A24B1CA23006015E0 /* AppDelegate.swift */; };
 		CA1DA29D24B1CA23006015E0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA29C24B1CA23006015E0 /* ViewController.swift */; };
 		CA1DA29F24B1CA23006015E0 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA29E24B1CA23006015E0 /* Document.swift */; };
@@ -61,6 +62,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CA0261B724D02F8100E1AAC9 /* DoubleComparator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleComparator.swift; sourceTree = "<group>"; };
 		CA1DA29724B1CA23006015E0 /* Subtitle Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Subtitle Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA1DA29A24B1CA23006015E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CA1DA29C24B1CA23006015E0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				CA1DA32A24B363D1006015E0 /* SubtitleEncoder.swift */,
 				CAFCC67124C18E9A00C71465 /* CoreDataStack.swift */,
 				CA9FA67A24C4330A00C6BFC0 /* SubRipTimeFormatter.swift */,
+				CA0261B724D02F8100E1AAC9 /* DoubleComparator.swift */,
 				CA1DA2A324B1CA27006015E0 /* Assets.xcassets */,
 				CA1DA2A524B1CA27006015E0 /* Main.storyboard */,
 				CA1DA2A824B1CA27006015E0 /* Info.plist */,
@@ -355,6 +358,7 @@
 				CA210B0624C5AEBD00F5D06F /* SubtitleTimes.swift in Sources */,
 				CA210ADA24C4E58500F5D06F /* NavigationPrimary.swift in Sources */,
 				CAFCC67224C18E9A00C71465 /* CoreDataStack.swift in Sources */,
+				CA0261B824D02F8100E1AAC9 /* DoubleComparator.swift in Sources */,
 				CA1DA33124B46483006015E0 /* Regex.swift in Sources */,
 				CAF7174C24C6CB640056888D /* TimeEditorView.swift in Sources */,
 				CA1DA2EC24B20926006015E0 /* SubtitleDecoder.swift in Sources */,

@@ -69,6 +69,10 @@ extension NavigationPrimary {
     }
     
     func addSubtitle() {
+        context.undoManager?.beginUndoGrouping()
+        defer {
+            context.undoManager?.endUndoGrouping()
+        }
         let newSubtitle = Subtitle(context: context)
         newSubtitle.startTime = selectedSubtitle?.endTime ?? 0.0
         newSubtitle.duration = 5
@@ -96,9 +100,9 @@ extension NavigationPrimary {
             
             newSubtitle.counter = newCounter
             
-            try context.save()
+            try self.context.obtainPermanentIDs(for: [newSubtitle])
         } catch {
-            print("Could not save context: \(error): \((error as NSError).localizedDescription)")
+            NSLog("An error occured while adding a subtitle. \(error): \((error as NSError).localizedDescription)")
         }
     }
     

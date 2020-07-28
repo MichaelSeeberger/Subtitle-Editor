@@ -22,17 +22,23 @@ import SwiftUI
 
 struct SubtitleDetail: View {
     @ObservedObject var selectedSubtitle: Subtitle
+    @Environment(\.managedObjectContext) var moc
     
     var parser = SubRipParser()
     private var subtitleString: Binding<String> { Binding (
         get: { return (self.selectedSubtitle.content ?? "") },
         set: {
+            if self.selectedSubtitle.content == $0 {
+                return
+            }
+            self.moc.undoManager?.beginUndoGrouping()
+            defer { self.moc.undoManager?.endUndoGrouping() }
             self.selectedSubtitle.content = $0
             do {
                 let (_, formatted, _) = try self.parser.parseBody(tokenizer: SubRipTokenizer(), subtitlesString: $0)
                 self.selectedSubtitle.formattedContent = formatted.rtf(from: NSMakeRange(0, formatted.string.count))
             } catch {
-                print("Could not parse body")
+                NSLog("Could not parse body")
             }
         })
     }

@@ -20,6 +20,7 @@
 
 import Cocoa
 import SwiftUI
+import CoreData
 
 class Document: NSDocument {
     var encoding: String.Encoding = .utf8
@@ -35,14 +36,14 @@ class Document: NSDocument {
     }
     
     override class var autosavesInPlace: Bool {
-        return true
+        return false
+    }
+    
+    override var isDocumentEdited: Bool {
+        self.coreDataStack.mainContext.hasChanges
     }
 
     override func makeWindowControllers() {
-        if coreDataStack.mainContext.undoManager == nil {
-            coreDataStack.mainContext.undoManager = UndoManager()
-        }
-        
         let contentView = Content().environment(\.managedObjectContext, self.coreDataStack.mainContext)
 
         // Create the window and set the content view.
@@ -54,6 +55,31 @@ class Document: NSDocument {
         window.contentView = NSHostingView(rootView: contentView)
         let windowController = NSWindowController(window: window)
         self.addWindowController(windowController)
+        
+        let didChangeKeys: [Notification.Name: Any?] = [
+            .NSManagedObjectContextDidSave: coreDataStack.mainContext,
+            .NSManagedObjectContextObjectsDidChange: coreDataStack.mainContext,
+            .NSUndoManagerDidRedoChange: coreDataStack.mainContext.undoManager,
+            .NSUndoManagerDidUndoChange: coreDataStack.mainContext.undoManager
+        ]
+        
+        for (name, object) in didChangeKeys {
+            NotificationCenter.default.addObserver(forName: name,
+                                                   object: object,
+                                                   queue: nil,
+                                                   using: {_ in
+                                                    self.windowControllers.first?.setDocumentEdited(self.isDocumentEdited)
+            })
+        }
+    }
+    
+    override func save(_ sender: Any?) {
+        super.save(sender)
+        do {
+            try coreDataStack.mainContext.save()
+        } catch {
+            NSLog("Could not save context. \(error): \((error as NSError).localizedDescription)")
+        }
     }
 
     override func data(ofType typeName: String) throws -> Data {
@@ -67,9 +93,8 @@ class Document: NSDocument {
         
         let contents = try String(contentsOf: url, usedEncoding: &encoding)
         let decoder = SubRipDecoder()
-        let backgroundContext = coreDataStack.createBackgroundContext()
-        try decoder.decodeSubtitleString(contents: contents, generator: { Subtitle(context: backgroundContext) })
-        if !coreDataStack.save(backgroundContext: backgroundContext) {
+        try decoder.decodeSubtitleString(contents: contents, generator: { Subtitle(context: coreDataStack.mainContext) })
+        if !coreDataStack.save() {
             throw ReadError.readError
         }
     }

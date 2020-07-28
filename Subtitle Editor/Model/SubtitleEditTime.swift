@@ -52,6 +52,13 @@ extension Subtitle {
         - keepDuration: Adjusts the duration, so that the end time will remain the same when set to `true`.
      */
     func changeStartTime(newStartTime: Double, keepDuration: Bool = true) {
+        if newStartTime.equals(self.startTime) {
+            return
+        }
+        
+        self.managedObjectContext?.undoManager?.beginUndoGrouping()
+        defer { self.managedObjectContext?.undoManager?.endUndoGrouping() }
+
         if keepDuration == false {
             if newStartTime > self.endTime {
                 return
@@ -75,9 +82,12 @@ extension Subtitle {
         - keepStartTime: Adjusts the start time, so that the end time will remain the same when set to `false`. Otherwise, the start time remains and the end time is adjusted.
      */
     func changeDuration(newDuration: Double, keepStartTime: Bool = true) {
-        if newDuration < 0.0 {
+        if newDuration < 0.0 || newDuration.equals(self.duration) {
             return
         }
+        
+        self.managedObjectContext?.undoManager?.beginUndoGrouping()
+        defer { self.managedObjectContext?.undoManager?.endUndoGrouping() }
         
         if keepStartTime == false {
             self.startTime = self.endTime - newDuration
@@ -98,6 +108,13 @@ extension Subtitle {
        - keepDuration: Adjusts the duration, so that the end time will remain the same when set to `true`.
     */
     func changeEndTime(newEndTime: Double, keepDuration: Bool = true) {
+        if newEndTime.equals(self.endTime) {
+            return
+        }
+        
+        self.managedObjectContext?.undoManager?.beginUndoGrouping()
+        defer { self.managedObjectContext?.undoManager?.endUndoGrouping() }
+        
         if keepDuration == true {
             self.startTime = newEndTime - self.duration
         } else if self.startTime < newEndTime {
