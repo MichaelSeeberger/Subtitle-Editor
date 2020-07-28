@@ -78,7 +78,7 @@ class CoreDataStack {
         do {
             try context.save()
         } catch let error as NSError {
-            print("Could not save changes \(error), \(error.userInfo)")
+            NSLog("Could not save changes \(error), \(error.userInfo)")
             return false
         }
         
