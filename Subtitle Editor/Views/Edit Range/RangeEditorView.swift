@@ -1,8 +1,8 @@
 //
-//  TimeEditorView.swift
+//  RangeEditorView.swift
 //  Subtitle Editor
 //
-//  Created by Michael Seeberger on 21.07.20.
+//  Created by Michael Seeberger on 31.07.20.
 //  Copyright © 2020 Michael Seeberger.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,35 +17,30 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-
 import SwiftUI
 
-struct TimeEditorView: View {
-    let label: String
-    let locked: Bool
-    @Binding var time: Double
-    let action: () -> Void
+struct RangeEditorView: View {
+    @Binding var startTime: Double
+    @Binding var endTime: Double
+    
     let formatter = SubRipTimeFormatter()
     
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text(label)
-                LockButton(locked: locked, action: self.action)
+        HStack {
+            VStack(alignment: .trailing) {
+                Text("Start").padding(.all, 5)
+                Text("End").padding(.all, 5)
             }
-            TimeField(time: $time)
-                .frame(width: 100)
-                .disabled(locked)
+            VStack(alignment: .trailing) {
+                TimeField(time: $startTime)
+                TimeField(time: $endTime)
+            }
         }
     }
 }
 
-struct TimeEditorView_Previews: PreviewProvider {
+struct RangeEditorView_Previews: PreviewProvider {
     static var previews: some View {
-        let time = 61.5
-        return VStack(alignment: .leading) {
-            TimeEditorView(label: "Start Time", locked: false, time: .constant(time), action: {})
-            TimeEditorView(label: "End Time", locked: true, time: .constant(time), action: {})
-        }
+        RangeEditorView(startTime: .constant(0.0), endTime: .constant(15.0))
     }
 }

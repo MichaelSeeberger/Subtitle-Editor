@@ -118,4 +118,138 @@ final class SubtitleEditTimeTests: XCTestCase {
         XCTAssertEqual(subtitle.duration, 20, accuracy: 0.0001)
         XCTAssertEqual(subtitle.endTime, 135, accuracy: 0.0001)
     }
+    
+    func testAddTimeToSubtitlesInRange() throws {
+        do {
+            try stack.resetStore()
+        } catch {
+            fatalError("Could not reset store")
+        }
+        
+        for i in 1...6 {
+            let newSubtitle = Subtitle(context: stack.mainContext)
+            newSubtitle.startTime = Double(i)*20.0
+            newSubtitle.duration = 15
+            newSubtitle.counter = Int64(i)
+        }
+        if !stack.save() {
+            fatalError("Could not save store")
+        }
+        
+        let editingService = EditRangeService(context: stack.mainContext)
+        try editingService.addTimeToSubtitlesInRange(startTime: 50.0, endTime: 90.0, add: 3.0)
+        
+        let fetchRequest = NSFetchRequest<Subtitle>(entityName: Subtitle.entity().name!)
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "startTime", ascending: true)
+        ]
+        let subtitles = try stack.mainContext.fetch(fetchRequest)
+        for i in 1...5 {
+            if i < 3 || i > 4 {
+                XCTAssertEqual(subtitles[i-1].startTime, Double(i)*20.0, accuracy: 0.0001)
+                XCTAssertEqual(subtitles[i-1].duration, 15, accuracy: 0.0001)
+            } else {
+                XCTAssertEqual(subtitles[i-1].startTime, Double(i)*20.0 + 3.0, accuracy: 0.0001)
+                XCTAssertEqual(subtitles[i-1].duration, 15, accuracy: 0.0001)
+            }
+        }
+    }
+    
+    func testSubtractTimeFromSubtitlesInRange() throws {
+        do {
+            try stack.resetStore()
+        } catch {
+            fatalError("Could not reset store")
+        }
+        
+        for i in 1...6 {
+            let newSubtitle = Subtitle(context: stack.mainContext)
+            newSubtitle.startTime = Double(i)*20.0
+            newSubtitle.duration = 15
+            newSubtitle.counter = Int64(i)
+        }
+        if !stack.save() {
+            fatalError("Could not save store")
+        }
+        
+        let editingService = EditRangeService(context: stack.mainContext)
+        try editingService.addTimeToSubtitlesInRange(startTime: 50.0, endTime: 90.0, add: -3.0)
+        
+        let fetchRequest = NSFetchRequest<Subtitle>(entityName: Subtitle.entity().name!)
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "startTime", ascending: true)
+        ]
+        let subtitles = try stack.mainContext.fetch(fetchRequest)
+        for i in 1...5 {
+            if i < 3 || i > 4 {
+                XCTAssertEqual(subtitles[i-1].startTime, Double(i)*20.0, accuracy: 0.0001)
+                XCTAssertEqual(subtitles[i-1].duration, 15, accuracy: 0.0001)
+            } else {
+                XCTAssertEqual(subtitles[i-1].startTime, Double(i)*20.0 - 3.0, accuracy: 0.0001)
+                XCTAssertEqual(subtitles[i-1].duration, 15, accuracy: 0.0001)
+            }
+        }
+    }
+    
+    func testAddTimeToAllSubtitles() throws {
+        do {
+            try stack.resetStore()
+        } catch {
+            fatalError("Could not reset store")
+        }
+        
+        for i in 1...6 {
+            let newSubtitle = Subtitle(context: stack.mainContext)
+            newSubtitle.startTime = Double(i)*20.0
+            newSubtitle.duration = 15
+            newSubtitle.counter = Int64(i)
+        }
+        if !stack.save() {
+            fatalError("Could not save store")
+        }
+        
+        let editingService = EditRangeService(context: stack.mainContext)
+        try editingService.addTimeToAllSubitles(3.0)
+        
+        let fetchRequest = NSFetchRequest<Subtitle>(entityName: Subtitle.entity().name!)
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "startTime", ascending: true)
+        ]
+        let subtitles = try stack.mainContext.fetch(fetchRequest)
+        for i in 1...5 {
+            XCTAssertEqual(subtitles[i-1].startTime, Double(i)*20.0 + 3.0, accuracy: 0.0001)
+            XCTAssertEqual(subtitles[i-1].duration, 15, accuracy: 0.0001)
+        }
+    }
+    
+    func testSubtractTimeFromAllSubtitles() throws {
+        do {
+            try stack.resetStore()
+        } catch {
+            fatalError("Could not reset store")
+        }
+        
+        for i in 1...6 {
+            let newSubtitle = Subtitle(context: stack.mainContext)
+            newSubtitle.startTime = Double(i)*20.0
+            newSubtitle.duration = 15
+            newSubtitle.counter = Int64(i)
+        }
+        if !stack.save() {
+            fatalError("Could not save store")
+        }
+        
+        let editingService = EditRangeService(context: stack.mainContext)
+        try editingService.addTimeToAllSubitles(-3.0)
+        
+        let fetchRequest = NSFetchRequest<Subtitle>(entityName: Subtitle.entity().name!)
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "startTime", ascending: true)
+        ]
+        let subtitles = try stack.mainContext.fetch(fetchRequest)
+        for i in 1...5 {
+            XCTAssertEqual(subtitles[i-1].startTime, Double(i)*20.0 - 3.0, accuracy: 0.0001)
+            XCTAssertEqual(subtitles[i-1].duration, 15, accuracy: 0.0001)
+        }
+    }
 }

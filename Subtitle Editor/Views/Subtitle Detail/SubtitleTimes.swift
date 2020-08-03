@@ -32,21 +32,21 @@ struct SubtitleTimes: View {
     
     @State private var locked: Locked = .duration
     
-    private var endTime: Binding<Double?> { Binding (
+    private var endTime: Binding<Double> { Binding (
         get: { return self.subtitle.endTime },
-        set: { self.subtitle.changeEndTime(newEndTime: $0 ?? 0, keepDuration: self.locked == .duration) }
+        set: { self.subtitle.changeEndTime(newEndTime: $0, keepDuration: self.locked == .duration) }
         )
     }
     
-    private var startTime: Binding<Double?> { Binding (
+    private var startTime: Binding<Double> { Binding (
         get: { return self.subtitle.startTime },
-        set: { self.subtitle.changeStartTime(newStartTime: $0 ?? 0, keepDuration: self.locked == .duration) }
+        set: { self.subtitle.changeStartTime(newStartTime: $0, keepDuration: self.locked == .duration) }
         )
     }
     
-    private var duration: Binding<Double?> { Binding (
+    private var duration: Binding<Double> { Binding (
         get: { return self.subtitle.duration },
-        set: { self.subtitle.changeDuration(newDuration: $0 ?? 0, keepStartTime: self.locked == .startTime) }
+        set: { self.subtitle.changeDuration(newDuration: $0, keepStartTime: self.locked == .startTime) }
         )
     }
     

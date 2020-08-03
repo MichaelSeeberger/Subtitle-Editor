@@ -22,16 +22,29 @@ import SwiftUI
 
 struct Content: View {
     @State private var selectedSubtitle: Subtitle?
-
+    @State private var isEditingRange: Bool = false
+    
     var body: some View {
         NavigationView {
             NavigationPrimary(selectedSubtitle: $selectedSubtitle)
             
-            if selectedSubtitle != nil {
-                /*
-                 Probably binding is set to nil before view is taken off screen. Turn this into an optional!!!
-                 */
-                SubtitleDetail(selectedSubtitle: selectedSubtitle!)
+            if isEditingRange == true {
+                EditRangeView(isVisible: $isEditingRange)
+                .padding()
+            } else {
+                VStack(alignment: .leading) {
+                    if selectedSubtitle != nil {
+                        SubtitleDetail(selectedSubtitle: selectedSubtitle!)
+                    }
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: { self.isEditingRange = true }) {
+                            Text("Edit Range")
+                        }
+                    }
+                }
+                .padding()
             }
         }
         .frame(minWidth: 700, minHeight: 300)
