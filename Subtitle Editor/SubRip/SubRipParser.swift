@@ -413,8 +413,11 @@ struct SubRipParser {
             text = italicTag
             let italicFont = NSFontManager.shared.convert(NSFont.systemFont(ofSize: NSFont.systemFontSize), toHaveTrait: NSFontTraitMask.italicFontMask)
             attributes = [ .font: italicFont ]
+        case let .Underline(underlineTag):
+            text = underlineTag
+            attributes = [.underlineStyle: NSUnderlineStyle.single.rawValue]
         default:
-            throw SubRipParseError.UnexpectedToken(expected: "font, b or i", actual: tagToken)
+            throw SubRipParseError.UnexpectedToken(expected: "font, b, u or i", actual: tagToken)
         }
         
         return (text, attributes, tagToken, newSubtitlesString)

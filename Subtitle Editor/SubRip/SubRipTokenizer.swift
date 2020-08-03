@@ -37,6 +37,7 @@ struct SubRipTokenizer {
     let CloseLeftBrace: TokenDefinition = ("\\{/", { _ in .CloseLeftBrace } )
     let Colon: TokenDefinition = (":", { _ in .Colon })
     let BoldTag: TokenDefinition = ("b", { (r: String) in .Bold(r) })
+    let UnderlineTag: TokenDefinition = ("u", { (r: String) in .Underline(r) })
     let ItalicTag: TokenDefinition = ("i", { (r: String) in .Italic(r) })
     let FontTag: TokenDefinition = ("font", { (r: String) in .Font(r) })
     let ColorAttr: TokenDefinition = ("color", { (r: String) in .Color(r) })
@@ -75,6 +76,7 @@ struct SubRipTokenizer {
         return [
             BoldTag,
             ItalicTag,
+            UnderlineTag,
             FontTag
         ]
     }

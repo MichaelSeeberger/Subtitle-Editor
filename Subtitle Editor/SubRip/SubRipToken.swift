@@ -38,6 +38,7 @@ public enum SubRipToken: Equatable {
     
     case Bold(String)
     case Italic(String)
+    case Underline(String)
     case Font(String)
     case Color(String) // color attribute in font tag
     case StringDelimiter // "
@@ -59,6 +60,7 @@ public enum SubRipToken: Equatable {
         case (.Arrow(_), .Arrow(_)): return true
         case (.ColorName(_), .ColorName(_)): return true
         case (.Bold(_), .Bold(_)): return true
+        case (.Underline(_), .Underline(_)): return true
         case (.Italic(_), .Italic(_)): return true
         case (.Font(_), .Font(_)): return true
         case (.Color(_), .Color(_)): return true
