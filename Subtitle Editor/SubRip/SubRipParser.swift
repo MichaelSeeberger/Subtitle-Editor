@@ -285,12 +285,11 @@ struct SubRipParser {
             let token: SubRipToken!
             var newSubtitlesString: String!
             (token, newSubtitlesString) = tokenizer.nextToken(tokenList: tokens, content: subtitlesString)
+            rawText += token.stringValue()
             switch token {
             case let .Other(content):
-                rawText += content
                 formattedString.append(NSAttributedString(string: content))
             case .OpenLeftBrace:
-                rawText += "{"
                 do {
                     let newRawText: String!
                     let newAttributedString: NSAttributedString!
@@ -302,7 +301,6 @@ struct SubRipParser {
                     formattedString.append(NSAttributedString(string: "{"))
                 }
             case .OpenLeftAngledBracket:
-                rawText += "<"
                 do {
                     let newRawText: String!
                     let newAttributedString: NSAttributedString!
@@ -314,13 +312,12 @@ struct SubRipParser {
                     formattedString.append(NSAttributedString(string: "<"))
                 }
             case .CloseLeftBrace:
-                rawText += "{/"
                 let closingTag: SubRipToken!
                 (closingTag, newSubtitlesString) = tokenizer.nextToken(tokenList: tagTokens + tokenizer.tagTokens, content: newSubtitlesString)
                 if !closingTag.isSameType(as: tagToken) {
                     throw SubRipParseError.UnexpectedToken(expected: String(describing: tagToken), actual: closingTag)
                 }
-                rawText += tagName
+                rawText += tagToken.stringValue()
                 let closingBracket: SubRipToken!
                 (closingBracket, newSubtitlesString) = tokenizer.nextToken(tokenList: tagTokens, content: newSubtitlesString)
                 if !closingBracket.isSameType(as: .RightBrace) {
@@ -335,13 +332,12 @@ struct SubRipParser {
                 }
                 return (rawText, formattedString, newSubtitlesString)
             case .CloseLeftAngleBracket:
-                rawText += "</"
                 let closingTag: SubRipToken!
                 (closingTag, newSubtitlesString) = tokenizer.nextToken(tokenList: tagTokens + tokenizer.tagTokens, content: newSubtitlesString)
                 if !closingTag.isSameType(as: tagToken) {
                     throw SubRipParseError.UnexpectedToken(expected: String(describing: tagToken), actual: closingTag)
                 }
-                rawText += tagName
+                rawText += tagToken.stringValue()
                 let closingBracket: SubRipToken!
                 (closingBracket, newSubtitlesString) = tokenizer.nextToken(tokenList: tagTokens, content: newSubtitlesString)
                 if !closingBracket.isSameType(as: .RightAngledBracket) {
@@ -361,14 +357,11 @@ struct SubRipParser {
                 if nlToken == .Newline {
                     throw SubRipParseError.UnexpectedToken(expected: "closing tag", actual: nlToken)
                 } else {
-                    rawText += "\n"
                     formattedString.append(NSAttributedString(string: "\n"))
                 }
             case .RightBrace:
-                rawText += "}"
                 formattedString.append(NSAttributedString(string: "}"))
             case .RightAngledBracket:
-                rawText += ">"
                 formattedString.append(NSAttributedString(string: ">"))
             default:
                 throw SubRipParseError.UnexpectedToken(expected: "text or closing tag", actual: token)
@@ -403,14 +396,18 @@ struct SubRipParser {
     }
     
     fileprivate func parseTagType(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (tagAsText: String, attributes: [NSAttributedString.Key : Any], tagToken: SubRipToken, subtitlesString: String) {
-        let (tagToken, newSubtitlesString) = tokenizer.nextToken(tokenList: tokenizer.tagTokens, content: subtitlesString)
+        let tagToken: SubRipToken
+        var newSubtitlesString: String
+        (tagToken, newSubtitlesString) = tokenizer.nextToken(tokenList: tokenizer.tagTokens, content: subtitlesString)
         var text: String!
         let attributes: [NSAttributedString.Key : Any]
         switch tagToken {
         case let .Font(fontString):
             text = fontString
-            let (color, string) = try parseFontAttributes(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
-            text = string
+            let color: NSColor
+            let rawString: String
+            (color, rawString, newSubtitlesString) = try parseFontAttributes(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+            text += rawString
             attributes = [ .foregroundColor: color ]
         case let .Bold(boldTag):
             text = boldTag
@@ -429,7 +426,7 @@ struct SubRipParser {
         return (text, attributes, tagToken, newSubtitlesString)
     }
     
-    fileprivate func parseFontAttributes(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (color: Color, string: String) {
+    fileprivate func parseFontAttributes(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (color: NSColor, rawString: String, subtitlesString: String) {
         var (rawText, subtitlesString) = try parseWhiteSpace(tokenizer: tokenizer, subtitlesString: subtitlesString)
         let colorAttrToken: SubRipToken!
         (colorAttrToken, subtitlesString) = tokenizer.nextToken(tokenList: tokenizer.fontAttributeTags, content: subtitlesString)
@@ -452,10 +449,10 @@ struct SubRipParser {
         
         let hexNumber: SubRipToken!
         (hexNumber, subtitlesString) = tokenizer.nextToken(tokenList: [tokenizer.HexValue], content: subtitlesString)
-        let color: Color
+        let color: NSColor
         switch hexNumber {
         case let .IntValue(value, original):
-            color = Color(rgb: Int(value))
+            color = NSColor(rgb: Int(value))
             rawText += original
         default:
             throw SubRipParseError.UnexpectedToken(expected: "hex number", actual: hexNumber)
@@ -467,7 +464,7 @@ struct SubRipParser {
         
         //TODO: implement the font attributes
         
-        return (color, subtitlesString)
+        return (color, rawText, subtitlesString)
     }
     
     private func expect(token: SubRipToken, definition: TokenDefinition, tokenizer: SubRipTokenizer, subtitleString: String) throws -> (token: SubRipToken, subtitleString: String) {

@@ -167,6 +167,29 @@ final class SubRipParserTests: XCTestCase {
         }
     }
     
+    func testParseBodyWithFontTag() {
+        let text = "A <font color=\"#ff0023\">Subtitle</font>"
+        let parser = SubRipParser()
+        do {
+            let tokenizer = SubRipTokenizer()
+            let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
+            XCTAssertEqual(text, rawText)
+            XCTAssertEqual("A Subtitle", formattedText.string)
+            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
+            func getDocumentsDirectory() -> URL {
+                let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+                return paths[0]
+            }
+            do {
+                try data!.write(to: getDocumentsDirectory().appendingPathComponent("italic.rtf"))
+            } catch {
+                print("\(error)")
+            }
+        } catch {
+            XCTFail()
+        }
+    }
+    
     func testParseBoldItalicFont() {
         let text = "A <b>test <i>Subtitle</i></b>"
         let parser = SubRipParser()
@@ -290,6 +313,7 @@ final class SubRipParserTests: XCTestCase {
     }
     
     func testIncompleteTagInTag() throws {
+        //try XCTSkipIf(true)
         let text = "An <i><b>incomplete tag</i>"
         let expected = "An <b>incomplete tag"
         let parser = SubRipParser()

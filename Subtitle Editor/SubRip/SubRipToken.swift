@@ -46,7 +46,62 @@ public enum SubRipToken: Equatable {
     case NumberSign // #
     
     case EOF
-    
+}
+
+extension SubRipToken {
+    func stringValue() -> String {
+        switch self {
+        case .Newline:
+            return "\n"
+        case .WhiteSpace(let ws):
+            return ws
+        case .IntValue(value: _, original: let original):
+            return original
+        case .FloatValue(value: _, original: let original):
+            return original
+        case .OpenLeftAngledBracket:
+            return "<"
+        case .CloseLeftAngleBracket:
+            return "</"
+        case .RightAngledBracket:
+            return ">"
+        case .OpenLeftBrace:
+            return "{"
+        case .CloseLeftBrace:
+            return "{/"
+        case .RightBrace:
+            return "}"
+        case .Arrow(let arrow):
+            return arrow
+        case .Colon:
+            return ":"
+        case .Other(let text):
+            return text
+        case .ColorName(let name):
+            return name
+        case .Bold(let tag):
+            return tag
+        case .Italic(let tag):
+            return tag
+        case .Underline(let tag):
+            return tag
+        case .Font(let tag):
+            return tag
+        case .Color(let value):
+            return value
+        case .StringDelimiter:
+            return "\""
+        case .Assign:
+            return "="
+        case .NumberSign:
+            return "#"
+        case .EOF:
+            return ""
+        }
+    }
+}
+
+extension SubRipToken {
     func isSameType(as otherToken: SubRipToken) -> Bool {
         if self == otherToken {
             return true
