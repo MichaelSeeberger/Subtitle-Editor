@@ -32,6 +32,8 @@ struct EditRangeView: View {
     @Binding var isVisible: Bool
     @Environment(\.managedObjectContext) var context
     
+    @State private var hoveringOverHelp = false
+    
     private let formatter = SubRipTimeFormatter()
     
     var body: some View {
@@ -44,11 +46,6 @@ struct EditRangeView: View {
                 }
             }
             TimeEditView(timeEditMode: $timeEditMode, addedTime: $addedTime)
-            
-            HoverButton(action: {}) {
-                Text("?")
-                    .bold()
-            }.padding()
             
             Spacer()
             
