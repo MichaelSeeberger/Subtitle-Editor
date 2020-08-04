@@ -443,12 +443,51 @@ struct SubRipParser {
         (_, subtitlesString) = try expect(token: .StringDelimiter, definition: tokenizer.StringDel, tokenizer: tokenizer, subtitleString: subtitlesString)
         rawText += "\""
         
+        let color: NSColor
+        let rawColorValue: String
+        (color, rawColorValue, subtitlesString) = try parseFontColor(tokenizer: tokenizer, subtitleString: subtitlesString)
+        rawText += rawColorValue
+        
+        /*let hexNumber: SubRipToken!
+        (hexNumber, subtitlesString) = tokenizer.nextToken(tokenList: [tokenizer.HexValue], content: subtitlesString)
+        let color: NSColor
+        switch hexNumber {
+        case let .IntValue(value, original):
+            color = NSColor(rgb: Int(value))
+            rawText += original
+        default:
+            throw SubRipParseError.UnexpectedToken(expected: "hex number", actual: hexNumber)
+        }*/
+        
+        // Expect second "
+        (_, subtitlesString) = try expect(token: .StringDelimiter, definition: tokenizer.StringDel, tokenizer: tokenizer, subtitleString: subtitlesString)
+        rawText += "\""
+        
+        return (color, rawText, subtitlesString)
+    }
+    
+    private func parseFontColor(tokenizer: SubRipTokenizer, subtitleString: String) throws -> (color: NSColor, rawText: String, subtitleString: String) {
+        do {
+            return try parseHexFontColor(tokenizer: tokenizer, subtitleString: subtitleString)
+        } catch {}
+        
+        do {
+            return try parseNamedFontColor(tokenizer: tokenizer, subtitleString: subtitleString)
+        } catch SubRipParseError.UnexpectedToken(_, let actual) {
+            throw SubRipParseError.UnexpectedToken(expected: "hex number or color name", actual: actual)
+        } catch {
+            NSLog("Unexpected error in parseFontColor")
+            throw error
+        }
+    }
+    
+    private func parseHexFontColor(tokenizer: SubRipTokenizer, subtitleString: String) throws -> (color: NSColor, rawText: String, subtitleString: String) {
         // Expect #
-        (_, subtitlesString) = try expect(token: .NumberSign, definition: tokenizer.NumberSign, tokenizer: tokenizer, subtitleString: subtitlesString)
-        rawText += "#"
+        var (_, newSubtitlesString) = try expect(token: .NumberSign, definition: tokenizer.NumberSign, tokenizer: tokenizer, subtitleString: subtitleString)
+        var rawText = "#"
         
         let hexNumber: SubRipToken!
-        (hexNumber, subtitlesString) = tokenizer.nextToken(tokenList: [tokenizer.HexValue], content: subtitlesString)
+        (hexNumber, newSubtitlesString) = tokenizer.nextToken(tokenList: [tokenizer.HexValue], content: newSubtitlesString)
         let color: NSColor
         switch hexNumber {
         case let .IntValue(value, original):
@@ -458,13 +497,20 @@ struct SubRipParser {
             throw SubRipParseError.UnexpectedToken(expected: "hex number", actual: hexNumber)
         }
         
-        // Expect second "
-        (_, subtitlesString) = try expect(token: .StringDelimiter, definition: tokenizer.StringDel, tokenizer: tokenizer, subtitleString: subtitlesString)
-        rawText += "\""
+        return (color, rawText, newSubtitlesString)
+    }
+    
+    private func parseNamedFontColor(tokenizer: SubRipTokenizer, subtitleString: String) throws -> (color: NSColor, rawText: String, subtitleString: String) {
+        let (token, newSubtitlesString) = tokenizer.nextToken(tokenList: [tokenizer.StringDel], content: subtitleString)
+        guard case SubRipToken.Other(let colorName) = token else {
+            throw SubRipParseError.UnexpectedToken(expected: "Color name", actual: token)
+        }
         
-        //TODO: implement the font attributes
+        guard let colorValue = HTMLColors[colorName] else {
+            throw SubRipParseError.UnexpectedToken(expected: "Invalid color name", actual: token)
+        }
         
-        return (color, rawText, subtitlesString)
+        return (NSColor(rgb: colorValue), colorName, newSubtitlesString)
     }
     
     private func expect(token: SubRipToken, definition: TokenDefinition, tokenizer: SubRipTokenizer, subtitleString: String) throws -> (token: SubRipToken, subtitleString: String) {
