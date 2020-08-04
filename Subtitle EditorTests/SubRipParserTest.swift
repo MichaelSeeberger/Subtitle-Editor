@@ -290,7 +290,6 @@ final class SubRipParserTests: XCTestCase {
     }
     
     func testIncompleteTagInTag() throws {
-        try XCTSkipIf(true)
         let text = "An <i><b>incomplete tag</i>"
         let expected = "An <b>incomplete tag"
         let parser = SubRipParser()

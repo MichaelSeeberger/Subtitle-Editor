@@ -28,6 +28,12 @@ struct SubRipTokenizer {
     let NewLine: TokenDefinition = ("\r*\n", { _ in .Newline })
     let FloatValue: TokenDefinition = ("[0-9]+[,\\.][0-9]+", { (r: String) in .FloatValue(value: (r.replacingOccurrences(of: ",", with: ".", options: .literal, range: nil) as NSString).doubleValue, original: r) })
     let IntegerValue: TokenDefinition = ("[0-9]+", { (r: String) in .IntValue(value: (r as NSString).longLongValue, original: r) })
+    let HexValue: TokenDefinition = ("[0-9a-fA-F]+", { (r: String) in
+        let scanner = Scanner(string: r)
+        var value: UInt64 = 0
+        scanner.scanHexInt64(&value)
+        return .IntValue(value: Int64(value), original: r)
+    })
     let Arrow: TokenDefinition = ("-+>", { (r: String) in .Arrow(r) })
     let OpenLeftAngledBracket: TokenDefinition = ("<", { _ in .OpenLeftAngledBracket })
     let RightAngledBracket: TokenDefinition = (">", { _ in .RightAngledBracket })
@@ -102,7 +108,8 @@ struct SubRipTokenizer {
             ColorAttr,
             EqualSign,
             NumberSign,
-            ColorName
+            ColorName,
+            StringDel
         ]
     }
     

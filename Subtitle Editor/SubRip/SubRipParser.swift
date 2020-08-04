@@ -364,6 +364,12 @@ struct SubRipParser {
                     rawText += "\n"
                     formattedString.append(NSAttributedString(string: "\n"))
                 }
+            case .RightBrace:
+                rawText += "}"
+                formattedString.append(NSAttributedString(string: "}"))
+            case .RightAngledBracket:
+                rawText += ">"
+                formattedString.append(NSAttributedString(string: ">"))
             default:
                 throw SubRipParseError.UnexpectedToken(expected: "text or closing tag", actual: token)
             }
@@ -427,15 +433,49 @@ struct SubRipParser {
         var (rawText, subtitlesString) = try parseWhiteSpace(tokenizer: tokenizer, subtitlesString: subtitlesString)
         let colorAttrToken: SubRipToken!
         (colorAttrToken, subtitlesString) = tokenizer.nextToken(tokenList: tokenizer.fontAttributeTags, content: subtitlesString)
-        switch colorAttrToken {
-        case let .Color(colorAttr):
-            rawText += colorAttr
-        default:
+        guard case let .Color(colorAttr) = colorAttrToken else {
             throw SubRipParseError.UnexpectedToken(expected: "color", actual: colorAttrToken)
         }
+        rawText += colorAttr
+        
+        // Expect =
+        (_, subtitlesString) = try expect(token: .Assign, definition: tokenizer.EqualSign, tokenizer: tokenizer, subtitleString: subtitlesString)
+        rawText += "="
+        
+        // Expect first "
+        (_, subtitlesString) = try expect(token: .StringDelimiter, definition: tokenizer.StringDel, tokenizer: tokenizer, subtitleString: subtitlesString)
+        rawText += "\""
+        
+        // Expect #
+        (_, subtitlesString) = try expect(token: .NumberSign, definition: tokenizer.NumberSign, tokenizer: tokenizer, subtitleString: subtitlesString)
+        rawText += "#"
+        
+        let hexNumber: SubRipToken!
+        (hexNumber, subtitlesString) = tokenizer.nextToken(tokenList: [tokenizer.HexValue], content: subtitlesString)
+        let color: Color
+        switch hexNumber {
+        case let .IntValue(value, original):
+            color = Color(rgb: Int(value))
+            rawText += original
+        default:
+            throw SubRipParseError.UnexpectedToken(expected: "hex number", actual: hexNumber)
+        }
+        
+        // Expect second "
+        (_, subtitlesString) = try expect(token: .StringDelimiter, definition: tokenizer.StringDel, tokenizer: tokenizer, subtitleString: subtitlesString)
+        rawText += "\""
         
         //TODO: implement the font attributes
-        fatalError()
+        
+        return (color, subtitlesString)
+    }
+    
+    private func expect(token: SubRipToken, definition: TokenDefinition, tokenizer: SubRipTokenizer, subtitleString: String) throws -> (token: SubRipToken, subtitleString: String) {
+        let (actualToken, newSubtitleString) = tokenizer.nextToken(tokenList: [definition], content: subtitleString)
+        guard actualToken.isSameType(as: token) else {
+            throw SubRipParseError.UnexpectedToken(expected: "\(token)", actual: actualToken)
+        }
+        return (actualToken, newSubtitleString)
     }
     
     fileprivate func parseFloat(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> (floatValue: Double, rawValue: String, subtitlesString: String) {
