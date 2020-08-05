@@ -22,22 +22,53 @@ import SwiftUI
 
 struct TimeField: View {
     @Binding var time: Double
-    @State private var inputString: String?
-    @State private var inputOK: Bool = true
+    @State private var inputString: String? = nil
+    
+    private var inputOK: Bool {
+        guard let rawInputString = inputString else {
+            return true
+        }
+        
+        var result: Double! = nil
+        let formattedValue = AutoreleasingUnsafeMutablePointer<AnyObject?>(&result)
+        if !self.formatter.getObjectValue(formattedValue, for: rawInputString, errorDescription: nil) {
+            return false
+        }
+        
+        return true
+    }
     
     let formatter = SubRipTimeFormatter()
     
     private var timeText: Binding<String> { Binding(
-        get: { (self.inputString ?? self.formatter.string(for: self.time)) ?? "00:00:00,000" },
+        get: {
+            let optStringForTime = self.formatter.string(for: self.time)
+            guard let currentInput = self.inputString else {
+                return optStringForTime ?? "00:00:00,000"
+            }
+            
+            guard let stringForTime = optStringForTime else {
+                return "00:00:00,000"
+            }
+            
+            var result: Double! = nil
+            let formattedValue = AutoreleasingUnsafeMutablePointer<AnyObject?>(&result)
+            if !self.formatter.getObjectValue(formattedValue, for: currentInput, errorDescription: nil) {
+                return currentInput
+            }
+            if (formattedValue.pointee as! Double) == self.time {
+                return currentInput
+            } else {
+                return stringForTime
+            }
+        },
         set: {
             self.inputString = $0
             var result: Double! = nil
             let formattedValue = AutoreleasingUnsafeMutablePointer<AnyObject?>(&result)
             if !self.formatter.getObjectValue(formattedValue, for: $0, errorDescription: nil) {
-                self.inputOK = false
                 return
             }
-            self.inputOK = true
             self.time = formattedValue.pointee as! Double
         }
     )}
