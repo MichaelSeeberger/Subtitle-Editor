@@ -35,6 +35,12 @@ struct Content: View {
                 VStack(alignment: .leading) {
                     if selectedSubtitle != nil {
                         SubtitleDetail(selectedSubtitle: selectedSubtitle!)
+                    } else {
+                        Text("No Selection")
+                            .bold()
+                            .foregroundColor(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .frame(maxHeight: .infinity, alignment: .center)
                     }
                     Spacer()
                     HStack {
