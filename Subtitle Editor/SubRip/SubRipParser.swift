@@ -448,17 +448,6 @@ struct SubRipParser {
         (color, rawColorValue, subtitlesString) = try parseFontColor(tokenizer: tokenizer, subtitleString: subtitlesString)
         rawText += rawColorValue
         
-        /*let hexNumber: SubRipToken!
-        (hexNumber, subtitlesString) = tokenizer.nextToken(tokenList: [tokenizer.HexValue], content: subtitlesString)
-        let color: NSColor
-        switch hexNumber {
-        case let .IntValue(value, original):
-            color = NSColor(rgb: Int(value))
-            rawText += original
-        default:
-            throw SubRipParseError.UnexpectedToken(expected: "hex number", actual: hexNumber)
-        }*/
-        
         // Expect second "
         (_, subtitlesString) = try expect(token: .StringDelimiter, definition: tokenizer.StringDel, tokenizer: tokenizer, subtitleString: subtitlesString)
         rawText += "\""
