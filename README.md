@@ -1,9 +1,29 @@
 # Subtitle Editor
 Edit Subtitles in the SubRip format (.srt files).
 
+## Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Contributing](#contributing)
+- [Screenshots](#screenshots)
+- [License](#license)
+
+## Features
+
+Subtitle Editor supports SubRip files (.srt) and supports the following featurees:
+
+- Edit subtitle texts
+- Support for formatting. Both angled brackets `<` and braces `{` are supported. The following tags are supported:
+	* `b` Bold font (e.g. `<b>This is bold</b>` or `{b}This is bold{/b}`)
+	* `i` Italic font (e.g. `<i>This is italic</i>`)
+	* `u` Underlined text (e.g. `<u>This text is underlined</u>`
+	* `font` Set the text color with. Both html color names as well as hex color values are supported (e.g. `<font color="CornflowerBlue">Hello</font>` or `<font color="#6495ED">Hello</font>`)
+
 ## Installation
 ### System Requirements
-Subtitle Editor requires macOS 10.15 (Catalina).
+Subtitle Editor requires macOS 10.15 (Catalina) or later.
 
 ### Installing Subtitle Editor
 Download the latest release from GitHub. Drag the application into the Applications directory on your local computer.
@@ -38,6 +58,11 @@ If you are not a developer, you can still contribute:
 2. Make your change on a new branch
 3. Make a pull request
 4. Once your pull request has been reviewed, it will be merged into the main branch.
+
+## Screenshots
+![edit subtitle](ScreenShots/EditSubtitle.png)
+![edit range](ScreenShots/EditRange.png)
+
 
 ## License
 Copyright 2020 Michael Seeberger
