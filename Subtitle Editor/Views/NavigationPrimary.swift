@@ -22,12 +22,13 @@ import SwiftUI
 
 struct NavigationPrimary: View {
     @Binding var selectedSubtitle: Subtitle?
+    @Binding var searchString: String
     @Environment(\.managedObjectContext) var context: NSManagedObjectContext
     @State private var showDeleteAlert = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SubtitleList(selectedSubtitle: $selectedSubtitle)
+            SubtitleList(selectedSubtitle: $selectedSubtitle, searchString: searchString)
                 //.listStyle(SidebarListStyle()) // SidebarListStyle introduces a bug into selection of the subtitle...
             Divider()
             HStack {
@@ -45,6 +46,9 @@ struct NavigationPrimary: View {
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 .disabled(selectedSubtitle == nil)
+                TextField("Search", text: $searchString)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(.leading)
             }
             .padding(6)
             .padding(.leading, 8)
@@ -140,6 +144,7 @@ struct NavigationPrimary_Previews: PreviewProvider {
     static var previews: some View {
         createSampleData()
         let selectedSubtitle = subtitles[1]
-        return NavigationPrimary(selectedSubtitle: .constant(selectedSubtitle)).environment(\.managedObjectContext, stack.mainContext)
+        return NavigationPrimary(selectedSubtitle: .constant(selectedSubtitle), searchString: .constant(""))
+            .environment(\.managedObjectContext, stack.mainContext)
     }
 }

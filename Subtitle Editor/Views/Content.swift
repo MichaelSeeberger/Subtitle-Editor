@@ -23,10 +23,11 @@ import SwiftUI
 struct Content: View {
     @State private var selectedSubtitle: Subtitle?
     @State private var isEditingRange: Bool = false
+    @State private var searchString: String = ""
     
     var body: some View {
         NavigationView {
-            NavigationPrimary(selectedSubtitle: $selectedSubtitle)
+            NavigationPrimary(selectedSubtitle: $selectedSubtitle, searchString: $searchString)
             
             if isEditingRange == true {
                 EditRangeView(isVisible: $isEditingRange)

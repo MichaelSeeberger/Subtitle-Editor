@@ -21,10 +21,21 @@
 import SwiftUI
 
 struct SubtitleList: View {
-    @FetchRequest(entity: Subtitle.entity(),
-                  sortDescriptors: [NSSortDescriptor(key: "counter", ascending: true)]) var subtitles: FetchedResults<Subtitle>
+    var fetchRequest: FetchRequest<Subtitle>
+    var subtitles: FetchedResults<Subtitle> {
+        fetchRequest.wrappedValue
+    }
     @Environment(\.managedObjectContext) var context
     @Binding var selectedSubtitle: Subtitle?
+    
+    init(selectedSubtitle: Binding<Subtitle?>, searchString: String) {
+        _selectedSubtitle = selectedSubtitle
+        fetchRequest = FetchRequest<Subtitle>(
+            entity: Subtitle.entity(),
+            sortDescriptors: [NSSortDescriptor(key: "counter", ascending: true)],
+            predicate: searchString == "" ? nil : NSPredicate(format: "content CONTAINS %@", searchString)
+        )
+    }
     
     var body: some View {
         List(selection: $selectedSubtitle) {
@@ -73,7 +84,7 @@ struct SubtitleList_Previews: PreviewProvider {
     
     static var previews: some View {
         createSampleData()
-        return SubtitleList(selectedSubtitle: .constant(subtitles[1]))
+        return SubtitleList(selectedSubtitle: .constant(subtitles[1]), searchString: "")
             .environment(\.managedObjectContext, stack.mainContext)
     }
 }
