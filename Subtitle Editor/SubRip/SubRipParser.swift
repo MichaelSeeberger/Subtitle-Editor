@@ -495,7 +495,7 @@ struct SubRipParser {
             throw SubRipParseError.UnexpectedToken(expected: "Color name", actual: token)
         }
         
-        guard let colorValue = HTMLColors[colorName] else {
+        guard let colorValue = HTMLColors[colorName.lowercased()] else {
             throw SubRipParseError.UnexpectedToken(expected: "Invalid color name", actual: token)
         }
         
