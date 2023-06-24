@@ -34,8 +34,6 @@ struct EditRangeView: View {
     
     @State private var hoveringOverHelp = false
     
-    private let formatter = SubRipTimeFormatter()
-    
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {

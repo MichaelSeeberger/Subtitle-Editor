@@ -23,8 +23,6 @@ struct RangeEditorView: View {
     @Binding var startTime: Double
     @Binding var endTime: Double
     
-    let formatter = SubRipTimeFormatter()
-    
     var body: some View {
         HStack {
             VStack(alignment: .trailing) {

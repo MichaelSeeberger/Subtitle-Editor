@@ -25,7 +25,6 @@ struct TimeEditorView: View {
     let locked: Bool
     @Binding var time: Double
     let action: () -> Void
-    let formatter = SubRipTimeFormatter()
     
     var body: some View {
         VStack(alignment: .leading) {

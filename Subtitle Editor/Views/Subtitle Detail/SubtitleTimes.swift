@@ -27,7 +27,6 @@ enum Locked {
 }
 
 struct SubtitleTimes: View {
-    let formatter = SubRipTimeFormatter()
     @ObservedObject var subtitle: Subtitle
     
     @State private var locked: Locked = .duration
