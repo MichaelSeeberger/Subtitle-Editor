@@ -34,7 +34,6 @@
 		CA210ADA24C4E58500F5D06F /* NavigationPrimary.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA210AD924C4E58500F5D06F /* NavigationPrimary.swift */; };
 		CA210ADB24C4E8EA00F5D06F /* SubtitleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9FA67E24C4CB7800C6BFC0 /* SubtitleList.swift */; };
 		CA210B0124C58C3600F5D06F /* Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA210B0024C58C3600F5D06F /* Content.swift */; };
-		CA210B0324C58E5000F5D06F /* SubtitleIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA210B0224C58E5000F5D06F /* SubtitleIdentifiable.swift */; };
 		CA210B0624C5AEBD00F5D06F /* SubtitleTimes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA210B0524C5AEBD00F5D06F /* SubtitleTimes.swift */; };
 		CA210B0824C5D05500F5D06F /* LockButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA210B0724C5D05500F5D06F /* LockButton.swift */; };
 		CA9FA67924C42FE900C6BFC0 /* SubtitleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9FA67824C42FE900C6BFC0 /* SubtitleRow.swift */; };
@@ -100,7 +99,6 @@
 		CA210AD724C4DE6900F5D06F /* SubtitleDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleDetailView.swift; sourceTree = "<group>"; };
 		CA210AD924C4E58500F5D06F /* NavigationPrimary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationPrimary.swift; sourceTree = "<group>"; };
 		CA210B0024C58C3600F5D06F /* Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Content.swift; sourceTree = "<group>"; };
-		CA210B0224C58E5000F5D06F /* SubtitleIdentifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleIdentifiable.swift; sourceTree = "<group>"; };
 		CA210B0524C5AEBD00F5D06F /* SubtitleTimes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleTimes.swift; sourceTree = "<group>"; };
 		CA210B0724C5D05500F5D06F /* LockButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockButton.swift; sourceTree = "<group>"; };
 		CA9FA67824C42FE900C6BFC0 /* SubtitleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleRow.swift; sourceTree = "<group>"; };
@@ -261,7 +259,6 @@
 			isa = PBXGroup;
 			children = (
 				CAF7174324C6360A0056888D /* SubtitleEditTime.swift */,
-				CA210B0224C58E5000F5D06F /* SubtitleIdentifiable.swift */,
 				CABCD39424D5CB680088AAD9 /* EditRangeService.swift */,
 			);
 			path = Model;
@@ -380,7 +377,6 @@
 				CABCD39324D4BAA20088AAD9 /* HoverButton.swift in Sources */,
 				CA1DA32F24B451A0006015E0 /* SubRipToken.swift in Sources */,
 				CA1DA33524B6E9E0006015E0 /* HTMLColorNames.swift in Sources */,
-				CA210B0324C58E5000F5D06F /* SubtitleIdentifiable.swift in Sources */,
 				CA1DA2A224B1CA23006015E0 /* Document.xcdatamodeld in Sources */,
 				CA1DA32924B363C0006015E0 /* SubRipEncoder.swift in Sources */,
 				CA1DA33E24BB092E006015E0 /* TextWithAttributedString.swift in Sources */,
