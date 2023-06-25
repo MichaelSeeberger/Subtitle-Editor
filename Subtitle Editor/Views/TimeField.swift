@@ -24,65 +24,43 @@ struct TimeField: View {
     @Binding var time: Double
     @State private var inputString: String? = nil
     
-    private var inputOK: Bool {
-        guard let rawInputString = inputString else {
-            return true
-        }
-        
-        var result: Double! = nil
-        let formattedValue = AutoreleasingUnsafeMutablePointer<AnyObject?>(&result)
-        if !self.formatter.getObjectValue(formattedValue, for: rawInputString, errorDescription: nil) {
-            return false
-        }
-        
-        return true
+    private let formatter = SubRipTimeFormatter()
+    
+    @State private var isInputOK = true
+
+    private var timeTextBinding: Binding<String> {
+        Binding<String>(
+            get: {
+                inputString ?? formatter.string(for: time)!
+            },
+            set: { newValue in
+                var result: Double! = nil
+                let formattedValue = AutoreleasingUnsafeMutablePointer<AnyObject?>(&result)
+                
+                isInputOK = formatter.isValid(newValue)
+                let calculatedValue = formatter.getObjectValue(formattedValue, for: newValue, errorDescription: nil)
+                inputString = newValue
+                
+                if calculatedValue {
+                    time = formattedValue.pointee as! Double
+                }
+            }
+        )
     }
-    
-    let formatter = SubRipTimeFormatter()
-    
-    private var timeText: Binding<String> { Binding(
-        get: {
-            let optStringForTime = self.formatter.string(for: self.time)
-            guard let currentInput = self.inputString else {
-                return optStringForTime ?? "00:00:00,000"
-            }
-            
-            guard let stringForTime = optStringForTime else {
-                return "00:00:00,000"
-            }
-            
-            var result: Double! = nil
-            let formattedValue = AutoreleasingUnsafeMutablePointer<AnyObject?>(&result)
-            if !self.formatter.getObjectValue(formattedValue, for: currentInput, errorDescription: nil) {
-                return currentInput
-            }
-            if (formattedValue.pointee as! Double) == self.time {
-                return currentInput
-            } else {
-                return stringForTime
-            }
-        },
-        set: {
-            self.inputString = $0
-            var result: Double! = nil
-            let formattedValue = AutoreleasingUnsafeMutablePointer<AnyObject?>(&result)
-            if !self.formatter.getObjectValue(formattedValue, for: $0, errorDescription: nil) {
-                return
-            }
-            self.time = formattedValue.pointee as! Double
-        }
-    )}
-    
+        
     var body: some View {
         ZStack(alignment: .trailing) {
-            TextField("", text: timeText, onCommit: {
-                self.inputString = self.formatter.string(for: self.time)
+            TextField("", text: timeTextBinding, onEditingChanged: { hasFocus in
+                if !hasFocus {
+                    DispatchQueue.main.async {
+                        inputString = nil
+                        isInputOK = true
+                    }
+                }
             })
-            if !self.inputOK {
-                Text("\u{2717}")
-                    .bold()
-                    .padding(.trailing, 4)
-                    .foregroundColor(inputOK ? .green : .red)
+            .foregroundColor(isInputOK ? .primary : .red)
+            .onSubmit {
+                inputString = nil
             }
         }
     }

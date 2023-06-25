@@ -46,12 +46,38 @@ class SubRipTimeFormatter: Formatter {
         let parser = SubRipParser()
         do {
             let (stringResult, _) = try parser.parseTime(tokenizer: tokenizer, subtitlesString: string)
-            obj?.pointee = stringResult as   NSNumber
+            obj?.pointee = stringResult as NSNumber
         } catch {
             outError?.pointee = "Could not read time \"\(string)\": \(error)" as NSString
             return false
         }
         
         return true
+    }
+    
+    func isValid(_ string: String) -> Bool {
+        let invalidCharachters = NSCharacterSet(charactersIn: "0123456789:,.").inverted
+        
+        if string.rangeOfCharacter(from: invalidCharachters) != nil {
+            return false
+        }
+        
+        let tokenizer = SubRipTokenizer()
+        let parser = SubRipParser()
+        do {
+            let _ = try parser.parseTime(tokenizer: tokenizer, subtitlesString: string)
+        } catch {
+            return false
+        }
+        
+        return true
+    }
+    
+    override func isPartialStringValid(
+        _ partialString: String,
+        newEditingString newString: AutoreleasingUnsafeMutablePointer<NSString?>?,
+        errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?
+    ) -> Bool {
+            return isValid(partialString)
     }
 }
