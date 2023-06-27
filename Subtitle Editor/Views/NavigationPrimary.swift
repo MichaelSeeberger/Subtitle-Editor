@@ -54,10 +54,11 @@ struct NavigationPrimary: View {
             .padding(.leading, 8)
         }
         .frame(minWidth: 250, maxWidth: 350)
-        .alert(isPresented: $showDeleteAlert) {
-            Alert(title: Text("Are you sure?"),
-                  message: Text("Do you really want to delete the selected Subtitle?"),
-                  primaryButton: .default(Text("Yes"), action: deleteSelectedSubtitle), secondaryButton: .cancel())
+        .alert("Are you sure?", isPresented: $showDeleteAlert) {
+            Button("Cancel", role: .cancel, action: { showDeleteAlert.toggle() })
+            Button("Delete", role: .destructive, action: { showDeleteAlert.toggle() })
+        } message: {
+            Text("Do you really want to delete the selected Subtitle?")
         }
     }
 }
