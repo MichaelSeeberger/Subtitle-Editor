@@ -33,7 +33,7 @@ struct NavigationPrimary: View {
             Divider()
             HStack {
                 Button(action: self.addSubtitle) {
-                    Image(nsImage: NSImage(named: NSImage.addTemplateName)!)
+                    Image(systemName: "plus")
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 
@@ -42,7 +42,7 @@ struct NavigationPrimary: View {
                 Button(action: {
                     self.showDeleteAlert = true
                 }) {
-                    Image(nsImage: NSImage(named: NSImage.removeTemplateName)!)
+                    Image(systemName: "minus")
                 }
                 .buttonStyle(BorderlessButtonStyle())
                 .disabled(selectedSubtitle == nil)

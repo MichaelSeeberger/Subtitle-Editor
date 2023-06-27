@@ -23,14 +23,12 @@ import SwiftUI
 struct LockButton: View {
     var locked: Bool = false
     @State var overButton: Bool = false
-    static let imageLocked = NSImage(named: NSImage.lockLockedTemplateName)!
-    static let imageUnlocked = NSImage(named: NSImage.lockUnlockedTemplateName)!
     
     let action: () -> Void
 
     var body: some View {
         Button(action: self.action) {
-            Image(nsImage: locked ? LockButton.imageLocked : LockButton.imageUnlocked)
+            Image(systemName: locked ? "lock" : "lock.open")
         }
         .buttonStyle(BorderlessButtonStyle())
         .foregroundColor(overButton ? .blue : .gray)
