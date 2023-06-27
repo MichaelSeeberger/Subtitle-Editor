@@ -58,10 +58,8 @@ struct SubtitleDetail: View {
             HStack {
                 VStack(alignment: .leading) {
                     SubtitleTimes(subtitle: selectedSubtitle)
-                        .padding()
                     Divider()
                     textField("Subtitle Text", text: subtitleString)
-                        .padding()
                     Text("Use \u{2325}-\u{23CE} for new line")
                         .font(.footnote)
                 }
