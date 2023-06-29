@@ -19,23 +19,23 @@ Subtitle Editor supports SubRip files (.srt) and supports the following featuree
 	* `b` Bold font (e.g. `<b>This is bold</b>` or `{b}This is bold{/b}`)
 	* `i` Italic font (e.g. `<i>This is italic</i>`)
 	* `u` Underlined text (e.g. `<u>This text is underlined</u>`
-	* `font` Set the text color with. Both html color names as well as hex color values are supported (e.g. `<font color="CornflowerBlue">Hello</font>` or `<font color="#6495ED">Hello</font>`)
+	* `font` Set the text color. Both html color names as well as hex color values are supported (e.g. `<font color="CornflowerBlue">Hello</font>` or `<font color="#6495ED">Hello</font>`)
 
 ## Installation
 ### System Requirements
-Subtitle Editor requires macOS 10.15 (Catalina) or later.
+Subtitle Editor requires macOS 12 (Monterey) or later.
 
 ### Installing Subtitle Editor
 Download the latest release from GitHub. Drag the application into the Applications directory on your local computer.
 
-## Getting Started
-Read these instructions will get you a copy of the code on your local machine for developing and testing purposes.
+## Development
+Following these instructions will get you a copy of the code on your local machine for developing and testing purposes.
 
 ### Prerequisits
-This project requires Xcode 11 to be installed. It hasn't been tested with Xcode 12 beta.
+This project requires Xcode to be installed.
 
 ### Get the source code
-Either download the source from GitHub or clone the repository:
+Either download the source from the GitHub page or clone the repository:
 
 ```bash
 git clone https://github.com/MichaelSeeberger/Subtitle-Editor.git
