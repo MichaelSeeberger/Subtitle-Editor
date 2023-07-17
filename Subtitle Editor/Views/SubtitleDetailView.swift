@@ -43,25 +43,14 @@ struct SubtitleDetail: View {
         })
     }
     
-    @ViewBuilder
-    private func textField(_ label: LocalizedStringKey, text: Binding<String>) -> some View {
-        if #available(macOS 13, iOS 16, *) {
-            TextField(label, text: text, axis: .vertical)
-                .lineLimit(5...)
-        } else {
-            TextField(label, text: text)
-        }
-    }
-    
     var body: some View {
         ScrollView {
             HStack {
                 VStack(alignment: .leading) {
                     SubtitleTimes(subtitle: selectedSubtitle)
                     Divider()
-                    textField("Subtitle Text", text: subtitleString)
-                    Text("Use \u{2325}-\u{23CE} for new line")
-                        .font(.footnote)
+                    TextEditor(text: subtitleString)
+                        .frame(minHeight: 100)
                 }
                 Spacer()
             }
