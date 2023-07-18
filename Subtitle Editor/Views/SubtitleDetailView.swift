@@ -28,19 +28,37 @@ struct SubtitleDetail: View {
     private var subtitleString: Binding<String> { Binding (
         get: { return (self.selectedSubtitle.content ?? "") },
         set: {
-            if self.selectedSubtitle.content == $0 {
+            let lastChar = $0.last
+            var newContent = $0.split(whereSeparator: \.isNewline)
+                .joined(separator: "\n")
+            
+            if lastChar == "\n" {
+                newContent += "\n"
+            }
+            
+            guard self.selectedSubtitle.content != newContent else {
                 return
             }
+            
             self.moc.undoManager?.beginUndoGrouping()
             defer { self.moc.undoManager?.endUndoGrouping() }
-            self.selectedSubtitle.content = $0
+            self.selectedSubtitle.content = newContent
             do {
-                let (_, formatted, _) = try self.parser.parseBody(tokenizer: SubRipTokenizer(), subtitlesString: $0)
+                let (_, formatted, _) = try self.parser.parseBody(tokenizer: SubRipTokenizer(), subtitlesString: newContent)
                 self.selectedSubtitle.formattedContent = formatted.rtf(from: NSMakeRange(0, formatted.string.count))
             } catch {
                 NSLog("Could not parse body")
             }
         })
+    }
+    
+    @ViewBuilder
+    var textField: some View {
+        if #available(macOS 13, iOS 16, *) {
+            TextField("subtitle", text: subtitleString, axis: .vertical)
+        } else {
+            TextField("subtitle", text: subtitleString)
+        }
     }
     
     var body: some View {
@@ -49,8 +67,8 @@ struct SubtitleDetail: View {
                 VStack(alignment: .leading) {
                     SubtitleTimes(subtitle: selectedSubtitle)
                     Divider()
-                    TextEditor(text: subtitleString)
-                        .frame(minHeight: 100)
+                    textField
+                        .lineLimit(nil)
                 }
                 Spacer()
             }
