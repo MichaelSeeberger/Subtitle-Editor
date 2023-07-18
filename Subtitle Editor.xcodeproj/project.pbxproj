@@ -27,7 +27,6 @@
 		CA1DA33724B76058006015E0 /* HTMLColorNamesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA33624B76058006015E0 /* HTMLColorNamesTests.swift */; };
 		CA1DA33924B79FA4006015E0 /* SubRipTokenizerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA33824B79FA4006015E0 /* SubRipTokenizerTest.swift */; };
 		CA1DA33B24B88101006015E0 /* SubRipParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA33A24B88101006015E0 /* SubRipParserTest.swift */; };
-		CA1DA33E24BB092E006015E0 /* TextWithAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA33D24BB092D006015E0 /* TextWithAttributedString.swift */; };
 		CA1DA34024BC667A006015E0 /* The Last Samurai.srt in Resources */ = {isa = PBXBuildFile; fileRef = CA1DA33F24BC667A006015E0 /* The Last Samurai.srt */; };
 		CA1DA34224BC6AD2006015E0 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA34124BC6AD2006015E0 /* TestHelpers.swift */; };
 		CA210AD824C4DE6900F5D06F /* SubtitleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA210AD724C4DE6900F5D06F /* SubtitleDetailView.swift */; };
@@ -45,6 +44,9 @@
 		CABCD39124D435EE0088AAD9 /* TimeEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABCD39024D435EE0088AAD9 /* TimeEditView.swift */; };
 		CABCD39324D4BAA20088AAD9 /* HoverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABCD39224D4BAA20088AAD9 /* HoverButton.swift */; };
 		CABCD39524D5CB680088AAD9 /* EditRangeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABCD39424D5CB680088AAD9 /* EditRangeService.swift */; };
+		CABF721D2A64078300AEA4C9 /* SubtitleContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABF721C2A64078300AEA4C9 /* SubtitleContentView.swift */; };
+		CABF721F2A64079800AEA4C9 /* SubtitleNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABF721E2A64079800AEA4C9 /* SubtitleNavigationView.swift */; };
+		CADA9C382A672A0E00C2EC9E /* TextWithAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADA9C372A672A0E00C2EC9E /* TextWithAttributedString.swift */; };
 		CAF7174424C6360A0056888D /* SubtitleEditTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174324C6360A0056888D /* SubtitleEditTime.swift */; };
 		CAF7174724C6C13C0056888D /* SubtitleEditTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */; };
 		CAF7174C24C6CB640056888D /* TimeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174B24C6CB640056888D /* TimeEditorView.swift */; };
@@ -93,7 +95,6 @@
 		CA1DA33624B76058006015E0 /* HTMLColorNamesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLColorNamesTests.swift; sourceTree = "<group>"; };
 		CA1DA33824B79FA4006015E0 /* SubRipTokenizerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubRipTokenizerTest.swift; sourceTree = "<group>"; };
 		CA1DA33A24B88101006015E0 /* SubRipParserTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubRipParserTest.swift; sourceTree = "<group>"; };
-		CA1DA33D24BB092D006015E0 /* TextWithAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWithAttributedString.swift; sourceTree = "<group>"; };
 		CA1DA33F24BC667A006015E0 /* The Last Samurai.srt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "The Last Samurai.srt"; sourceTree = "<group>"; };
 		CA1DA34124BC6AD2006015E0 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		CA210AD724C4DE6900F5D06F /* SubtitleDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleDetailView.swift; sourceTree = "<group>"; };
@@ -111,6 +112,9 @@
 		CABCD39024D435EE0088AAD9 /* TimeEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeEditView.swift; sourceTree = "<group>"; };
 		CABCD39224D4BAA20088AAD9 /* HoverButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverButton.swift; sourceTree = "<group>"; };
 		CABCD39424D5CB680088AAD9 /* EditRangeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRangeService.swift; sourceTree = "<group>"; };
+		CABF721C2A64078300AEA4C9 /* SubtitleContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleContentView.swift; sourceTree = "<group>"; };
+		CABF721E2A64079800AEA4C9 /* SubtitleNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleNavigationView.swift; sourceTree = "<group>"; };
+		CADA9C372A672A0E00C2EC9E /* TextWithAttributedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextWithAttributedString.swift; sourceTree = "<group>"; };
 		CAF7174324C6360A0056888D /* SubtitleEditTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleEditTime.swift; sourceTree = "<group>"; };
 		CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleEditTimeTests.swift; sourceTree = "<group>"; };
 		CAF7174B24C6CB640056888D /* TimeEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeEditorView.swift; sourceTree = "<group>"; };
@@ -222,14 +226,16 @@
 			children = (
 				CA210B0024C58C3600F5D06F /* Content.swift */,
 				CA210AD924C4E58500F5D06F /* NavigationPrimary.swift */,
-				CA1DA33D24BB092D006015E0 /* TextWithAttributedString.swift */,
 				CA9FA67824C42FE900C6BFC0 /* SubtitleRow.swift */,
+				CADA9C372A672A0E00C2EC9E /* TextWithAttributedString.swift */,
 				CA9FA67E24C4CB7800C6BFC0 /* SubtitleList.swift */,
 				CA210AD724C4DE6900F5D06F /* SubtitleDetailView.swift */,
 				CA210B0424C5AEAD00F5D06F /* Subtitle Detail */,
 				CABCD38924D42CFB0088AAD9 /* Edit Range */,
 				CABCD39224D4BAA20088AAD9 /* HoverButton.swift */,
 				CAFD0DAE24D738C000A39D8F /* TimeField.swift */,
+				CABF721C2A64078300AEA4C9 /* SubtitleContentView.swift */,
+				CABF721E2A64079800AEA4C9 /* SubtitleNavigationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -375,12 +381,14 @@
 				CA1DA32624B363AA006015E0 /* SubRipDecoder.swift in Sources */,
 				CA210B0124C58C3600F5D06F /* Content.swift in Sources */,
 				CAFCC64124BC92C600C71465 /* SubRipParser.swift in Sources */,
+				CABF721D2A64078300AEA4C9 /* SubtitleContentView.swift in Sources */,
 				CABCD39324D4BAA20088AAD9 /* HoverButton.swift in Sources */,
 				CA1DA32F24B451A0006015E0 /* SubRipToken.swift in Sources */,
 				CA1DA33524B6E9E0006015E0 /* HTMLColorNames.swift in Sources */,
+				CABF721F2A64079800AEA4C9 /* SubtitleNavigationView.swift in Sources */,
 				CA1DA2A224B1CA23006015E0 /* Document.xcdatamodeld in Sources */,
 				CA1DA32924B363C0006015E0 /* SubRipEncoder.swift in Sources */,
-				CA1DA33E24BB092E006015E0 /* TextWithAttributedString.swift in Sources */,
+				CADA9C382A672A0E00C2EC9E /* TextWithAttributedString.swift in Sources */,
 				CA210AD824C4DE6900F5D06F /* SubtitleDetailView.swift in Sources */,
 				CAF7174424C6360A0056888D /* SubtitleEditTime.swift in Sources */,
 				CA210B0624C5AEBD00F5D06F /* SubtitleTimes.swift in Sources */,
@@ -619,7 +627,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.michaelseeberger.Subtitle-EditorTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -642,7 +650,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.michaelseeberger.Subtitle-EditorTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

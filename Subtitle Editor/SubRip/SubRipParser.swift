@@ -392,6 +392,11 @@ struct SubRipParser {
             newString.addAttributes([.font : combinedFont ?? currentFont], range: range)
         }
         
+        string.enumerateAttribute(.foregroundColor, in: range) { color, range, shouldStop in
+            guard let color = color else { return }
+            newString.addAttribute(.foregroundColor, value: color, range: range)
+        }
+        
         return newString
     }
     

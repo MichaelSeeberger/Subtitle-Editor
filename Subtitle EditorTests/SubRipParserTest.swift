@@ -133,12 +133,8 @@ final class SubRipParserTests: XCTestCase {
             let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
             XCTAssertEqual(text, rawText)
             XCTAssertEqual("A Subtitle", formattedText.string)
-            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
-            do {
-                try data!.write(to: getDocumentsDirectory().appendingPathComponent("bold.rtf"))
-            } catch {
-                print("\(error)")
-            }
+            let sub1Font = formattedText.attributes(at: 2, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font.fontDescriptor.symbolicTraits.contains(.bold))
         } catch {
             XCTFail()
         }
@@ -152,16 +148,8 @@ final class SubRipParserTests: XCTestCase {
             let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
             XCTAssertEqual(text, rawText)
             XCTAssertEqual("A Subtitle", formattedText.string)
-            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
-            func getDocumentsDirectory() -> URL {
-                let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-                return paths[0]
-            }
-            do {
-                try data!.write(to: getDocumentsDirectory().appendingPathComponent("italic.rtf"))
-            } catch {
-                print("\(error)")
-            }
+            let sub1Font = formattedText.attributes(at: 2, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font.fontDescriptor.symbolicTraits.contains(.italic))
         } catch {
             XCTFail()
         }
@@ -175,16 +163,9 @@ final class SubRipParserTests: XCTestCase {
             let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
             XCTAssertEqual(text, rawText)
             XCTAssertEqual("A Subtitle", formattedText.string)
-            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
-            func getDocumentsDirectory() -> URL {
-                let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-                return paths[0]
-            }
-            do {
-                try data!.write(to: getDocumentsDirectory().appendingPathComponent("italic.rtf"))
-            } catch {
-                print("\(error)")
-            }
+            let sub1Color = formattedText.attributes(at: 2, effectiveRange: nil)[.foregroundColor] as! NSColor
+            XCTAssertNotNil(sub1Color)
+            XCTAssertEqual(sub1Color, NSColor(rgb: 0xff0023))
         } catch {
             XCTFail()
         }
@@ -198,16 +179,9 @@ final class SubRipParserTests: XCTestCase {
             let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
             XCTAssertEqual(text, rawText)
             XCTAssertEqual("A Subtitle", formattedText.string)
-            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
-            func getDocumentsDirectory() -> URL {
-                let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-                return paths[0]
-            }
-            do {
-                try data!.write(to: getDocumentsDirectory().appendingPathComponent("italic.rtf"))
-            } catch {
-                print("\(error)")
-            }
+            let sub1Color = formattedText.attributes(at: 2, effectiveRange: nil)[.foregroundColor] as! NSColor
+            XCTAssertNotNil(sub1Color)
+            XCTAssertEqual(sub1Color, NSColor.blue)
         } catch {
             XCTFail()
         }
@@ -221,16 +195,9 @@ final class SubRipParserTests: XCTestCase {
             let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
             XCTAssertEqual(text, rawText)
             XCTAssertEqual("A Subtitle", formattedText.string)
-            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
-            func getDocumentsDirectory() -> URL {
-                let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-                return paths[0]
-            }
-            do {
-                try data!.write(to: getDocumentsDirectory().appendingPathComponent("italic.rtf"))
-            } catch {
-                print("\(error)")
-            }
+            let sub1Color = formattedText.attributes(at: 2, effectiveRange: nil)[.foregroundColor] as! NSColor
+            XCTAssertNotNil(sub1Color)
+            XCTAssertEqual(sub1Color, NSColor(rgb: 0x6495ed))
         } catch {
             XCTFail()
         }
@@ -244,16 +211,53 @@ final class SubRipParserTests: XCTestCase {
             let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
             XCTAssertEqual(text, rawText)
             XCTAssertEqual("A test Subtitle", formattedText.string)
-            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
-            func getDocumentsDirectory() -> URL {
-                let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-                return paths[0]
-            }
-            do {
-                try data!.write(to: getDocumentsDirectory().appendingPathComponent("boldItalic.rtf"))
-            } catch {
-                print("\(error)")
-            }
+            let sub1Font1 = formattedText.attributes(at: 2, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font1.fontDescriptor.symbolicTraits.contains(.bold))
+            XCTAssertFalse(sub1Font1.fontDescriptor.symbolicTraits.contains(.italic))
+            
+            let sub1Font2 = formattedText.attributes(at: 7, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font2.fontDescriptor.symbolicTraits.contains(.bold))
+            XCTAssertTrue(sub1Font2.fontDescriptor.symbolicTraits.contains(.italic))
+        } catch {
+            XCTFail()
+        }
+    }
+    
+    func testParseBodyWithFontWithinBoldTag() {
+        let text = "A <b><font color=\"blue\">Subtitle</font></b>"
+        let parser = SubRipParser()
+        do {
+            let tokenizer = SubRipTokenizer()
+            let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
+            XCTAssertEqual(text, rawText)
+            XCTAssertEqual("A Subtitle", formattedText.string)
+            let sub1Color = formattedText.attributes(at: 2, effectiveRange: nil)[.foregroundColor] as! NSColor
+            XCTAssertNotNil(sub1Color)
+            XCTAssertEqual(sub1Color, NSColor.blue)
+            
+            let sub1Font1 = formattedText.attributes(at: 2, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font1.fontDescriptor.symbolicTraits.contains(.bold))
+            XCTAssertFalse(sub1Font1.fontDescriptor.symbolicTraits.contains(.italic))
+        } catch {
+            XCTFail()
+        }
+    }
+
+    func testParseBodyWithBoldTagInsideFontTag() {
+        let text = "A <font color=\"blue\"><b>Subtitle</b></font>"
+        let parser = SubRipParser()
+        do {
+            let tokenizer = SubRipTokenizer()
+            let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
+            XCTAssertEqual(text, rawText)
+            XCTAssertEqual("A Subtitle", formattedText.string)
+            let sub1Color = formattedText.attributes(at: 2, effectiveRange: nil)[.foregroundColor] as! NSColor
+            XCTAssertNotNil(sub1Color)
+            XCTAssertEqual(sub1Color, NSColor.blue)
+            
+            let sub1Font1 = formattedText.attributes(at: 2, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font1.fontDescriptor.symbolicTraits.contains(.bold))
+            XCTAssertFalse(sub1Font1.fontDescriptor.symbolicTraits.contains(.italic))
         } catch {
             XCTFail()
         }
@@ -267,12 +271,13 @@ final class SubRipParserTests: XCTestCase {
             let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
             XCTAssertEqual(text, rawText)
             XCTAssertEqual("A test Subtitle\nwith two lines", formattedText.string)
-            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
-            do {
-                try data!.write(to: getDocumentsDirectory().appendingPathComponent("boldItalicTwoLines.rtf"))
-            } catch {
-                print("\(error)")
-            }
+            let sub1Font1 = formattedText.attributes(at: 2, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font1.fontDescriptor.symbolicTraits.contains(.bold))
+            XCTAssertFalse(sub1Font1.fontDescriptor.symbolicTraits.contains(.italic))
+            
+            let sub1Font2 = formattedText.attributes(at: 7, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font2.fontDescriptor.symbolicTraits.contains(.bold))
+            XCTAssertTrue(sub1Font2.fontDescriptor.symbolicTraits.contains(.italic))
         } catch {
             XCTFail()
         }
@@ -286,12 +291,17 @@ final class SubRipParserTests: XCTestCase {
             let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
             XCTAssertEqual(text, rawText)
             XCTAssertEqual("A test Subtitle\nwith two lines", formattedText.string)
-            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
-            do {
-                try data!.write(to: getDocumentsDirectory().appendingPathComponent("boldItalicTwoLinesSpanFormat.rtf"))
-            } catch {
-                print("\(error)")
-            }
+            let sub1Font1 = formattedText.attributes(at: 2, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font1.fontDescriptor.symbolicTraits.contains(.bold))
+            XCTAssertFalse(sub1Font1.fontDescriptor.symbolicTraits.contains(.italic))
+            
+            let sub1Font2 = formattedText.attributes(at: 7, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font2.fontDescriptor.symbolicTraits.contains(.bold))
+            XCTAssertTrue(sub1Font2.fontDescriptor.symbolicTraits.contains(.italic))
+            
+            let sub1Font3 = formattedText.attributes(at: 15, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font3.fontDescriptor.symbolicTraits.contains(.bold))
+            XCTAssertFalse(sub1Font3.fontDescriptor.symbolicTraits.contains(.italic))
         } catch {
             XCTFail()
         }
@@ -305,12 +315,6 @@ final class SubRipParserTests: XCTestCase {
             let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
             XCTAssertEqual(text, rawText)
             XCTAssertEqual("A test Subtitle\nwith two lines", formattedText.string)
-            let data = formattedText.rtf(from: NSMakeRange(0, formattedText.length))
-            do {
-                try data!.write(to: getDocumentsDirectory().appendingPathComponent("boldItalicTwoLines.rtf"))
-            } catch {
-                print("\(error)")
-            }
         } catch {
             XCTFail()
         }
@@ -359,7 +363,6 @@ final class SubRipParserTests: XCTestCase {
     }
     
     func testIncompleteTagInTag() throws {
-        //try XCTSkipIf(true)
         let text = "An <i><b>incomplete tag</i>"
         let expected = "An <b>incomplete tag"
         let parser = SubRipParser()
@@ -368,6 +371,10 @@ final class SubRipParserTests: XCTestCase {
             let (rawText, formattedText, _) = try parser.parseBody(tokenizer: tokenizer, subtitlesString: text)
             XCTAssertEqual(text, rawText)
             XCTAssertEqual(expected, formattedText.string)
+            
+            let sub1Font1 = formattedText.attributes(at: 3, effectiveRange: nil)[.font] as! NSFont
+            XCTAssertTrue(sub1Font1.fontDescriptor.symbolicTraits.contains(.italic))
+            XCTAssertFalse(sub1Font1.fontDescriptor.symbolicTraits.contains(.bold))
         } catch {
             XCTFail()
         }
