@@ -22,7 +22,7 @@ import SwiftUI
 
 struct SubtitleDetail: View {
     @ObservedObject var selectedSubtitle: Subtitle
-    @Environment(\.managedObjectContext) var moc
+    @Environment(\.undoManager) var undoManager
     
     var parser = SubRipParser()
     private var subtitleString: Binding<String> { Binding (
@@ -40,8 +40,10 @@ struct SubtitleDetail: View {
                 return
             }
             
-            self.moc.undoManager?.beginUndoGrouping()
-            defer { self.moc.undoManager?.endUndoGrouping() }
+            undoManager?.registerUndo(withTarget: self.selectedSubtitle, handler: { subtitle in
+                subtitle.content = self.selectedSubtitle.content
+            })
+            
             self.selectedSubtitle.content = newContent
             do {
                 let (_, formatted, _) = try self.parser.parseBody(tokenizer: SubRipTokenizer(), subtitlesString: newContent)
@@ -73,6 +75,15 @@ struct SubtitleDetail: View {
                 Spacer()
             }
             .padding()
+        }
+        .toolbar {
+            ToolbarItem(placement: .destructiveAction) {
+                Button {
+                    
+                } label: {
+                    Label("Delete subtitle", systemImage: "minus")
+                }
+            }
         }
     }
 }

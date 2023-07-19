@@ -28,6 +28,7 @@ enum Locked {
 
 struct SubtitleTimes: View {
     @ObservedObject var subtitle: Subtitle
+    @Environment(\.undoManager) var undoManager
     
     @State private var locked: Locked = .duration
     
@@ -75,6 +76,18 @@ struct SubtitleTimes: View {
                 time: duration,
                 action: { self.changeLocked(newLocked: .duration) }
             )
+        }
+        .onChange(of: subtitle.startTime) { newValue in
+            let oldValue = subtitle.startTime
+            undoManager?.registerUndo(withTarget: subtitle, handler: { subtitle in
+                subtitle.startTime = oldValue
+            })
+        }
+        .onChange(of: subtitle.endTime) { newValue in
+            let oldValue = subtitle.endTime
+            undoManager?.registerUndo(withTarget: subtitle, handler: { subtitle in
+                subtitle.startTime = oldValue
+            })
         }
     }
 }

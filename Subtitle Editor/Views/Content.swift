@@ -23,38 +23,31 @@ import SwiftUI
 struct Content: View {
     @State private var selectedSubtitle: Subtitle?
     @State private var isEditingRange: Bool = false
-    @State private var searchString: String = ""
     
     var body: some View {
-        NavigationView {
-            NavigationPrimary(selectedSubtitle: $selectedSubtitle, searchString: $searchString)
-            
-            if isEditingRange == true {
+        SubtitleNavigationView()
+            .frame(minWidth: 700, minHeight: 300)
+            .sheet(isPresented: $isEditingRange) {
                 EditRangeView(isVisible: $isEditingRange)
-                .padding()
-            } else {
-                VStack(alignment: .leading) {
-                    if selectedSubtitle != nil {
-                        SubtitleDetail(selectedSubtitle: selectedSubtitle!)
-                    } else {
-                        Text("No Selection")
-                            .bold()
-                            .foregroundColor(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .frame(maxHeight: .infinity, alignment: .center)
-                    }
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Button(action: { self.isEditingRange = true }) {
-                            Text("Edit Range")
-                        }
+                    .padding()
+            }
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        
+                    } label: {
+                        Label("Delete subtitle", systemImage: "plus")
                     }
                 }
-                .padding()
+                
+                ToolbarItem {
+                    Button {
+                        isEditingRange.toggle()
+                    } label: {
+                        Label("Edit Range", systemImage: "slider.horizontal.2.square.on.square")
+                    }
+                }
             }
-        }
-        .frame(minWidth: 700, minHeight: 300)
     }
 }
 

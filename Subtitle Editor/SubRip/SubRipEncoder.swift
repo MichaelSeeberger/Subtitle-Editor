@@ -23,7 +23,7 @@ import Foundation
 struct SubRipEncoder: SubtitleEncoder {
     let timeFormatter = SubRipTimeFormatter()
     
-    func encodeSubtitles(subtitles: [Subtitle], using encoding: String.Encoding) throws -> Data {
+    func subtitlesAsString(subtitles: [Subtitle]) throws -> String {
         var documentString = String()
         var counter = 1
         for subtitle in subtitles {
@@ -42,6 +42,12 @@ struct SubRipEncoder: SubtitleEncoder {
             
             counter += 1
         }
+        
+        return documentString
+    }
+    
+    func encodeSubtitles(subtitles: [Subtitle], using encoding: String.Encoding) throws -> Data {
+        let documentString = try subtitlesAsString(subtitles: subtitles)
         
         guard let data = documentString.data(using: encoding) else {
             throw SubtitleEncoderError.DataNotConvertable

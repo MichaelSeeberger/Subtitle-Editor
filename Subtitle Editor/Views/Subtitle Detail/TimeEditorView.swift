@@ -21,6 +21,8 @@
 import SwiftUI
 
 struct TimeEditorView: View {
+    @Environment(\.undoManager) var undoManager
+    
     let label: String
     let locked: Bool
     @Binding var time: Double

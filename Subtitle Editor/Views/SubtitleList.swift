@@ -21,28 +21,58 @@
 import SwiftUI
 
 struct SubtitleList: View {
-    var fetchRequest: FetchRequest<Subtitle>
+    /*var fetchRequest: FetchRequest<Subtitle>
     var subtitles: FetchedResults<Subtitle> {
         fetchRequest.wrappedValue
-    }
+    }*/
     @Environment(\.managedObjectContext) var context
-    @Binding var selectedSubtitle: Subtitle?
+    @FetchRequest(entity: Subtitle.entity(),
+                  sortDescriptors: [NSSortDescriptor(key: "counter", ascending: true)]) private var subtitles: FetchedResults<Subtitle>
     
-    init(selectedSubtitle: Binding<Subtitle?>, searchString: String) {
+    @Binding var selectedSubtitle: Subtitle?
+    @Binding var searchText: String {
+        didSet {
+            subtitles.nsPredicate = searchText.isEmpty
+                           ? nil
+                           : NSPredicate(format: "content CONTAINS %@", searchText)
+        }
+    }
+
+    /*init(selectedSubtitle: Binding<Subtitle?>, searchString: String) {
         _selectedSubtitle = selectedSubtitle
         fetchRequest = FetchRequest<Subtitle>(
             entity: Subtitle.entity(),
             sortDescriptors: [NSSortDescriptor(key: "counter", ascending: true)],
             predicate: searchString == "" ? nil : NSPredicate(format: "content CONTAINS %@", searchString)
         )
-    }
+    }*/
+    var query: Binding<String> {
+            Binding {
+                searchText
+            } set: { newValue in
+                searchText = newValue
+                subtitles.nsPredicate = newValue.isEmpty
+                               ? nil
+                               : NSPredicate(format: "content CONTAINS %@", newValue)
+            }
+        }
     
     var body: some View {
-        List(selection: $selectedSubtitle) {
+        /*List(selection: $selectedSubtitle) {
             ForEach(subtitles) { subtitle in
                 SubtitleRow(subtitle: subtitle).tag(subtitle)
             }
             .onDelete(perform: deleteRows)
+            .searchable(text: query)
+        }*/
+        List(subtitles, selection: $selectedSubtitle) { subtitle in
+            SubtitleRow(subtitle: subtitle).tag(subtitle)
+        }
+        .searchable(text: $searchText)
+        .toolbar {
+            ToolbarItem {
+                Button("OK", action: {})
+            }
         }
     }
 }
@@ -84,7 +114,7 @@ struct SubtitleList_Previews: PreviewProvider {
     
     static var previews: some View {
         createSampleData()
-        return SubtitleList(selectedSubtitle: .constant(subtitles[1]), searchString: "")
+        return SubtitleList(selectedSubtitle: .constant(subtitles[1]), searchText: .constant(""))
             .environment(\.managedObjectContext, stack.mainContext)
     }
 }
