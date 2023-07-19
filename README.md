@@ -1,5 +1,5 @@
 # Subtitle Editor
-Edit Subtitles in the SubRip format (.srt files).
+This application for macOS is designed to write and edit SubRip subtitles files.
 
 ## Contents
 
@@ -20,6 +20,9 @@ Subtitle Editor supports SubRip files (.srt) and supports the following featuree
 	* `i` Italic font (e.g. `<i>This is italic</i>`)
 	* `u` Underlined text (e.g. `<u>This text is underlined</u>`
 	* `font` Set the text color. Both html color names as well as hex color values are supported (e.g. `<font color="CornflowerBlue">Hello</font>` or `<font color="#6495ED">Hello</font>`)
+    * Nesting: `<i>This is italic. <b>This is <font color="red">red</font>, bold and italic</b></i>`. Note: Putting one font tag within another will have no effect (at least for this app).
+    
+ *Note:* Formatting with tags is not part of the official standard, so this might or might not work when viewing in your movie player of choice.   
 
 ## Installation
 ### System Requirements
@@ -42,7 +45,7 @@ git clone https://github.com/MichaelSeeberger/Subtitle-Editor.git
 ```
 
 ## Contributing
-When contributing to this repository, please first discuss the change you wish to make via issue with the owners of this repository before making a change. This is to ensure that the same work is not done by multiple people.
+When contributing to this repository, please first discuss the change you wish to make via issue with the owners of this repository before making a change. This is to ensure that the same work is not being done by multiple people.
 
 ### Not a Developer?
 If you are not a developer, you can still contribute:
