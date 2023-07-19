@@ -43,6 +43,7 @@
 		CADA9C382A672A0E00C2EC9E /* TextWithAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADA9C372A672A0E00C2EC9E /* TextWithAttributedString.swift */; };
 		CADA9C3A2A67BD2C00C2EC9E /* SubRipDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADA9C392A67BD2C00C2EC9E /* SubRipDocument.swift */; };
 		CADA9C3C2A67C31800C2EC9E /* SubtitleEditorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADA9C3B2A67C31800C2EC9E /* SubtitleEditorApp.swift */; };
+		CADA9C3F2A67F7EC00C2EC9E /* SubtiteNavigationViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADA9C3E2A67F7EC00C2EC9E /* SubtiteNavigationViewModifier.swift */; };
 		CAF7174424C6360A0056888D /* SubtitleEditTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174324C6360A0056888D /* SubtitleEditTime.swift */; };
 		CAF7174724C6C13C0056888D /* SubtitleEditTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */; };
 		CAF7174C24C6CB640056888D /* TimeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174B24C6CB640056888D /* TimeEditorView.swift */; };
@@ -107,6 +108,7 @@
 		CADA9C372A672A0E00C2EC9E /* TextWithAttributedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextWithAttributedString.swift; sourceTree = "<group>"; };
 		CADA9C392A67BD2C00C2EC9E /* SubRipDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubRipDocument.swift; sourceTree = "<group>"; };
 		CADA9C3B2A67C31800C2EC9E /* SubtitleEditorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleEditorApp.swift; sourceTree = "<group>"; };
+		CADA9C3E2A67F7EC00C2EC9E /* SubtiteNavigationViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtiteNavigationViewModifier.swift; sourceTree = "<group>"; };
 		CAF7174324C6360A0056888D /* SubtitleEditTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleEditTime.swift; sourceTree = "<group>"; };
 		CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleEditTimeTests.swift; sourceTree = "<group>"; };
 		CAF7174B24C6CB640056888D /* TimeEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeEditorView.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 		CA1DA29924B1CA23006015E0 /* Subtitle Editor */ = {
 			isa = PBXGroup;
 			children = (
+				CADA9C3D2A67F7CC00C2EC9E /* ViewModifiers */,
 				CAF7174824C6CA8F0056888D /* Model */,
 				CA1DA33C24BB08F9006015E0 /* Views */,
 				CADA9C3B2A67C31800C2EC9E /* SubtitleEditorApp.swift */,
@@ -246,6 +249,14 @@
 				CABCD39024D435EE0088AAD9 /* TimeEditView.swift */,
 			);
 			path = "Edit Range";
+			sourceTree = "<group>";
+		};
+		CADA9C3D2A67F7CC00C2EC9E /* ViewModifiers */ = {
+			isa = PBXGroup;
+			children = (
+				CADA9C3E2A67F7EC00C2EC9E /* SubtiteNavigationViewModifier.swift */,
+			);
+			path = ViewModifiers;
 			sourceTree = "<group>";
 		};
 		CAF7174824C6CA8F0056888D /* Model */ = {
@@ -374,6 +385,7 @@
 				CA1DA33524B6E9E0006015E0 /* HTMLColorNames.swift in Sources */,
 				CABF721F2A64079800AEA4C9 /* SubtitleNavigationView.swift in Sources */,
 				CA1DA2A224B1CA23006015E0 /* Document.xcdatamodeld in Sources */,
+				CADA9C3F2A67F7EC00C2EC9E /* SubtiteNavigationViewModifier.swift in Sources */,
 				CA1DA32924B363C0006015E0 /* SubRipEncoder.swift in Sources */,
 				CADA9C382A672A0E00C2EC9E /* TextWithAttributedString.swift in Sources */,
 				CA210AD824C4DE6900F5D06F /* SubtitleDetailView.swift in Sources */,
