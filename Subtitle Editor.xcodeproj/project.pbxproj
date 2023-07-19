@@ -38,7 +38,6 @@
 		CABCD38D24D42E930088AAD9 /* EditModePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABCD38C24D42E930088AAD9 /* EditModePicker.swift */; };
 		CABCD38F24D4334C0088AAD9 /* RangeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABCD38E24D4334C0088AAD9 /* RangeEditorView.swift */; };
 		CABCD39124D435EE0088AAD9 /* TimeEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABCD39024D435EE0088AAD9 /* TimeEditView.swift */; };
-		CABCD39324D4BAA20088AAD9 /* HoverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABCD39224D4BAA20088AAD9 /* HoverButton.swift */; };
 		CABCD39524D5CB680088AAD9 /* EditRangeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABCD39424D5CB680088AAD9 /* EditRangeService.swift */; };
 		CABF721F2A64079800AEA4C9 /* SubtitleNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABF721E2A64079800AEA4C9 /* SubtitleNavigationView.swift */; };
 		CADA9C382A672A0E00C2EC9E /* TextWithAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADA9C372A672A0E00C2EC9E /* TextWithAttributedString.swift */; };
@@ -103,7 +102,6 @@
 		CABCD38C24D42E930088AAD9 /* EditModePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditModePicker.swift; sourceTree = "<group>"; };
 		CABCD38E24D4334C0088AAD9 /* RangeEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeEditorView.swift; sourceTree = "<group>"; };
 		CABCD39024D435EE0088AAD9 /* TimeEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeEditView.swift; sourceTree = "<group>"; };
-		CABCD39224D4BAA20088AAD9 /* HoverButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverButton.swift; sourceTree = "<group>"; };
 		CABCD39424D5CB680088AAD9 /* EditRangeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRangeService.swift; sourceTree = "<group>"; };
 		CABF721E2A64079800AEA4C9 /* SubtitleNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleNavigationView.swift; sourceTree = "<group>"; };
 		CADA9C372A672A0E00C2EC9E /* TextWithAttributedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextWithAttributedString.swift; sourceTree = "<group>"; };
@@ -224,7 +222,6 @@
 				CA210AD724C4DE6900F5D06F /* SubtitleDetailView.swift */,
 				CA210B0424C5AEAD00F5D06F /* Subtitle Detail */,
 				CABCD38924D42CFB0088AAD9 /* Edit Range */,
-				CABCD39224D4BAA20088AAD9 /* HoverButton.swift */,
 				CAFD0DAE24D738C000A39D8F /* TimeField.swift */,
 			);
 			path = Views;
@@ -373,7 +370,6 @@
 				CA1DA32624B363AA006015E0 /* SubRipDecoder.swift in Sources */,
 				CA210B0124C58C3600F5D06F /* Content.swift in Sources */,
 				CAFCC64124BC92C600C71465 /* SubRipParser.swift in Sources */,
-				CABCD39324D4BAA20088AAD9 /* HoverButton.swift in Sources */,
 				CA1DA32F24B451A0006015E0 /* SubRipToken.swift in Sources */,
 				CA1DA33524B6E9E0006015E0 /* HTMLColorNames.swift in Sources */,
 				CABF721F2A64079800AEA4C9 /* SubtitleNavigationView.swift in Sources */,
