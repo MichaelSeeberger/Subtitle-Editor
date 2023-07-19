@@ -1,5 +1,5 @@
 //
-//  Content.swift
+//  MainContent.swift
 //  Subtitle Editor
 //
 //  Created by Michael Seeberger on 20.07.20.
@@ -20,7 +20,7 @@
 
 import SwiftUI
 
-struct Content: View {
+struct MainContent: View {
     @State private var selectedSubtitle: Subtitle?
     @State private var isEditingRange: Bool = false
     
@@ -76,7 +76,7 @@ struct Content_Previews: PreviewProvider {
     
     static var previews: some View {
         createSampleData()
-        return Content()
+        return MainContent()
             .environment(\.managedObjectContext, stack.mainContext)
     }
 }

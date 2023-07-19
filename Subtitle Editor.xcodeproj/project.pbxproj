@@ -28,7 +28,7 @@
 		CA1DA34224BC6AD2006015E0 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DA34124BC6AD2006015E0 /* TestHelpers.swift */; };
 		CA210AD824C4DE6900F5D06F /* SubtitleDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA210AD724C4DE6900F5D06F /* SubtitleDetailView.swift */; };
 		CA210ADB24C4E8EA00F5D06F /* SubtitleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9FA67E24C4CB7800C6BFC0 /* SubtitleList.swift */; };
-		CA210B0124C58C3600F5D06F /* Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA210B0024C58C3600F5D06F /* Content.swift */; };
+		CA210B0124C58C3600F5D06F /* MainContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA210B0024C58C3600F5D06F /* MainContent.swift */; };
 		CA210B0624C5AEBD00F5D06F /* SubtitleTimes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA210B0524C5AEBD00F5D06F /* SubtitleTimes.swift */; };
 		CA210B0824C5D05500F5D06F /* LockButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA210B0724C5D05500F5D06F /* LockButton.swift */; };
 		CA9FA67924C42FE900C6BFC0 /* SubtitleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9FA67824C42FE900C6BFC0 /* SubtitleRow.swift */; };
@@ -91,7 +91,7 @@
 		CA1DA33F24BC667A006015E0 /* The Last Samurai.srt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "The Last Samurai.srt"; sourceTree = "<group>"; };
 		CA1DA34124BC6AD2006015E0 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		CA210AD724C4DE6900F5D06F /* SubtitleDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleDetailView.swift; sourceTree = "<group>"; };
-		CA210B0024C58C3600F5D06F /* Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Content.swift; sourceTree = "<group>"; };
+		CA210B0024C58C3600F5D06F /* MainContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainContent.swift; sourceTree = "<group>"; };
 		CA210B0524C5AEBD00F5D06F /* SubtitleTimes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleTimes.swift; sourceTree = "<group>"; };
 		CA210B0724C5D05500F5D06F /* LockButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockButton.swift; sourceTree = "<group>"; };
 		CA9FA67824C42FE900C6BFC0 /* SubtitleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleRow.swift; sourceTree = "<group>"; };
@@ -214,7 +214,7 @@
 		CA1DA33C24BB08F9006015E0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				CA210B0024C58C3600F5D06F /* Content.swift */,
+				CA210B0024C58C3600F5D06F /* MainContent.swift */,
 				CABF721E2A64079800AEA4C9 /* SubtitleNavigationView.swift */,
 				CA9FA67824C42FE900C6BFC0 /* SubtitleRow.swift */,
 				CADA9C372A672A0E00C2EC9E /* TextWithAttributedString.swift */,
@@ -368,7 +368,7 @@
 				CA9FA67924C42FE900C6BFC0 /* SubtitleRow.swift in Sources */,
 				CA9FA67B24C4330A00C6BFC0 /* SubRipTimeFormatter.swift in Sources */,
 				CA1DA32624B363AA006015E0 /* SubRipDecoder.swift in Sources */,
-				CA210B0124C58C3600F5D06F /* Content.swift in Sources */,
+				CA210B0124C58C3600F5D06F /* MainContent.swift in Sources */,
 				CAFCC64124BC92C600C71465 /* SubRipParser.swift in Sources */,
 				CA1DA32F24B451A0006015E0 /* SubRipToken.swift in Sources */,
 				CA1DA33524B6E9E0006015E0 /* HTMLColorNames.swift in Sources */,

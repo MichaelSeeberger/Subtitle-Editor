@@ -12,7 +12,7 @@ import SwiftUI
 struct SubtitleEditorApp: App {
     var body: some Scene {
         DocumentGroup(newDocument: { SubRipDocument() }) { file in
-            Content()
+            MainContent()
                 .environment(\.managedObjectContext, file.document.context)
         }
     }

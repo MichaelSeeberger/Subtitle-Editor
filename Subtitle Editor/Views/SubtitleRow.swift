@@ -46,9 +46,7 @@ struct SubtitleRow: View {
                     .bold()
             }
             TextWithAttributedString(attributedString: attributedString())
-            Divider()
         }
-        //.padding(.vertical, 4)
     }
 }
 
