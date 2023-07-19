@@ -78,14 +78,24 @@ struct SubtitleTimes: View {
             )
         }
         .onChange(of: subtitle.startTime) { newValue in
+            guard !subtitle.isDeleted, subtitle.managedObjectContext != nil else {
+                return
+            }
+            
             let oldValue = subtitle.startTime
             undoManager?.registerUndo(withTarget: subtitle, handler: { subtitle in
+                guard subtitle.managedObjectContext != nil else { return }
                 subtitle.startTime = oldValue
             })
         }
         .onChange(of: subtitle.endTime) { newValue in
+            guard !subtitle.isDeleted, subtitle.managedObjectContext != nil else {
+                return
+            }
+            
             let oldValue = subtitle.endTime
             undoManager?.registerUndo(withTarget: subtitle, handler: { subtitle in
+                guard subtitle.managedObjectContext != nil else { return }
                 subtitle.startTime = oldValue
             })
         }

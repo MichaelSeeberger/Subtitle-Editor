@@ -22,6 +22,7 @@ import SwiftUI
 
 struct SubtitleDetail: View {
     @ObservedObject var selectedSubtitle: Subtitle
+    @Environment(\.managedObjectContext) var context
     @Environment(\.undoManager) var undoManager
     
     var parser = SubRipParser()
@@ -41,6 +42,8 @@ struct SubtitleDetail: View {
             }
             
             undoManager?.registerUndo(withTarget: self.selectedSubtitle, handler: { subtitle in
+                guard subtitle.managedObjectContext != nil else { return }
+                
                 subtitle.content = self.selectedSubtitle.content
             })
             
@@ -79,7 +82,9 @@ struct SubtitleDetail: View {
         .toolbar {
             ToolbarItem(placement: .destructiveAction) {
                 Button {
-                    
+                    withAnimation {
+                        delete(subtitle: selectedSubtitle)
+                    }
                 } label: {
                     Label("Delete subtitle", systemImage: "minus")
                 }
@@ -88,7 +93,28 @@ struct SubtitleDetail: View {
     }
 }
 
+extension SubtitleDetail {
+    fileprivate func delete(subtitle: Subtitle) {
+        let startTime = subtitle.startTime
+        let duration = subtitle.duration
+        let content = subtitle.content
 
+        undoManager?.beginUndoGrouping()
+        defer { undoManager?.endUndoGrouping() }
+        
+        undoManager?.registerUndo(withTarget: context, handler: { _ in
+            withAnimation {
+                let newSubtitle = Subtitle(context: context)
+                newSubtitle.startTime = startTime
+                newSubtitle.duration = duration
+                newSubtitle.content = content
+                    try? context.save()
+                }
+            })
+        context.delete(subtitle)
+        try? context.save()
+    }
+}
 
 struct SubtitleDetail_Previews: PreviewProvider {
     static let stack = CoreDataStack()

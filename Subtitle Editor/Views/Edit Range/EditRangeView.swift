@@ -31,6 +31,7 @@ struct EditRangeView: View {
     
     @Binding var isVisible: Bool
     @Environment(\.managedObjectContext) var context
+    @Environment(\.undoManager) var undoManager
     
     @State private var hoveringOverHelp = false
     
@@ -67,10 +68,9 @@ extension EditRangeView {
     }
     
     func applyChanges() {
-        let timeService = EditRangeService(context: context)
+        let timeService = EditRangeService(context: context, undoManager: undoManager)
         let theAddedTime = self.timeEditMode == TimeEditMode.addTime ? self.addedTime : -self.addedTime
         do {
-            NSLog("\(self.startTime) --> \(self.endTime): +\(theAddedTime)")
             if rangeEditMode == EditMode.editTimeRange {
                 try timeService.addTimeToSubtitlesInRange(startTime: self.startTime, endTime: self.endTime, add: theAddedTime)
             } else {

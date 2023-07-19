@@ -56,9 +56,6 @@ extension Subtitle {
             return
         }
         
-        self.managedObjectContext?.undoManager?.beginUndoGrouping()
-        defer { self.managedObjectContext?.undoManager?.endUndoGrouping() }
-
         if keepDuration == false {
             if newStartTime > self.endTime {
                 return
@@ -86,9 +83,6 @@ extension Subtitle {
             return
         }
         
-        self.managedObjectContext?.undoManager?.beginUndoGrouping()
-        defer { self.managedObjectContext?.undoManager?.endUndoGrouping() }
-        
         if keepStartTime == false {
             self.startTime = self.endTime - newDuration
         }
@@ -111,9 +105,6 @@ extension Subtitle {
         if newEndTime.equals(self.endTime) {
             return
         }
-        
-        self.managedObjectContext?.undoManager?.beginUndoGrouping()
-        defer { self.managedObjectContext?.undoManager?.endUndoGrouping() }
         
         if keepDuration == true {
             self.startTime = newEndTime - self.duration

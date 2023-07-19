@@ -18,7 +18,7 @@ struct ReadError: Error {
     let file: String
     
     var localizedDescription: String {
-        "Could not read the file \(file)"
+        String(localized: "Could not read the file \(file)")
     }
 }
 

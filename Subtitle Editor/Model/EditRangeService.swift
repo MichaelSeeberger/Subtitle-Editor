@@ -10,6 +10,7 @@ import CoreData
 
 struct EditRangeService {
     let context: NSManagedObjectContext
+    let undoManager: UndoManager?
     
     /**
      Add time to subtitles in the specified time range
@@ -17,9 +18,9 @@ struct EditRangeService {
      The subtitles whos start time is *at or after* `startTime` and *before or at* `endTime` will be taken to change.
      */
     func addTimeToSubtitlesInRange(startTime: Double, endTime: Double, add time: Double) throws {
-        context.undoManager?.beginUndoGrouping()
+        undoManager?.beginUndoGrouping()
         defer {
-            context.undoManager?.endUndoGrouping()
+            undoManager?.endUndoGrouping()
         }
         guard let entityName = Subtitle.entity().name else {
             let error = NSError(domain: "SubtitleEditorDomain", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not get the subtitles entity name."])
@@ -35,9 +36,9 @@ struct EditRangeService {
     }
     
     func addTimeToAllSubitles(_ time: Double) throws {
-        context.undoManager?.beginUndoGrouping()
+        undoManager?.beginUndoGrouping()
         defer {
-            context.undoManager?.endUndoGrouping()
+            undoManager?.endUndoGrouping()
         }
         guard let entityName = Subtitle.entity().name else {
             let error = NSError(domain: "SubtitleEditorDomain", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not get the subtitles entity name."])
