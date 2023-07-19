@@ -11,15 +11,14 @@ import SwiftUI
 struct SubtitleNavigationView: View {
     @Environment(\.managedObjectContext) var context: NSManagedObjectContext
     @FetchRequest(entity: Subtitle.entity(),
-                  sortDescriptors: [NSSortDescriptor(key: "counter", ascending: true)]) private var subtitles: FetchedResults<Subtitle>
+                  sortDescriptors: [NSSortDescriptor(key: "startTime", ascending: true)]) private var subtitles: FetchedResults<Subtitle>
+    
+    @Binding var selectedSubtitle: Subtitle?
     
     var body: some View {
         NavigationView {
             List(subtitles) { subtitle in
-                NavigationLink {
-                    SubtitleDetail(selectedSubtitle: subtitle)
-                } label: {
-                    SubtitleRow(subtitle: subtitle)
+                NavigationLink(destination: SubtitleDetail(selectedSubtitle: subtitle), tag: subtitle, selection: $selectedSubtitle) { SubtitleRow(subtitle: subtitle)
                 }
                 .subtitleNavigationListStyle()
             }
@@ -34,6 +33,6 @@ struct SubtitleNavigationView: View {
 
 struct SubtitleNavigationView_Previews: PreviewProvider {
     static var previews: some View {
-        SubtitleNavigationView()
+        SubtitleNavigationView(selectedSubtitle: .constant(nil))
     }
 }

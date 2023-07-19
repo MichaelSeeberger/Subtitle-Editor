@@ -177,7 +177,6 @@
 				CA1DA2A524B1CA27006015E0 /* Main.storyboard */,
 				CA1DA2A824B1CA27006015E0 /* Info.plist */,
 				CA1DA2A924B1CA27006015E0 /* Subtitle_Editor.entitlements */,
-				CA1DA2A024B1CA23006015E0 /* Document.xcdatamodeld */,
 			);
 			path = "Subtitle Editor";
 			sourceTree = "<group>";
@@ -262,6 +261,7 @@
 		CAF7174824C6CA8F0056888D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				CA1DA2A024B1CA23006015E0 /* Document.xcdatamodeld */,
 				CAF7174324C6360A0056888D /* SubtitleEditTime.swift */,
 				CABCD39424D5CB680088AAD9 /* EditRangeService.swift */,
 				CADA9C392A67BD2C00C2EC9E /* SubRipDocument.swift */,

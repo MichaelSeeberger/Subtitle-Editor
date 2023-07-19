@@ -21,11 +21,15 @@
 import SwiftUI
 
 struct MainContent: View {
-    @State private var selectedSubtitle: Subtitle?
+    @Environment(\.managedObjectContext) var context
+    @Environment(\.undoManager) var undoManager
+    @EnvironmentObject var document: SubRipDocument
+    
+    @State private var selectedSubtitle: Subtitle? = nil
     @State private var isEditingRange: Bool = false
     
     var body: some View {
-        SubtitleNavigationView()
+        SubtitleNavigationView(selectedSubtitle: $selectedSubtitle)
             .frame(minWidth: 700, minHeight: 300)
             .sheet(isPresented: $isEditingRange) {
                 EditRangeView(isVisible: $isEditingRange)
@@ -34,7 +38,9 @@ struct MainContent: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        
+                        withAnimation {
+                            addSubtitle()
+                        }
                     } label: {
                         Label("Delete subtitle", systemImage: "plus")
                     }
@@ -48,6 +54,28 @@ struct MainContent: View {
                     }
                 }
             }
+    }
+}
+
+extension MainContent {
+    @MainActor
+    fileprivate func addSubtitle() {
+        let newSubtitle: Subtitle = Subtitle(context: context)
+        newSubtitle.duration = 5
+        
+        if let selection = selectedSubtitle {
+            newSubtitle.startTime = selection.startTime + selection.duration
+        } else if let lastSubtitle = document.lastSubtitle() {
+            newSubtitle.startTime = lastSubtitle.startTime + lastSubtitle.duration
+        } else {
+            newSubtitle.startTime = 0
+        }
+        
+        undoManager?.registerUndo(withTarget: newSubtitle, handler: { subtitle in
+            context.delete(subtitle)
+        })
+        
+        selectedSubtitle = newSubtitle
     }
 }
 

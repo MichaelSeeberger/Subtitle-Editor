@@ -76,4 +76,15 @@ class SubRipDocument: ReferenceFileDocument {
         
         return result
     }
+    
+    func lastSubtitle() -> Subtitle? {
+        let request = Subtitle.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
+        request.fetchLimit = 1
+        guard let result = try? coreDataStack.mainContext.fetch(request) else {
+            return nil
+        }
+        
+        return result.first
+    }
 }
