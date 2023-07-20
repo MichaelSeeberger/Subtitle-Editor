@@ -77,14 +77,12 @@ struct SubRipParser {
         (startTime, endTime, newSubtitlesString) = try parseTimeLabels(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
         
         let body: String!
-        let formattedBody: NSAttributedString
         do {
             newSubtitlesString = try parseNewLine(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
-            (body, formattedBody, newSubtitlesString) = try parseBody(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+            (body, _, newSubtitlesString) = try parseBody(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
         } catch {
             NSLog("Error parsing body. Assuming no content, add empty body: \(error). Here is my subtitle component:\n***\n\(subtitlesString)\n***")
             body = ""
-            formattedBody = NSAttributedString(string: "")
         }
         
         let newSubtitle = subtitleGenerator()
@@ -92,7 +90,6 @@ struct SubRipParser {
         newSubtitle.startTime = startTime
         newSubtitle.duration = endTime - startTime
         newSubtitle.content = body
-        newSubtitle.formattedContent = formattedBody.rtf(from: NSMakeRange(0, formattedBody.length))
         
         return newSubtitlesString
     }

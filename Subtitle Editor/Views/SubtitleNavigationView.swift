@@ -47,9 +47,6 @@ struct SubtitleNavigationView: View {
     private func deleteRows(at offsets: IndexSet) {
         for index in offsets {
             let deletedSubtitle = subtitles[index]
-            if deletedSubtitle == selectedSubtitle {
-                selectedSubtitle = nil
-            }
             context.delete(deletedSubtitle)
         }
     }

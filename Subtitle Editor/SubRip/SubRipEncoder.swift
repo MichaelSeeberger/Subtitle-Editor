@@ -38,7 +38,7 @@ struct SubRipEncoder: SubtitleEncoder {
             
             documentString += "\(startTime) --> \(endTime)\r\n"
             
-            documentString += (subtitle.content ?? "").replacingOccurrences(of: "\n", with: "\r\n") + "\r\n\r\n"
+            documentString += subtitle.content.replacingOccurrences(of: "\n", with: "\r\n") + "\r\n\r\n"
             
             counter += 1
         }

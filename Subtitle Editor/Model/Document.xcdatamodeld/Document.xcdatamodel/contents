@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19G73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22F66" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Subtitle" representedClassName="Subtitle" syncable="YES" codeGenerationType="class">
-        <attribute name="content" optional="YES" attributeType="String"/>
+        <attribute name="content_" optional="YES" attributeType="String"/>
         <attribute name="counter" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="duration" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="formattedContent" optional="YES" attributeType="Binary"/>
+        <attribute name="formattedContent_" optional="YES" attributeType="Binary"/>
         <attribute name="startTime" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
-    <elements>
-        <element name="Subtitle" positionX="-63" positionY="-18" width="128" height="118"/>
-    </elements>
 </model>

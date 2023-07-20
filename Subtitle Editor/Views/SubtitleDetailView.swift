@@ -27,7 +27,7 @@ struct SubtitleDetail: View {
     
     var parser = SubRipParser()
     private var subtitleString: Binding<String> { Binding (
-        get: { return (self.selectedSubtitle.content ?? "") },
+        get: { self.selectedSubtitle.content },
         set: {
             let lastChar = $0.last
             var newContent = $0.split(whereSeparator: \.isNewline)
@@ -48,12 +48,6 @@ struct SubtitleDetail: View {
             })
             
             self.selectedSubtitle.content = newContent
-            do {
-                let (_, formatted, _) = try self.parser.parseBody(tokenizer: SubRipTokenizer(), subtitlesString: newContent)
-                self.selectedSubtitle.formattedContent = formatted.rtf(from: NSMakeRange(0, formatted.string.count))
-            } catch {
-                NSLog("Could not parse body")
-            }
         })
     }
     
@@ -123,10 +117,7 @@ struct SubtitleDetail_Previews: PreviewProvider {
         s.startTime = 120.123
         s.duration = 15.835
         s.content = "My <b>attributed</b> string\nWith two lines"
-        let attributedString = NSAttributedString(string: s.content!, attributes: [.font: NSFont.boldSystemFont(ofSize: 14.0)])
-        
-        s.formattedContent = attributedString.rtf(from: NSMakeRange(0, s.content!.count))
-        
+
         return s
     }()
     
