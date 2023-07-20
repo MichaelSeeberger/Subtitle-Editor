@@ -17,16 +17,40 @@ struct SubtitleNavigationView: View {
     
     var body: some View {
         NavigationView {
-            List(subtitles) { subtitle in
-                NavigationLink(destination: SubtitleDetail(selectedSubtitle: subtitle), tag: subtitle, selection: $selectedSubtitle) { SubtitleRow(subtitle: subtitle)
+            List {
+                ForEach(subtitles) { subtitle in
+                    NavigationLink(
+                        destination: SubtitleDetail(selectedSubtitle: subtitle),
+                        tag: subtitle,
+                        selection: $selectedSubtitle, label: {
+                            SubtitleRow(subtitle: subtitle)
+                        }
+                    )
+                    .subtitleNavigationListStyle()
+                    .swipeActions {
+                        Button("Delete", role: .destructive, action: {
+                            withAnimation {
+                                context.delete(subtitle)
+                            }
+                        })
+                    }
                 }
-                .subtitleNavigationListStyle()
             }
             .frame(minWidth: 250)
             
             Text("Select a subtitle")
                 .bold()
                 .foregroundColor(.secondary)
+        }
+    }
+    
+    private func deleteRows(at offsets: IndexSet) {
+        for index in offsets {
+            let deletedSubtitle = subtitles[index]
+            if deletedSubtitle == selectedSubtitle {
+                selectedSubtitle = nil
+            }
+            context.delete(deletedSubtitle)
         }
     }
 }

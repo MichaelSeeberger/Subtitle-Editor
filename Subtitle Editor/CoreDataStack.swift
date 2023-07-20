@@ -53,9 +53,6 @@ class CoreDataStack {
         }
         
         mainContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        if mainContext.undoManager == nil {
-            mainContext.undoManager = UndoManager()
-        }
         mainContext.persistentStoreCoordinator = persistentStoreCoordinator
     }
     
