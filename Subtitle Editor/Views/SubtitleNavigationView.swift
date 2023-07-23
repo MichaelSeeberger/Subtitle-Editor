@@ -9,28 +9,31 @@
 import SwiftUI
 
 struct SubtitleNavigationView: View {
-    @Environment(\.managedObjectContext) var context: NSManagedObjectContext
-    @FetchRequest(entity: Subtitle.entity(),
-                  sortDescriptors: [NSSortDescriptor(key: "startTime", ascending: true)]) private var subtitles: FetchedResults<Subtitle>
+    @EnvironmentObject var document: SubRipDocument
     
-    @Binding var selectedSubtitle: Subtitle?
+    @Binding var selectedSubtitleID: UUID?
     
     var body: some View {
         NavigationView {
             List {
-                ForEach(subtitles) { subtitle in
+                ForEach($document.orderedSubtitles) { subtitle in
                     NavigationLink(
-                        destination: SubtitleDetail(selectedSubtitle: subtitle),
-                        tag: subtitle,
-                        selection: $selectedSubtitle, label: {
+                        destination: SubtitleDetail(selectedSubtitleID: subtitle.id),
+                        tag: subtitle.id,
+                        selection: $selectedSubtitleID, label: {
                             SubtitleRow(subtitle: subtitle)
                         }
                     )
+                    /*NavigationLink(destination: {
+                        SubtitleDetail(selectedSubtitle: subtitle)
+                    }, label: {
+                        SubtitleRow(subtitle: subtitle)
+                    })*/
                     .subtitleNavigationListStyle()
                     .swipeActions {
                         Button("Delete", role: .destructive, action: {
                             withAnimation {
-                                context.delete(subtitle)
+                                document.delete(subtitle: subtitle.wrappedValue)
                             }
                         })
                     }
@@ -46,14 +49,13 @@ struct SubtitleNavigationView: View {
     
     private func deleteRows(at offsets: IndexSet) {
         for index in offsets {
-            let deletedSubtitle = subtitles[index]
-            context.delete(deletedSubtitle)
+            document.delete(subtitle: document.orderedSubtitles[index])
         }
     }
 }
 
 struct SubtitleNavigationView_Previews: PreviewProvider {
     static var previews: some View {
-        SubtitleNavigationView(selectedSubtitle: .constant(nil))
+        SubtitleNavigationView(selectedSubtitleID: .constant(nil))
     }
 }

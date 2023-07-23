@@ -30,8 +30,8 @@ struct EditRangeView: View {
     @State private var addedTime: Double = 0.0
     
     @Binding var isVisible: Bool
-    @Environment(\.managedObjectContext) var context
     @Environment(\.undoManager) var undoManager
+    @EnvironmentObject var document: SubRipDocument
     
     @State private var hoveringOverHelp = false
     
@@ -68,20 +68,15 @@ extension EditRangeView {
     }
     
     func applyChanges() {
-        let timeService = EditRangeService(context: context, undoManager: undoManager)
+        let timeService = EditRangeService(document: document, undoManager: undoManager)
         let theAddedTime = self.timeEditMode == TimeEditMode.addTime ? self.addedTime : -self.addedTime
-        do {
-            if rangeEditMode == EditMode.editTimeRange {
-                try timeService.addTimeToSubtitlesInRange(startTime: self.startTime, endTime: self.endTime, add: theAddedTime)
-            } else {
-                try timeService.addTimeToAllSubitles(theAddedTime)
-            }
-        } catch let error as NSError {
-            NSLog("error \(error): \(error.localizedDescription)")
-        } catch {
-            NSLog("error: \(error)")
+
+        if rangeEditMode == EditMode.editTimeRange {
+            timeService.addTimeToSubtitlesInRange(startTime: self.startTime, endTime: self.endTime, add: theAddedTime)
+        } else {
+            timeService.addTimeToAllSubitles(theAddedTime)
         }
-        }
+    }
 }
 
 struct EditRangeView_Previews: PreviewProvider {

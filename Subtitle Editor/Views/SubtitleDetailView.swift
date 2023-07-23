@@ -21,13 +21,17 @@
 import SwiftUI
 
 struct SubtitleDetail: View {
-    @ObservedObject var selectedSubtitle: Subtitle
-    @Environment(\.managedObjectContext) var context
+    var selectedSubtitleID: UUID
     @Environment(\.undoManager) var undoManager
+    @EnvironmentObject var document: SubRipDocument
+    
+    var selectedSubtitle: Subtitle {
+        document.subtitlesById[selectedSubtitleID]!
+    }
     
     var parser = SubRipParser()
     private var subtitleString: Binding<String> { Binding (
-        get: { self.selectedSubtitle.content },
+        get: { selectedSubtitle.content },
         set: {
             let lastChar = $0.last
             var newContent = $0.split(whereSeparator: \.isNewline)
@@ -41,13 +45,12 @@ struct SubtitleDetail: View {
                 return
             }
             
-            undoManager?.registerUndo(withTarget: self.selectedSubtitle, handler: { subtitle in
-                guard subtitle.managedObjectContext != nil else { return }
-                
-                subtitle.content = self.selectedSubtitle.content
+            let oldContent = self.selectedSubtitle.content
+            undoManager?.registerUndo(withTarget: document, handler: { document in
+                document.updateSubtitle(with: self.selectedSubtitle.id, content: oldContent)
             })
             
-            self.selectedSubtitle.content = newContent
+            document.updateSubtitle(with: selectedSubtitle.id, content: newContent)
         })
     }
     
@@ -64,7 +67,7 @@ struct SubtitleDetail: View {
         ScrollView {
             HStack {
                 VStack(alignment: .leading) {
-                    SubtitleTimes(subtitle: selectedSubtitle)
+                    //SubtitleTimes(subtitle: $selectedSubtitle)
                     Divider()
                     textField
                         .lineLimit(nil)
@@ -89,6 +92,7 @@ struct SubtitleDetail: View {
 
 extension SubtitleDetail {
     fileprivate func delete(subtitle: Subtitle) {
+        let id = subtitle.id
         let startTime = subtitle.startTime
         let duration = subtitle.duration
         let content = subtitle.content
@@ -96,33 +100,20 @@ extension SubtitleDetail {
         undoManager?.beginUndoGrouping()
         defer { undoManager?.endUndoGrouping() }
         
-        undoManager?.registerUndo(withTarget: context, handler: { _ in
+        undoManager?.registerUndo(withTarget: document, handler: { document in
             withAnimation {
-                let newSubtitle = Subtitle(context: context)
-                newSubtitle.startTime = startTime
-                newSubtitle.duration = duration
-                newSubtitle.content = content
-                    try? context.save()
-                }
-            })
-        context.delete(subtitle)
-        try? context.save()
+                let _ = document.newSubtitle(id: id, content: content, startTime: startTime, duration: duration)
+            }
+        })
+        document.delete(subtitle: subtitle)
     }
 }
 
 struct SubtitleDetail_Previews: PreviewProvider {
-    static let stack = CoreDataStack()
-    static var subtitle: Subtitle = {
-        let s = Subtitle(context: stack.mainContext)
-        s.startTime = 120.123
-        s.duration = 15.835
-        s.content = "My <b>attributed</b> string\nWith two lines"
-
-        return s
-    }()
-    
     static var previews: some View {
-        SubtitleDetail(selectedSubtitle: subtitle)
-            .environment(\.managedObjectContext, stack.mainContext)
+        let document = SubRipDocument()
+        let subtitle = document.newSubtitle(content: "My <b>attributed</b> string\nWith two lines", startTime: 120.123, duration: 15.835)!
+        SubtitleDetail(selectedSubtitleID: subtitle.id)
+            .environmentObject(document)
     }
 }

@@ -51,7 +51,7 @@ extension Subtitle {
         - newStartTime: The new start time
         - keepDuration: Adjusts the duration, so that the end time will remain the same when set to `true`.
      */
-    func changeStartTime(newStartTime: Double, keepDuration: Bool = true) {
+    func changeStartTime(document: SubRipDocument, newStartTime: Double, keepDuration: Bool = true) {
         if newStartTime.equals(self.startTime) {
             return
         }
@@ -61,10 +61,11 @@ extension Subtitle {
                 return
             }
             
-            self.duration = self.endTime - newStartTime
+            let newDuration = self.endTime - newStartTime
+            document.updateSubtitle(with: id, startTime: newStartTime, duration: newDuration)
+        } else {
+            document.updateSubtitle(with: id, startTime: newStartTime)
         }
-        
-        self.startTime = newStartTime
     }
     
     /**
@@ -78,16 +79,17 @@ extension Subtitle {
         - newDuration: The new duration for the subtitle.
         - keepStartTime: Adjusts the start time, so that the end time will remain the same when set to `false`. Otherwise, the start time remains and the end time is adjusted.
      */
-    func changeDuration(newDuration: Double, keepStartTime: Bool = true) {
+    func changeDuration(document: SubRipDocument, newDuration: Double, keepStartTime: Bool = true) {
         if newDuration < 0.0 || newDuration.equals(self.duration) {
             return
         }
         
-        if keepStartTime == false {
-            self.startTime = self.endTime - newDuration
+        if keepStartTime {
+            document.updateSubtitle(with: id, duration: newDuration)
+        } else {
+            let newStartTime = self.endTime - newDuration
+            document.updateSubtitle(with: id, startTime: newStartTime, duration: newDuration)
         }
-        
-        self.duration = newDuration
     }
     
     /**
@@ -101,15 +103,15 @@ extension Subtitle {
        - newEndTime: The new end time
        - keepDuration: Adjusts the duration, so that the end time will remain the same when set to `true`.
     */
-    func changeEndTime(newEndTime: Double, keepDuration: Bool = true) {
+    mutating func changeEndTime(document: SubRipDocument, newEndTime: Double, keepDuration: Bool = true) {
         if newEndTime.equals(self.endTime) {
             return
         }
         
-        if keepDuration == true {
-            self.startTime = newEndTime - self.duration
+        if keepDuration {
+            document.updateSubtitle(with: id, startTime: newEndTime - duration)
         } else if self.startTime < newEndTime {
-            self.duration = newEndTime - self.startTime
+            document.updateSubtitle(with: id, duration: newEndTime - self.startTime)
         }
     }
 }

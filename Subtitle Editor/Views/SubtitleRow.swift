@@ -21,7 +21,7 @@
 import SwiftUI
 
 struct SubtitleRow: View {
-    @ObservedObject var subtitle: Subtitle
+    @Binding var subtitle: Subtitle
     let formatter = SubRipTimeFormatter()
     
     var body: some View {
@@ -39,18 +39,11 @@ struct SubtitleRow: View {
 }
 
 struct SubtitleOverview_Previews: PreviewProvider {
-    static let coreDataStack = CoreDataStack()
-    
     static var subtitle: Subtitle = {
-        let s = Subtitle(context: coreDataStack.mainContext)
-        s.startTime = 120.123
-        s.duration = 15.835
-        s.content = "My attributed string\nWith two lines"
-        
-        return s
+        return Subtitle(content: "My attributed string\nWith two lines", startTime: 120.123, duration: 15.835)
     }()
     
     static var previews: some View {
-        SubtitleRow(subtitle: subtitle)
+        SubtitleRow(subtitle: .constant(subtitle))
     }
 }

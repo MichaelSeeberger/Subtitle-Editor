@@ -9,7 +9,7 @@
 import CoreData
 
 struct EditRangeService {
-    let context: NSManagedObjectContext
+    let document: SubRipDocument
     let undoManager: UndoManager?
     
     /**
@@ -17,38 +17,29 @@ struct EditRangeService {
      
      The subtitles whos start time is *at or after* `startTime` and *before or at* `endTime` will be taken to change.
      */
-    func addTimeToSubtitlesInRange(startTime: Double, endTime: Double, add time: Double) throws {
+    func addTimeToSubtitlesInRange(startTime: Double, endTime: Double, add time: Double) {
         undoManager?.beginUndoGrouping()
         defer {
             undoManager?.endUndoGrouping()
         }
-        guard let entityName = Subtitle.entity().name else {
-            let error = NSError(domain: "SubtitleEditorDomain", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not get the subtitles entity name."])
-            throw error
-        }
-        let request = NSFetchRequest<Subtitle>(entityName: entityName)
-        request.predicate = NSPredicate(format: "startTime >= %f && startTime <= %f", startTime, endTime)
         
-        let subtitles = try context.fetch(request)
+        let subtitles = document.orderedSubtitles.filter { subtitle in
+            subtitle.endTime >= startTime && subtitle.startTime <= endTime
+        }
         for subtitle in subtitles {
-            subtitle.changeStartTime(newStartTime: subtitle.startTime + time, keepDuration: true)
+            document.updateSubtitle(with: subtitle.id, startTime: subtitle.startTime + time)
         }
     }
     
-    func addTimeToAllSubitles(_ time: Double) throws {
+    func addTimeToAllSubitles(_ time: Double) {
         undoManager?.beginUndoGrouping()
         defer {
             undoManager?.endUndoGrouping()
         }
-        guard let entityName = Subtitle.entity().name else {
-            let error = NSError(domain: "SubtitleEditorDomain", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not get the subtitles entity name."])
-            throw error
-        }
-        let request = NSFetchRequest<Subtitle>(entityName: entityName)
         
-        let subtitles = try context.fetch(request)
+        let subtitles = document.orderedSubtitles
         for subtitle in subtitles {
-            subtitle.changeStartTime(newStartTime: subtitle.startTime + time, keepDuration: true)
+            document.updateSubtitle(with: subtitle.id, startTime: subtitle.startTime + time)
         }
     }
 }

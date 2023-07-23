@@ -13,7 +13,7 @@ struct SubtitleEditorApp: App {
     var body: some Scene {
         DocumentGroup(newDocument: { SubRipDocument() }) { file in
             MainContent()
-                .environment(\.managedObjectContext, file.document.context)
+                .environmentObject(file.document)
         }
     }
 }

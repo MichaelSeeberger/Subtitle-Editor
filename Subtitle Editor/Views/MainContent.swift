@@ -21,15 +21,14 @@
 import SwiftUI
 
 struct MainContent: View {
-    @Environment(\.managedObjectContext) var context
     @Environment(\.undoManager) var undoManager
     @EnvironmentObject var document: SubRipDocument
     
-    @State private var selectedSubtitle: Subtitle? = nil
+    @State private var selectedSubtitleID: UUID? = nil
     @State private var isEditingRange: Bool = false
     
     var body: some View {
-        SubtitleNavigationView(selectedSubtitle: $selectedSubtitle)
+        SubtitleNavigationView(selectedSubtitleID: $selectedSubtitleID)
             .frame(minWidth: 700, minHeight: 300)
             .sheet(isPresented: $isEditingRange) {
                 EditRangeView(isVisible: $isEditingRange)
@@ -58,53 +57,51 @@ struct MainContent: View {
 }
 
 extension MainContent {
-    @MainActor
-    fileprivate func addSubtitle() {
-        let newSubtitle: Subtitle = Subtitle(context: context)
-        newSubtitle.duration = 5
-        
-        if let selection = selectedSubtitle {
-            newSubtitle.startTime = selection.startTime + selection.duration
-        } else if let lastSubtitle = document.lastSubtitle() {
-            newSubtitle.startTime = lastSubtitle.startTime + lastSubtitle.duration
-        } else {
-            newSubtitle.startTime = 0
+    private func selectedSubtitle() -> Subtitle? {
+        guard let id = selectedSubtitleID else {
+            return nil
         }
         
-        undoManager?.registerUndo(withTarget: newSubtitle, handler: { subtitle in
-            context.delete(subtitle)
+        return document.subtitlesById[id]
+    }
+    
+    fileprivate func addSubtitle() {
+        var startTime: Double = 0
+        
+        if let selection = selectedSubtitle() {
+            startTime = selection.startTime + selection.duration
+        } else if let lastSubtitle = document.lastSubtitle() {
+            startTime = lastSubtitle.startTime + lastSubtitle.duration
+        }
+        
+        guard let newSubtitle = document.newSubtitle(startTime: startTime) else {
+            NSLog("Could not create a subtitle")
+            return
+        }
+        
+        undoManager?.registerUndo(withTarget: document, handler: { document in
+            document.delete(subtitle: newSubtitle)
         })
         
-        selectedSubtitle = newSubtitle
+        selectedSubtitleID = newSubtitle.id
     }
 }
 
 struct Content_Previews: PreviewProvider {
-    static let stack = CoreDataStack()
+    static let document = SubRipDocument()
     static var subtitles: [Subtitle] = []
     
     static func createSampleData() {
-        do {
-            try stack.resetStore()
-        } catch {
-            fatalError("Could not reset store")
-        }
         subtitles = []
         for i in 0...6 {
-            let subtitle = Subtitle(context: stack.mainContext)
-            subtitle.counter = Int64(i+1)
-            subtitle.startTime = Double(60*i)
-            subtitle.duration = 25.0
-            subtitle.content = "Subtitle \(i)"
+            let subtitle = document.newSubtitle(content: "Subtitle \(i)", startTime: Double(60*i), duration: 25.0)!
             subtitles.append(subtitle)
         }
-        
-        _ = stack.save()
     }
     
     static var previews: some View {
         createSampleData()
         return MainContent()
-            .environment(\.managedObjectContext, stack.mainContext)
+            .environmentObject(document)
     }
 }

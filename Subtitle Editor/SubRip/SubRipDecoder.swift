@@ -22,16 +22,16 @@ import Foundation
 import CoreData
 
 struct SubRipDecoder: SubtitleDecoder {
-    func decodeSubtitleData(contents: Data, generator: SubtitleGenerator) throws {
+    func decodeSubtitleData(contents: Data) throws -> [Subtitle] {
         guard let string = String(data: contents, encoding: .utf8) else {
             throw SubtitleDecoderError.DataNotReadable
         }
         
-        try decodeSubtitleString(contents: string, generator: generator)
+        return try decodeSubtitleString(contents: string)
     }
     
-    func decodeSubtitleString(contents: String, generator: SubtitleGenerator) throws {
+    func decodeSubtitleString(contents: String) throws -> [Subtitle] {
         let parser = SubRipParser()
-        try parser.parse(string: contents, subtitleGenerator: generator)
+        return try parser.parse(string: contents)
     }
 }

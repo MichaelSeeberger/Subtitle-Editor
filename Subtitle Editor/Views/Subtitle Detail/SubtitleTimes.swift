@@ -27,26 +27,30 @@ enum Locked {
 }
 
 struct SubtitleTimes: View {
-    @ObservedObject var subtitle: Subtitle
+    @Binding var subtitle: Subtitle
     @Environment(\.undoManager) var undoManager
+    @EnvironmentObject var document: SubRipDocument
     
     @State private var locked: Locked = .duration
     
-    private var endTime: Binding<Double> { Binding (
-        get: { return self.subtitle.endTime },
-        set: { self.subtitle.changeEndTime(newEndTime: $0, keepDuration: self.locked == .duration) }
+    private var endTime: Binding<Double> {
+        Binding(
+            get: { return self.subtitle.endTime },
+            set: { self.subtitle.changeEndTime(document: document, newEndTime: $0, keepDuration: self.locked == .duration) }
         )
     }
     
-    private var startTime: Binding<Double> { Binding (
-        get: { return self.subtitle.startTime },
-        set: { self.subtitle.changeStartTime(newStartTime: $0, keepDuration: self.locked == .duration) }
+    private var startTime: Binding<Double> {
+        Binding(
+            get: { return self.subtitle.startTime },
+            set: { self.subtitle.changeStartTime(document: document, newStartTime: $0, keepDuration: self.locked == .duration) }
         )
     }
     
-    private var duration: Binding<Double> { Binding (
-        get: { return self.subtitle.duration },
-        set: { self.subtitle.changeDuration(newDuration: $0, keepStartTime: self.locked == .startTime) }
+    private var duration: Binding<Double> {
+        Binding(
+            get: { return self.subtitle.duration },
+            set: { self.subtitle.changeDuration(document: document, newDuration: $0, keepStartTime: self.locked == .startTime) }
         )
     }
     
@@ -78,38 +82,35 @@ struct SubtitleTimes: View {
             )
         }
         .onChange(of: subtitle.startTime) { newValue in
-            guard !subtitle.isDeleted, subtitle.managedObjectContext != nil else {
+            guard document.subtitlesById[subtitle.id] != nil else {
                 return
             }
             
             let oldValue = subtitle.startTime
-            undoManager?.registerUndo(withTarget: subtitle, handler: { subtitle in
-                guard subtitle.managedObjectContext != nil else { return }
-                subtitle.startTime = oldValue
+            undoManager?.registerUndo(withTarget: document, handler: { document in
+                guard document.subtitlesById[subtitle.id] != nil else { return }
+                document.updateSubtitle(with: subtitle.id, startTime: oldValue)
             })
         }
         .onChange(of: subtitle.endTime) { newValue in
-            guard !subtitle.isDeleted, subtitle.managedObjectContext != nil else {
-                return
-            }
-            
+            guard document.subtitlesById[subtitle.id] != nil else { return }
+
             let oldValue = subtitle.endTime
-            undoManager?.registerUndo(withTarget: subtitle, handler: { subtitle in
-                guard subtitle.managedObjectContext != nil else { return }
-                subtitle.startTime = oldValue
+            undoManager?.registerUndo(withTarget: document, handler: { document in
+                guard document.subtitlesById[subtitle.id] != nil else { return }
+                document.updateSubtitle(with: subtitle.id, startTime: oldValue)
             })
         }
     }
 }
 
 struct SubtitleTimes_Previews: PreviewProvider {
-    static let stack = CoreDataStack()
+    static let document = SubRipDocument()
+    
     static var previews: some View {
-        let subtitle = Subtitle(context: stack.mainContext)
-        subtitle.startTime = 62.183
-        subtitle.duration = 5.331
-        _ = stack.save()
-        return SubtitleTimes(subtitle: subtitle)
-            .environment(\.managedObjectContext, stack.mainContext)
+        let subtitle = document.newSubtitle(startTime: 62.183, duration: 5.331)!
+
+        return SubtitleTimes(subtitle: .constant(subtitle))
+            .environmentObject(document)
     }
 }

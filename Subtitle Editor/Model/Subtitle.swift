@@ -8,40 +8,29 @@
 
 import Foundation
 
-extension Subtitle {
-    var content: String {
-        get {
-            self.content_ ?? ""
-        }
-        set {
-            self.content_ = newValue
-            self.formattedContent_ = nil
-        }
+struct Subtitle: Identifiable, Hashable {
+    let id: UUID
+    let content: String
+    let startTime: Double
+    let duration: Double
+    let formattedContent: NSAttributedString
+    
+    init(id: UUID? = nil, content: String, startTime: Double, duration: Double) {
+        self.id = id ?? UUID()
+        self.content = content
+        self.formattedContent = Self.format(string: content)
+        self.startTime = startTime
+        self.duration = duration
     }
     
-    var formattedContent: NSAttributedString {
-        if formattedContent_ == nil {
-            updateFormattedContent()
-        }
-        
-        guard let data = formattedContent_ else {
-            return NSAttributedString(string: "")
-        }
-        
-        guard let attributedString = NSAttributedString(rtf: data, documentAttributes: nil) else {
-            return NSAttributedString(string: "")
-        }
-        
-        return attributedString
-    }
-    
-    private func updateFormattedContent() {
+    private static func format(string: String) -> NSAttributedString {
         let parser = SubRipParser()
         do {
-            let (_, formatted, _) = try parser.parseBody(tokenizer: SubRipTokenizer(), subtitlesString: content)
-            self.formattedContent_ = formatted.rtf(from: NSMakeRange(0, formatted.string.count))
+            let (_, formatted, _) = try parser.parseBody(tokenizer: SubRipTokenizer(), subtitlesString: string)
+            return formatted
         } catch {
-            NSLog("Could not parse body of \(content)")
+            NSLog("Could not parse body of \(string)")
+            return NSAttributedString(string: string)
         }
     }
 }

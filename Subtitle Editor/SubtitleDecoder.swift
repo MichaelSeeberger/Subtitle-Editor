@@ -27,6 +27,6 @@ enum SubtitleDecoderError: Error {
 }
 
 protocol SubtitleDecoder {
-    func decodeSubtitleData(contents: Data, generator: SubtitleGenerator) throws
-    func decodeSubtitleString(contents: String, generator: SubtitleGenerator) throws
+    func decodeSubtitleData(contents: Data) throws -> [Subtitle]
+    func decodeSubtitleString(contents: String) throws -> [Subtitle]
 }

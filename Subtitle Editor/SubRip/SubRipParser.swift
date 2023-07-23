@@ -49,25 +49,27 @@ struct SubRipParser {
     /**
      Parse the subtitles string. This will create subtitles using the `subtitleGenerator` param and populate the newly created subtitles with values.
      */
-    func parse(string: String, subtitleGenerator: SubtitleGenerator) throws {
+    func parse(string: String) throws -> [Subtitle] {
         let tokenizer = SubRipTokenizer()
-        try parseAndCreateSubtitles(tokenizer: tokenizer, subtitlesString: string, subtitleGenerator: subtitleGenerator)
+        return try parseAndCreateSubtitles(tokenizer: tokenizer, subtitlesString: string)
     }
     
-    func parseAndCreateSubtitles(tokenizer: SubRipTokenizer, subtitlesString: String, subtitleGenerator: SubtitleGenerator) throws {
-         let subtitles = subtitlesString.replacingOccurrences(of: "\r", with: "").components(separatedBy: "\n\n")
-         for component in subtitles {
+    func parseAndCreateSubtitles(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> [Subtitle] {
+        let subtitles = subtitlesString.replacingOccurrences(of: "\r", with: "").components(separatedBy: "\n\n")
+        var result: [Subtitle] = []
+        for component in subtitles {
             if component.replacingOccurrences(of: "\n", with: "") == "" {
                 continue
             }
-            _ = try parseAndCreateSubtitle(tokenizer: tokenizer, subtitlesString: component, subtitleGenerator: subtitleGenerator)
+            let subtitle = try parseAndCreateSubtitle(tokenizer: tokenizer, subtitlesString: component)
+            result.append(subtitle)
         }
+        return result
     }
     
-    fileprivate func parseAndCreateSubtitle(tokenizer: SubRipTokenizer, subtitlesString: String, subtitleGenerator: SubtitleGenerator) throws -> String {
+    fileprivate func parseAndCreateSubtitle(tokenizer: SubRipTokenizer, subtitlesString: String) throws -> Subtitle {
         var newSubtitlesString = skipWhiteSpaceAndNewlines(tokenizer: tokenizer, subtitlesString: subtitlesString)
-        let counter: Int64!
-        (counter, _, newSubtitlesString) = try parseInt(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
+        (_, _, newSubtitlesString) = try parseInt(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
         newSubtitlesString = try parseNewLine(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
         
         newSubtitlesString = skipWhiteSpace(tokenizer: tokenizer, subtitlesString: newSubtitlesString)
@@ -85,13 +87,7 @@ struct SubRipParser {
             body = ""
         }
         
-        let newSubtitle = subtitleGenerator()
-        newSubtitle.counter = counter
-        newSubtitle.startTime = startTime
-        newSubtitle.duration = endTime - startTime
-        newSubtitle.content = body
-        
-        return newSubtitlesString
+        return Subtitle(content: body, startTime: startTime, duration: endTime - startTime)
     }
     
     fileprivate func skipWhiteSpaceAndNewlines(tokenizer: SubRipTokenizer, subtitlesString: String) -> String {
