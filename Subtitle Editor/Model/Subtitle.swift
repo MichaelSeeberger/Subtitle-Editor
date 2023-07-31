@@ -15,6 +15,15 @@ struct Subtitle: Identifiable, Hashable {
     let duration: Double
     let formattedContent: NSAttributedString
     
+    /**
+     Get the end time of the subtitle.
+     
+     This (computed) property is read only. To change the end time, you can use SubRipDocuments `changeEndTime(for subtitle: Subtitle, newEndTime: Double, keepDuration: Bool)`.
+     */
+    var endTime: Double {
+        startTime + duration
+    }
+    
     init(id: UUID? = nil, content: String, startTime: Double, duration: Double) {
         self.id = id ?? UUID()
         self.content = content
@@ -32,5 +41,13 @@ struct Subtitle: Identifiable, Hashable {
             NSLog("Could not parse body of \(string)")
             return NSAttributedString(string: string)
         }
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func ==(lhs: Subtitle, rhs: Subtitle) -> Bool {
+        return lhs.id == rhs.id
     }
 }

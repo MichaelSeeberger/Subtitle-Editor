@@ -42,7 +42,7 @@
 		CADA9C3C2A67C31800C2EC9E /* SubtitleEditorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADA9C3B2A67C31800C2EC9E /* SubtitleEditorApp.swift */; };
 		CADA9C3F2A67F7EC00C2EC9E /* SubtiteNavigationViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADA9C3E2A67F7EC00C2EC9E /* SubtiteNavigationViewModifier.swift */; };
 		CADA9C412A69140300C2EC9E /* Subtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADA9C402A69140200C2EC9E /* Subtitle.swift */; };
-		CAF7174424C6360A0056888D /* Subtitle+EditTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174324C6360A0056888D /* Subtitle+EditTime.swift */; };
+		CAF7174424C6360A0056888D /* SubRipDocument+EditTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174324C6360A0056888D /* SubRipDocument+EditTime.swift */; };
 		CAF7174724C6C13C0056888D /* SubtitleEditTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */; };
 		CAF7174C24C6CB640056888D /* TimeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF7174B24C6CB640056888D /* TimeEditorView.swift */; };
 		CAF7174E24C6D8010056888D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CAF7174D24C6D8010056888D /* README.md */; };
@@ -105,7 +105,7 @@
 		CADA9C3B2A67C31800C2EC9E /* SubtitleEditorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleEditorApp.swift; sourceTree = "<group>"; };
 		CADA9C3E2A67F7EC00C2EC9E /* SubtiteNavigationViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtiteNavigationViewModifier.swift; sourceTree = "<group>"; };
 		CADA9C402A69140200C2EC9E /* Subtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtitle.swift; sourceTree = "<group>"; };
-		CAF7174324C6360A0056888D /* Subtitle+EditTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Subtitle+EditTime.swift"; sourceTree = "<group>"; };
+		CAF7174324C6360A0056888D /* SubRipDocument+EditTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SubRipDocument+EditTime.swift"; sourceTree = "<group>"; };
 		CAF7174524C6C08A0056888D /* SubtitleEditTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleEditTimeTests.swift; sourceTree = "<group>"; };
 		CAF7174B24C6CB640056888D /* TimeEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeEditorView.swift; sourceTree = "<group>"; };
 		CAF7174D24C6D8010056888D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -256,9 +256,9 @@
 			isa = PBXGroup;
 			children = (
 				CADA9C402A69140200C2EC9E /* Subtitle.swift */,
-				CAF7174324C6360A0056888D /* Subtitle+EditTime.swift */,
 				CABCD39424D5CB680088AAD9 /* EditRangeService.swift */,
 				CADA9C392A67BD2C00C2EC9E /* SubRipDocument.swift */,
+				CAF7174324C6360A0056888D /* SubRipDocument+EditTime.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -382,7 +382,7 @@
 				CA1DA32924B363C0006015E0 /* SubRipEncoder.swift in Sources */,
 				CADA9C382A672A0E00C2EC9E /* TextWithAttributedString.swift in Sources */,
 				CA210AD824C4DE6900F5D06F /* SubtitleDetailView.swift in Sources */,
-				CAF7174424C6360A0056888D /* Subtitle+EditTime.swift in Sources */,
+				CAF7174424C6360A0056888D /* SubRipDocument+EditTime.swift in Sources */,
 				CA210B0624C5AEBD00F5D06F /* SubtitleTimes.swift in Sources */,
 				CAFCC67224C18E9A00C71465 /* CoreDataStack.swift in Sources */,
 				CA0261B824D02F8100E1AAC9 /* DoubleComparator.swift in Sources */,

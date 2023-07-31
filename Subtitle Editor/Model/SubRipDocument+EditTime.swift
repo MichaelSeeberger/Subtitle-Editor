@@ -1,5 +1,5 @@
 //
-//  SubtitleEditTime.swift
+//  SubRipDocument+EditTime.swift
 //  Subtitle Editor
 //
 //  Created by Michael Seeberger on 20.07.20.
@@ -21,25 +21,11 @@
 import Foundation
 
 /**
- Provides an easy way to access the end time (read only).
- */
-extension Subtitle {
-    /**
-     Get the end time of the subtitle.
-     
-     This (computed) property is read only. To change the end time, use `changeEndTime(newEndTime: Double, keepDuration: Bool)`.
-     */
-    var endTime: Double {
-        self.startTime + self.duration
-    }
-}
-
-/**
  This provides convenience methods to change the subtitles times.
  
  - Note: Do not edit the times manually, but instead use these methods!
  */
-extension Subtitle {
+extension SubRipDocument {
     /**
      Change the start time of the subtitle.
      
@@ -51,20 +37,20 @@ extension Subtitle {
         - newStartTime: The new start time
         - keepDuration: Adjusts the duration, so that the end time will remain the same when set to `true`.
      */
-    func changeStartTime(document: SubRipDocument, newStartTime: Double, keepDuration: Bool = true) {
-        if newStartTime.equals(self.startTime) {
+    func changeStartTime(for subtitle: Subtitle, newStartTime: Double, keepDuration: Bool = true) {
+        if newStartTime.equals(subtitle.startTime) {
             return
         }
         
         if keepDuration == false {
-            if newStartTime > self.endTime {
+            if newStartTime > subtitle.endTime {
                 return
             }
             
-            let newDuration = self.endTime - newStartTime
-            document.updateSubtitle(with: id, startTime: newStartTime, duration: newDuration)
+            let newDuration = subtitle.endTime - newStartTime
+            updateSubtitle(with: subtitle.id, startTime: newStartTime, duration: newDuration)
         } else {
-            document.updateSubtitle(with: id, startTime: newStartTime)
+            updateSubtitle(with: subtitle.id, startTime: newStartTime)
         }
     }
     
@@ -79,16 +65,16 @@ extension Subtitle {
         - newDuration: The new duration for the subtitle.
         - keepStartTime: Adjusts the start time, so that the end time will remain the same when set to `false`. Otherwise, the start time remains and the end time is adjusted.
      */
-    func changeDuration(document: SubRipDocument, newDuration: Double, keepStartTime: Bool = true) {
-        if newDuration < 0.0 || newDuration.equals(self.duration) {
+    func changeDuration(for subtitle: Subtitle, newDuration: Double, keepStartTime: Bool = true) {
+        if newDuration < 0.0 || newDuration.equals(subtitle.duration) {
             return
         }
         
         if keepStartTime {
-            document.updateSubtitle(with: id, duration: newDuration)
+            updateSubtitle(with: subtitle.id, duration: newDuration)
         } else {
-            let newStartTime = self.endTime - newDuration
-            document.updateSubtitle(with: id, startTime: newStartTime, duration: newDuration)
+            let newStartTime = subtitle.endTime - newDuration
+            updateSubtitle(with: subtitle.id, startTime: newStartTime, duration: newDuration)
         }
     }
     
@@ -103,15 +89,15 @@ extension Subtitle {
        - newEndTime: The new end time
        - keepDuration: Adjusts the duration, so that the end time will remain the same when set to `true`.
     */
-    mutating func changeEndTime(document: SubRipDocument, newEndTime: Double, keepDuration: Bool = true) {
-        if newEndTime.equals(self.endTime) {
+    func changeEndTime(for subtitle: Subtitle, newEndTime: Double, keepDuration: Bool = true) {
+        if newEndTime.equals(subtitle.endTime) {
             return
         }
         
         if keepDuration {
-            document.updateSubtitle(with: id, startTime: newEndTime - duration)
-        } else if self.startTime < newEndTime {
-            document.updateSubtitle(with: id, duration: newEndTime - self.startTime)
+            updateSubtitle(with: subtitle.id, startTime: newEndTime - subtitle.duration)
+        } else if subtitle.startTime < newEndTime {
+            updateSubtitle(with: subtitle.id, duration: newEndTime - subtitle.startTime)
         }
     }
 }

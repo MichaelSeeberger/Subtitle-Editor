@@ -27,7 +27,7 @@ enum Locked {
 }
 
 struct SubtitleTimes: View {
-    @Binding var subtitle: Subtitle
+    var subtitle: Subtitle
     @Environment(\.undoManager) var undoManager
     @EnvironmentObject var document: SubRipDocument
     
@@ -36,21 +36,21 @@ struct SubtitleTimes: View {
     private var endTime: Binding<Double> {
         Binding(
             get: { return self.subtitle.endTime },
-            set: { self.subtitle.changeEndTime(document: document, newEndTime: $0, keepDuration: self.locked == .duration) }
+            set: { document.changeEndTime(for: subtitle, newEndTime: $0, keepDuration: self.locked == .duration) }
         )
     }
     
     private var startTime: Binding<Double> {
         Binding(
             get: { return self.subtitle.startTime },
-            set: { self.subtitle.changeStartTime(document: document, newStartTime: $0, keepDuration: self.locked == .duration) }
+            set: { document.changeStartTime(for: subtitle, newStartTime: $0, keepDuration: self.locked == .duration) }
         )
     }
     
     private var duration: Binding<Double> {
         Binding(
             get: { return self.subtitle.duration },
-            set: { self.subtitle.changeDuration(document: document, newDuration: $0, keepStartTime: self.locked == .startTime) }
+            set: { document.changeDuration(for: subtitle, newDuration: $0, keepStartTime: self.locked == .startTime) }
         )
     }
     
@@ -110,7 +110,7 @@ struct SubtitleTimes_Previews: PreviewProvider {
     static var previews: some View {
         let subtitle = document.newSubtitle(startTime: 62.183, duration: 5.331)!
 
-        return SubtitleTimes(subtitle: .constant(subtitle))
+        return SubtitleTimes(subtitle: subtitle)
             .environmentObject(document)
     }
 }

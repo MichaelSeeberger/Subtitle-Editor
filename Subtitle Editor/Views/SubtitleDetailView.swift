@@ -67,7 +67,7 @@ struct SubtitleDetail: View {
         ScrollView {
             HStack {
                 VStack(alignment: .leading) {
-                    //SubtitleTimes(subtitle: $selectedSubtitle)
+                    SubtitleTimes(subtitle: selectedSubtitle)
                     Divider()
                     textField
                         .lineLimit(nil)
